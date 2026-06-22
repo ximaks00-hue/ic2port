@@ -51,7 +51,7 @@ public final class ReactorMath {
             return 0;
         }
         ItemStack stack = reactor.getStack(x, y);
-        return isActiveFuelRod(stack) ? 1 : 0;
+        return isActiveFuelRod(stack) ? ((IReactorFuel) stack.getItem()).getRodCount() : 0;
     }
 
     public static boolean isActiveFuelRod(final ItemStack stack) {

@@ -12,4 +12,9 @@ public interface IReactorFuel extends IReactorComponent {
     int getDepletion(ItemStack stack);
 
     boolean isDepleted(ItemStack stack);
+
+    /** Individual rod count represented by this stack for adjacency/pulse math (dual=2, quad=4). */
+    default int getRodCount() {
+        return 1;
+    }
 }

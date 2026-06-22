@@ -72,6 +72,8 @@ public final class JetpackForgeEvents {
 
             if (JetpackHelper.applyThrust(player, chest, ElectricJetpackItem.CAPACITY, jetpack.getMode(chest))) {
 
+                player.getInventory().setChanged();
+
                 spawnSmoke(player);
 
             }

@@ -41,6 +41,11 @@ public class DualFuelRodItem extends RadioactiveItem implements IReactorFuel {
     }
 
     @Override
+    public int getRodCount() {
+        return RODS;
+    }
+
+    @Override
     public void processTick(final IReactor reactor, final ItemStack stack, final int x, final int y) {
         if (!reactor.isColumnEnabled(x) || isDepleted(stack)) {
             return;

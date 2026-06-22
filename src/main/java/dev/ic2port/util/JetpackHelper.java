@@ -1,6 +1,7 @@
 package dev.ic2port.util;
 
 import dev.ic2port.item.ElectricJetpackItem;
+import dev.ic2port.item.IElectricItem;
 import dev.ic2port.item.JetpackModuleItem;
 import dev.ic2port.item.ArmorModuleItem;
 import net.minecraft.network.chat.Component;
@@ -25,7 +26,7 @@ public final class JetpackHelper {
             final ItemStack energyStack,
             final double capacity,
             final ElectricJetpackItem.JetpackMode mode) {
-        if (ModuleEnergyHelper.getStoredEnergy(energyStack, capacity) <= JetpackModuleItem.MIN_ACTIVE_ENERGY) {
+        if (getStoredEnergy(energyStack, capacity) <= ElectricJetpackItem.MIN_ACTIVE_ENERGY) {
             return false;
         }
         if (player.onGround() || player.isInWater() || player.isPassenger()) {
@@ -37,7 +38,7 @@ public final class JetpackHelper {
             if (!PlayerInputHelper.isJumping(player)) {
                 return false;
             }
-            if (ModuleEnergyHelper.drawEnergy(energyStack, capacity, cost) < cost) {
+            if (!drawEnergyCost(energyStack, capacity, cost)) {
                 return false;
             }
             var motion = player.getDeltaMovement();
@@ -45,7 +46,7 @@ public final class JetpackHelper {
             return true;
         }
 
-        if (ModuleEnergyHelper.drawEnergy(energyStack, capacity, cost) < cost) {
+        if (!drawEnergyCost(energyStack, capacity, cost)) {
             return false;
         }
         var motion = player.getDeltaMovement();
@@ -56,6 +57,20 @@ public final class JetpackHelper {
             player.fallDistance = 0.0F;
         }
         return true;
+    }
+
+    private static double getStoredEnergy(final ItemStack stack, final double moduleCapacity) {
+        if (stack.getItem() instanceof IElectricItem electric) {
+            return electric.getStoredEnergy(stack);
+        }
+        return ModuleEnergyHelper.getStoredEnergy(stack, moduleCapacity);
+    }
+
+    private static boolean drawEnergyCost(final ItemStack stack, final double moduleCapacity, final double cost) {
+        if (stack.getItem() instanceof IElectricItem electric) {
+            return electric.drawEnergy(stack, cost) >= cost;
+        }
+        return ModuleEnergyHelper.drawEnergy(stack, moduleCapacity, cost) >= cost;
     }
 
     public static Optional<Integer> findInstalledJetpackIndex(final ItemStack chestplate) {

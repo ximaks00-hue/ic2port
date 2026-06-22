@@ -173,21 +173,35 @@ public class FusionReactorBlockEntity extends BlockEntity implements IEnergyAcce
         }
         productionCooldown = FusionFuelHelper.PRODUCTION_INTERVAL_TICKS;
 
-        int produced = (int) Math.round(
+        int baseProduced = (int) Math.round(
                 FusionFuelHelper.countProductionRate(itemHandler, FUEL_SLOT_START, FUEL_SLOT_END)
                         * ModConfig.FUSION_LAVA_MULTIPLIER.get());
+        int produced = baseProduced;
+
+        ItemStack meltable = itemHandler.getStackInSlot(MELTABLE_SLOT);
+        boolean consumeMeltable = false;
+        if (!meltable.isEmpty()) {
+            produced += FusionMeltableHelper.getBonusMb(meltable);
+            consumeMeltable = true;
+        }
+
         if (produced <= 0 || lavaTank.getFluidAmount() >= LAVA_CAPACITY_MB) {
             setChanged();
             return;
         }
 
-        ItemStack meltable = itemHandler.getStackInSlot(MELTABLE_SLOT);
-        if (!meltable.isEmpty()) {
-            produced += FusionMeltableHelper.getBonusMb(meltable);
-            meltable.shrink(1);
+        FluidStack toFill = new FluidStack(Fluids.LAVA, produced);
+        int filled = lavaTank.fill(toFill, IFluidHandler.FluidAction.SIMULATE);
+        if (filled <= 0) {
+            setChanged();
+            return;
         }
 
-        lavaTank.fill(new FluidStack(Fluids.LAVA, produced), IFluidHandler.FluidAction.EXECUTE);
+        lavaTank.fill(new FluidStack(Fluids.LAVA, filled), IFluidHandler.FluidAction.EXECUTE);
+
+        if (consumeMeltable && filled > baseProduced) {
+            meltable.shrink(1);
+        }
 
         if (fuelConsumeCooldown <= 0) {
             fuelConsumeCooldown = FusionFuelHelper.FUEL_CONSUME_INTERVAL_TICKS;
