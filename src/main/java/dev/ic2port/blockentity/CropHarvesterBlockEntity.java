@@ -16,6 +16,8 @@ import dev.ic2port.setup.BlockEntityRegistry;
 import dev.ic2port.setup.ModCapabilities;
 
 import dev.ic2port.util.ContainerDataHelper;
+import dev.ic2port.util.EnergyOverloadHelper;
+import dev.ic2port.util.FullInventoryAccess;
 
 import net.minecraft.core.BlockPos;
 
@@ -69,7 +71,7 @@ import java.util.List;
 
  */
 
-public class CropHarvesterBlockEntity extends BlockEntity implements IEnergyAcceptor, MenuProvider {
+public class CropHarvesterBlockEntity extends BlockEntity implements IEnergyAcceptor, MenuProvider, FullInventoryAccess {
 
 
 
@@ -149,6 +151,8 @@ public class CropHarvesterBlockEntity extends BlockEntity implements IEnergyAcce
 
     private double storedEnergy;
 
+    private boolean destroyedByOverload;
+
     private int tickCounter;
 
 
@@ -179,7 +183,7 @@ public class CropHarvesterBlockEntity extends BlockEntity implements IEnergyAcce
 
     private void tickServer() {
 
-        if (level == null || level.isClientSide) {
+        if (level == null || level.isClientSide || destroyedByOverload) {
 
             return;
 
@@ -271,6 +275,13 @@ public class CropHarvesterBlockEntity extends BlockEntity implements IEnergyAcce
 
 
 
+    @Override
+    public IItemHandler getFullItemHandler() {
+        return outputHandler;
+    }
+
+
+
     public ContainerData getContainerData() {
 
         return data;
@@ -323,16 +334,16 @@ public class CropHarvesterBlockEntity extends BlockEntity implements IEnergyAcce
 
     public double injectEnergy(final Direction directionFrom, final double amount, final int tier) {
 
-        if (level == null || level.isClientSide || amount <= 0.0D) {
+        if (level == null || level.isClientSide || amount <= 0.0D || destroyedByOverload) {
 
             return amount;
 
         }
 
         if (tier > TIER) {
-
+            destroyedByOverload = true;
+            EnergyOverloadHelper.tryExplode(level, worldPosition, this, tier, TIER);
             return amount;
-
         }
 
         double space = ENERGY_CAPACITY - storedEnergy;

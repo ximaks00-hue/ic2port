@@ -8,6 +8,9 @@ import dev.ic2port.menu.GeothermalGeneratorMenu;
 import dev.ic2port.setup.BlockEntityRegistry;
 import dev.ic2port.setup.ModCapabilities;
 import dev.ic2port.util.EnergyTransferHelper;
+import dev.ic2port.util.FullInventoryAccess;
+import dev.ic2port.util.InsertOnlyFluidHandler;
+import dev.ic2port.util.ProcessOnlyItemHandler;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -38,7 +41,7 @@ import org.jetbrains.annotations.Nullable;
 /**
  * LV geothermal EU generator — burns lava from an internal tank or lava buckets.
  */
-public class GeothermalGeneratorBlockEntity extends BlockEntity implements IEnergyEmitter, MenuProvider {
+public class GeothermalGeneratorBlockEntity extends BlockEntity implements IEnergyEmitter, MenuProvider, FullInventoryAccess {
 
     public static final int FLUID_CAPACITY_MB = 8_000;
     public static final double ENERGY_CAPACITY = 2_400.0D;
@@ -58,7 +61,8 @@ public class GeothermalGeneratorBlockEntity extends BlockEntity implements IEner
             setChanged();
         }
     };
-    private final LazyOptional<IFluidHandler> fluidHandlerOptional = LazyOptional.of(() -> fluidTank);
+    private final LazyOptional<IFluidHandler> fluidHandlerOptional =
+            LazyOptional.of(() -> new InsertOnlyFluidHandler(fluidTank));
 
     private final ItemStackHandler itemHandler = new ItemStackHandler(SLOT_COUNT) {
         @Override
@@ -77,7 +81,9 @@ public class GeothermalGeneratorBlockEntity extends BlockEntity implements IEner
             setChanged();
         }
     };
-    private final LazyOptional<IItemHandler> itemHandlerOptional = LazyOptional.of(() -> itemHandler);
+    private final ProcessOnlyItemHandler automationItemHandler = new ProcessOnlyItemHandler(
+            itemHandler, SLOT_COUNT, slot -> slot == SLOT_OUTPUT);
+    private final LazyOptional<IItemHandler> itemHandlerOptional = LazyOptional.of(() -> automationItemHandler);
     private final LazyOptional<IEnergyEmitter> energyOptional = LazyOptional.of(() -> this);
 
     private final ContainerData data = new ContainerData() {
@@ -236,6 +242,11 @@ public class GeothermalGeneratorBlockEntity extends BlockEntity implements IEner
     }
 
     public ItemStackHandler getItemHandler() {
+        return itemHandler;
+    }
+
+    @Override
+    public IItemHandler getFullItemHandler() {
         return itemHandler;
     }
 

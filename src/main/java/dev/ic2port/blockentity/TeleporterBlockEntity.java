@@ -5,6 +5,7 @@ import dev.ic2port.api.energy.IEnergyAcceptor;
 import dev.ic2port.api.energy.IEnergyNode;
 import dev.ic2port.setup.BlockEntityRegistry;
 import dev.ic2port.setup.ModCapabilities;
+import dev.ic2port.util.EnergyOverloadHelper;
 import dev.ic2port.util.TeleporterCostHelper;
 import dev.ic2port.util.TeleportLink;
 import net.minecraft.core.BlockPos;
@@ -31,6 +32,7 @@ public class TeleporterBlockEntity extends BlockEntity implements IEnergyAccepto
 
     private final LazyOptional<IEnergyNode> energyOptional = LazyOptional.of(() -> this);
     private double storedEnergy;
+    private boolean destroyedByOverload;
 
     public TeleporterBlockEntity(final BlockPos pos, final BlockState state) {
         super(BlockEntityRegistry.TELEPORTER_BE.get(), pos, state);
@@ -47,7 +49,7 @@ public class TeleporterBlockEntity extends BlockEntity implements IEnergyAccepto
     /** @return failure reason key suffix, or null on success */
     @Nullable
     public String tryTeleportPlayer(final Player player, final TeleportLink link) {
-        if (level == null || level.isClientSide) {
+        if (level == null || level.isClientSide || destroyedByOverload) {
             return "invalid_target";
         }
         if (!(level instanceof ServerLevel serverLevel)) {
@@ -115,10 +117,12 @@ public class TeleporterBlockEntity extends BlockEntity implements IEnergyAccepto
 
     @Override
     public double injectEnergy(final Direction directionFrom, final double amount, final int tier) {
-        if (level == null || level.isClientSide || amount <= 0.0D) {
+        if (level == null || level.isClientSide || amount <= 0.0D || destroyedByOverload) {
             return amount;
         }
         if (tier > getTier()) {
+            destroyedByOverload = true;
+            EnergyOverloadHelper.tryExplode(level, worldPosition, this, tier, getTier());
             return amount;
         }
         double space = ENERGY_CAPACITY - storedEnergy;

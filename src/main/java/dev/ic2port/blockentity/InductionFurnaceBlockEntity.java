@@ -111,6 +111,11 @@ public class InductionFurnaceBlockEntity extends BaseMachineBlockEntity {
     }
 
     @Override
+    protected boolean canAutomationExtractFromSlot(final int processSlot) {
+        return processSlot == SLOT_OUTPUT_A || processSlot == SLOT_OUTPUT_B;
+    }
+
+    @Override
     protected boolean isValidProcessInput(final ItemStack stack) {
         return MachineRecipeHelper.acceptsSingleInput(
                 level,
@@ -129,7 +134,7 @@ public class InductionFurnaceBlockEntity extends BaseMachineBlockEntity {
     }
 
     private void tickServer() {
-        if (level == null || level.isClientSide) {
+        if (!isServerProcessingEnabled()) {
             return;
         }
         if (consumeOverclockerLayoutReset()) {

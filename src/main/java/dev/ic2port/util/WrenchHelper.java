@@ -1,7 +1,6 @@
 package dev.ic2port.util;
 
 import dev.ic2port.Reference;
-import dev.ic2port.blockentity.BaseMachineBlockEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -102,8 +101,8 @@ public final class WrenchHelper {
         if (blockEntity == null) {
             return;
         }
-        if (blockEntity instanceof BaseMachineBlockEntity machine) {
-            BlockEntitySpillHelper.spillItems(level, pos, machine.getFullItemHandler());
+        if (blockEntity instanceof FullInventoryAccess access) {
+            BlockEntitySpillHelper.spillItems(level, pos, access.getFullItemHandler());
         } else {
             blockEntity.getCapability(ForgeCapabilities.ITEM_HANDLER).ifPresent(handler ->
                     BlockEntitySpillHelper.spillItems(level, pos, handler));

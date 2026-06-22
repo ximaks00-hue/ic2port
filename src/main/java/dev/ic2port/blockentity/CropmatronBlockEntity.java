@@ -18,6 +18,9 @@ import dev.ic2port.setup.ModCapabilities;
 
 import dev.ic2port.util.ContainerDataHelper;
 import dev.ic2port.util.CropMatronHelper;
+import dev.ic2port.util.EnergyOverloadHelper;
+import dev.ic2port.util.FullInventoryAccess;
+import dev.ic2port.util.ProcessOnlyItemHandler;
 
 import net.minecraft.core.BlockPos;
 
@@ -67,7 +70,7 @@ import org.jetbrains.annotations.Nullable;
 
  */
 
-public class CropmatronBlockEntity extends BlockEntity implements IEnergyAcceptor, MenuProvider {
+public class CropmatronBlockEntity extends BlockEntity implements IEnergyAcceptor, MenuProvider, FullInventoryAccess {
 
 
 
@@ -109,7 +112,10 @@ public class CropmatronBlockEntity extends BlockEntity implements IEnergyAccepto
 
     };
 
-    private final LazyOptional<IItemHandler> inputOptional = LazyOptional.of(() -> inputHandler);
+    private final ProcessOnlyItemHandler automationInputHandler = new ProcessOnlyItemHandler(
+            inputHandler, 1, slot -> false);
+
+    private final LazyOptional<IItemHandler> inputOptional = LazyOptional.of(() -> automationInputHandler);
 
     private final LazyOptional<IEnergyNode> energyOptional = LazyOptional.of(() -> this);
 
@@ -159,6 +165,8 @@ public class CropmatronBlockEntity extends BlockEntity implements IEnergyAccepto
 
     private double storedEnergy;
 
+    private boolean destroyedByOverload;
+
     private int tickCounter;
 
 
@@ -189,7 +197,7 @@ public class CropmatronBlockEntity extends BlockEntity implements IEnergyAccepto
 
     private void tickServer() {
 
-        if (level == null || level.isClientSide) {
+        if (level == null || level.isClientSide || destroyedByOverload) {
 
             return;
 
@@ -215,14 +223,16 @@ public class CropmatronBlockEntity extends BlockEntity implements IEnergyAccepto
 
         boolean hasSupply = !supply.isEmpty();
 
-        int weeds = CropMatronHelper.clearWeeds(level, worldPosition);
+        int weeds = hasSupply && supply.is(ItemRegistry.WEED_EX.get())
+                ? CropMatronHelper.clearWeeds(level, worldPosition)
+                : 0;
 
-        int hydrated = CropMatronHelper.hydrateFarmland(level, worldPosition);
+        int hydrated = hasSupply && supply.is(ItemRegistry.HYDRATION_CELL.get())
+                ? CropMatronHelper.hydrateFarmland(level, worldPosition)
+                : 0;
 
         int tended = hasSupply
-
                 ? CropMatronHelper.applySupply(level, worldPosition, supply, FERTILIZER_BOOST)
-
                 : 0;
 
 
@@ -237,9 +247,9 @@ public class CropmatronBlockEntity extends BlockEntity implements IEnergyAccepto
 
         storedEnergy -= ENERGY_PER_CYCLE;
 
-        if (tended > 0 && hasSupply) {
+        if (hasSupply) {
 
-            if (supply.is(ItemRegistry.HYDRATION_CELL.get())) {
+            if (supply.is(ItemRegistry.HYDRATION_CELL.get()) && (hydrated > 0 || tended > 0)) {
 
                 int damage = supply.getDamageValue() + 1;
 
@@ -255,7 +265,11 @@ public class CropmatronBlockEntity extends BlockEntity implements IEnergyAccepto
 
                 }
 
-            } else {
+            } else if (supply.is(ItemRegistry.WEED_EX.get()) && (weeds > 0 || tended > 0)) {
+
+                inputHandler.extractItem(0, 1, false);
+
+            } else if (supply.is(ItemRegistry.FERTILIZER.get()) && tended > 0) {
 
                 inputHandler.extractItem(0, 1, false);
 
@@ -277,6 +291,13 @@ public class CropmatronBlockEntity extends BlockEntity implements IEnergyAccepto
 
 
 
+    @Override
+    public IItemHandler getFullItemHandler() {
+        return inputHandler;
+    }
+
+
+
     public ContainerData getContainerData() {
 
         return data;
@@ -289,16 +310,16 @@ public class CropmatronBlockEntity extends BlockEntity implements IEnergyAccepto
 
     public double injectEnergy(final Direction directionFrom, final double amount, final int tier) {
 
-        if (level == null || level.isClientSide || amount <= 0.0D) {
+        if (level == null || level.isClientSide || amount <= 0.0D || destroyedByOverload) {
 
             return amount;
 
         }
 
         if (tier > TIER) {
-
+            destroyedByOverload = true;
+            EnergyOverloadHelper.tryExplode(level, worldPosition, this, tier, TIER);
             return amount;
-
         }
 
         double space = ENERGY_CAPACITY - storedEnergy;

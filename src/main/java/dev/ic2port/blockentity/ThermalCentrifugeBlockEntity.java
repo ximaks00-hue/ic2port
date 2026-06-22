@@ -87,7 +87,14 @@ public class ThermalCentrifugeBlockEntity extends BaseMachineBlockEntity {
 
     @Override
     protected boolean isProcessSlotInput(final int processSlot) {
-        return processSlot == SLOT_INPUT || processSlot == SLOT_ROTOR;
+        return processSlot == SLOT_INPUT;
+    }
+
+    @Override
+    protected boolean canAutomationExtractFromSlot(final int processSlot) {
+        return processSlot == SLOT_OUTPUT_PRIMARY
+                || processSlot == SLOT_OUTPUT_SECONDARY
+                || processSlot == SLOT_OUTPUT_TERTIARY;
     }
 
     @Override
@@ -116,7 +123,7 @@ public class ThermalCentrifugeBlockEntity extends BaseMachineBlockEntity {
     }
 
     private void tickServer() {
-        if (level == null || level.isClientSide) {
+        if (!isServerProcessingEnabled()) {
             return;
         }
         if (consumeOverclockerLayoutReset()) {

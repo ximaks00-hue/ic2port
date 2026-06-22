@@ -5,11 +5,12 @@ import dev.ic2port.api.energy.IEnergyAcceptor;
 import dev.ic2port.api.energy.IEnergyNode;
 import dev.ic2port.setup.BlockEntityRegistry;
 import dev.ic2port.setup.ModCapabilities;
+import dev.ic2port.util.EnergyOverloadHelper;
+import dev.ic2port.util.FullInventoryAccess;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.Containers;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
@@ -29,7 +30,7 @@ import java.util.List;
  * HV block miner — digs downward one block every 20 ticks, consuming 100 EU/block.
  * Drops items into its internal output buffer; pipe or hopper to collect.
  */
-public class MinerBlockEntity extends BlockEntity implements IEnergyAcceptor {
+public class MinerBlockEntity extends BlockEntity implements IEnergyAcceptor, FullInventoryAccess {
 
     public static final double ENERGY_CAPACITY = 20_000.0D;
     public static final double EU_PER_BLOCK = 100.0D;
@@ -57,6 +58,7 @@ public class MinerBlockEntity extends BlockEntity implements IEnergyAcceptor {
     private int mineY;
     private int tickCount;
     private boolean done;
+    private boolean destroyedByOverload;
 
     public MinerBlockEntity(final BlockPos pos, final BlockState state) {
         super(BlockEntityRegistry.MINER_BE.get(), pos, state);
@@ -69,7 +71,7 @@ public class MinerBlockEntity extends BlockEntity implements IEnergyAcceptor {
     }
 
     private void tickServer() {
-        if (level == null || level.isClientSide || done) return;
+        if (level == null || level.isClientSide || done || destroyedByOverload) return;
         if (storedEnergy < EU_PER_BLOCK) return;
         if (!hasOutputSpace()) return;
 
@@ -107,7 +109,7 @@ public class MinerBlockEntity extends BlockEntity implements IEnergyAcceptor {
                     remaining = outputHandler.insertItem(i, remaining, false);
                 }
                 if (!remaining.isEmpty()) {
-                    Containers.dropItemStack(level, worldPosition.getX(), worldPosition.getY(), worldPosition.getZ(), remaining);
+                    Block.popResource(level, worldPosition, remaining);
                 }
             }
         }
@@ -129,11 +131,18 @@ public class MinerBlockEntity extends BlockEntity implements IEnergyAcceptor {
     }
 
     @Override
+    public IItemHandler getFullItemHandler() {
+        return outputHandler;
+    }
+
+    @Override
     public double injectEnergy(final Direction directionFrom, final double amount, final int tier) {
-        if (level == null || level.isClientSide || amount <= 0.0D) {
+        if (level == null || level.isClientSide || amount <= 0.0D || destroyedByOverload) {
             return amount;
         }
         if (tier > getTier()) {
+            destroyedByOverload = true;
+            EnergyOverloadHelper.tryExplode(level, worldPosition, this, tier, getTier());
             return amount;
         }
         double space = ENERGY_CAPACITY - storedEnergy;

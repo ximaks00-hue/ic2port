@@ -3,6 +3,9 @@ package dev.ic2port.blockentity;
 import dev.ic2port.api.energy.EnergyTier;
 import dev.ic2port.api.energy.IEnergyAcceptor;
 import dev.ic2port.api.energy.IEnergyNode;
+import dev.ic2port.util.EnergyOverloadHelper;
+import dev.ic2port.util.FullInventoryAccess;
+import dev.ic2port.util.ProcessOnlyItemHandler;
 import dev.ic2port.item.TerraformerBlueprintItem;
 import dev.ic2port.setup.BlockEntityRegistry;
 import dev.ic2port.setup.ModCapabilities;
@@ -25,7 +28,7 @@ import org.jetbrains.annotations.Nullable;
  * HV Terraformer — converts terrain in a 9×1×9 area based on installed blueprint.
  * Consumes 10 EU/t while active.
  */
-public class TerraformerBlockEntity extends BlockEntity implements IEnergyAcceptor {
+public class TerraformerBlockEntity extends BlockEntity implements IEnergyAcceptor, FullInventoryAccess {
 
     public static final double ENERGY_CAPACITY = 100_000.0D;
     public static final int TIER = EnergyTier.HV;
@@ -48,13 +51,16 @@ public class TerraformerBlockEntity extends BlockEntity implements IEnergyAccept
             return slot == SLOT_BLUEPRINT && stack.getItem() instanceof TerraformerBlueprintItem;
         }
     };
-    private final LazyOptional<IItemHandler> itemOptional = LazyOptional.of(() -> itemHandler);
+    private final ProcessOnlyItemHandler automationItemHandler = new ProcessOnlyItemHandler(
+            itemHandler, SLOT_COUNT, slot -> false);
+    private final LazyOptional<IItemHandler> itemOptional = LazyOptional.of(() -> automationItemHandler);
     private final LazyOptional<IEnergyNode> energyOptional = LazyOptional.of(() -> this);
 
     private double storedEnergy;
     private int tickCount;
     private int scanX = -RANGE;
     private int scanZ = -RANGE;
+    private boolean destroyedByOverload;
 
     public TerraformerBlockEntity(final BlockPos pos, final BlockState state) {
         super(BlockEntityRegistry.TERRAFORMER_BE.get(), pos, state);
@@ -66,7 +72,7 @@ public class TerraformerBlockEntity extends BlockEntity implements IEnergyAccept
     }
 
     private void tickServer() {
-        if (level == null || level.isClientSide || storedEnergy < EU_PER_OPERATION) return;
+        if (level == null || level.isClientSide || destroyedByOverload || storedEnergy < EU_PER_OPERATION) return;
 
         tickCount++;
         if (tickCount < WORK_INTERVAL) return;
@@ -136,10 +142,12 @@ public class TerraformerBlockEntity extends BlockEntity implements IEnergyAccept
 
     @Override
     public double injectEnergy(final Direction directionFrom, final double amount, final int tier) {
-        if (level == null || level.isClientSide || amount <= 0.0D) {
+        if (level == null || level.isClientSide || amount <= 0.0D || destroyedByOverload) {
             return amount;
         }
         if (tier > getTier()) {
+            destroyedByOverload = true;
+            EnergyOverloadHelper.tryExplode(level, worldPosition, this, tier, getTier());
             return amount;
         }
         double space = ENERGY_CAPACITY - storedEnergy;
@@ -152,6 +160,11 @@ public class TerraformerBlockEntity extends BlockEntity implements IEnergyAccept
     @Override public double getCapacity() { return ENERGY_CAPACITY; }
     @Override public double getStoredEnergy() { return storedEnergy; }
     @Override public int getTier() { return TIER; }
+
+    @Override
+    public IItemHandler getFullItemHandler() {
+        return itemHandler;
+    }
 
     @Override
     protected void saveAdditional(final CompoundTag tag) {

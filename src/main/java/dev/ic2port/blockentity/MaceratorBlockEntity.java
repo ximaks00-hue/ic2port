@@ -91,7 +91,7 @@ public class MaceratorBlockEntity extends BaseMachineBlockEntity {
     }
 
     private void tickServer() {
-        if (level == null || level.isClientSide) {
+        if (!isServerProcessingEnabled()) {
             return;
         }
         if (consumeOverclockerLayoutReset()) {

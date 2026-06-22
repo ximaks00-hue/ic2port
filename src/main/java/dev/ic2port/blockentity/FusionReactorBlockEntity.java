@@ -8,6 +8,9 @@ import dev.ic2port.setup.BlockEntityRegistry;
 import dev.ic2port.setup.ItemRegistry;
 import dev.ic2port.setup.ModCapabilities;
 import dev.ic2port.setup.ModConfig;
+import dev.ic2port.util.BlockEntitySpillHelper;
+import dev.ic2port.util.EnergyOverloadHelper;
+import dev.ic2port.util.FullInventoryAccess;
 import dev.ic2port.util.FusionFuelHelper;
 import dev.ic2port.util.FusionMeltableHelper;
 import dev.ic2port.util.FusionReactorHelper;
@@ -23,6 +26,7 @@ import net.minecraft.world.inventory.ContainerData;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.util.Mth;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluids;
@@ -32,6 +36,7 @@ import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
+import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -39,7 +44,7 @@ import org.jetbrains.annotations.Nullable;
 /**
  * Thermonuclear reactor controller — 5×5×5 reinforced shell, produces lava from uranium rods.
  */
-public class FusionReactorBlockEntity extends BlockEntity implements IEnergyAcceptor, MenuProvider {
+public class FusionReactorBlockEntity extends BlockEntity implements IEnergyAcceptor, MenuProvider, FullInventoryAccess {
 
     public static final int FUEL_SLOT_START = 0;
     public static final int FUEL_SLOT_END = 5;
@@ -117,6 +122,7 @@ public class FusionReactorBlockEntity extends BlockEntity implements IEnergyAcce
     private int productionCooldown;
     private int fuelConsumeCooldown;
     private boolean meltdownTriggered;
+    private boolean destroyedByOverload;
 
     public FusionReactorBlockEntity(final BlockPos pos, final BlockState state) {
         super(BlockEntityRegistry.FUSION_REACTOR_BE.get(), pos, state);
@@ -131,7 +137,7 @@ public class FusionReactorBlockEntity extends BlockEntity implements IEnergyAcce
     }
 
     private void tickServer() {
-        if (level == null || level.isClientSide) {
+        if (level == null || level.isClientSide || meltdownTriggered || destroyedByOverload) {
             return;
         }
 
@@ -231,18 +237,16 @@ public class FusionReactorBlockEntity extends BlockEntity implements IEnergyAcce
         double centerY = worldPosition.getY() + 0.5D;
         double centerZ = worldPosition.getZ() + 0.5D;
         int lavaMb = lavaTank.getFluidAmount();
+        BlockEntitySpillHelper.spillItems(level, worldPosition, itemHandler);
+        BlockEntitySpillHelper.spillFluids(level, worldPosition, this);
+        level.removeBlock(worldPosition, false);
         level.explode(null, centerX, centerY, centerZ, 8.0F, Level.ExplosionInteraction.BLOCK);
         if (lavaMb > 0) {
             level.explode(null, centerX, centerY, centerZ, 4.0F, Level.ExplosionInteraction.NONE);
         }
-        itemHandler.setStackInSlot(MELTABLE_SLOT, ItemStack.EMPTY);
-        for (int slot = FUEL_SLOT_START; slot <= FUEL_SLOT_END; slot++) {
-            itemHandler.setStackInSlot(slot, ItemStack.EMPTY);
-        }
         lavaTank.setFluid(FluidStack.EMPTY);
         heat = 0.0D;
         storedEnergy = 0.0D;
-        level.removeBlock(worldPosition, false);
     }
 
     private void consumePartialFuelRod() {
@@ -281,12 +285,7 @@ public class FusionReactorBlockEntity extends BlockEntity implements IEnergyAcce
             }
         }
         if (level != null) {
-            net.minecraft.world.Containers.dropItemStack(
-                    level,
-                    worldPosition.getX() + 0.5D,
-                    worldPosition.getY() + 0.5D,
-                    worldPosition.getZ() + 0.5D,
-                    depleted);
+            Block.popResource(level, worldPosition, depleted);
         }
     }
 
@@ -344,16 +343,23 @@ public class FusionReactorBlockEntity extends BlockEntity implements IEnergyAcce
         return itemHandler;
     }
 
+    @Override
+    public IItemHandler getFullItemHandler() {
+        return itemHandler;
+    }
+
     public ContainerData getContainerData() {
         return data;
     }
 
     @Override
     public double injectEnergy(final Direction directionFrom, final double amount, final int tier) {
-        if (level == null || level.isClientSide || amount <= 0.0D) {
+        if (level == null || level.isClientSide || amount <= 0.0D || destroyedByOverload) {
             return amount;
         }
         if (tier > getTier()) {
+            destroyedByOverload = true;
+            EnergyOverloadHelper.tryExplode(level, worldPosition, this, tier, getTier());
             return amount;
         }
         double space = ENERGY_CAPACITY - storedEnergy;

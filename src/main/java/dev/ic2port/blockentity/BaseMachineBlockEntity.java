@@ -10,6 +10,7 @@ import dev.ic2port.setup.ModCapabilities;
 import dev.ic2port.setup.ModConfig;
 import dev.ic2port.recipe.IMachineRecipe;
 import dev.ic2port.util.BlockEntitySpillHelper;
+import dev.ic2port.util.FullInventoryAccess;
 import dev.ic2port.util.MachineUpgradeMath;
 import dev.ic2port.util.ProcessOnlyItemHandler;
 import net.minecraft.core.BlockPos;
@@ -40,7 +41,7 @@ import org.jetbrains.annotations.Nullable;
  * <p>
  * Provides process inventory, four player-only upgrade slots, EU storage, capability exposure and client energy sync.
  */
-public abstract class BaseMachineBlockEntity extends BlockEntity implements IEnergyAcceptor, MenuProvider {
+public abstract class BaseMachineBlockEntity extends BlockEntity implements IEnergyAcceptor, MenuProvider, FullInventoryAccess {
 
     public static final int UPGRADE_SLOT_COUNT = 4;
 
@@ -74,7 +75,8 @@ public abstract class BaseMachineBlockEntity extends BlockEntity implements IEne
         this.processSlotCount = processSlotCount;
         this.energyCapacity = energyCapacity;
         this.itemHandler = createItemHandler(processSlotCount + UPGRADE_SLOT_COUNT, processSlotCount);
-        this.automationItemHandler = new ProcessOnlyItemHandler(itemHandler, processSlotCount);
+        this.automationItemHandler = new ProcessOnlyItemHandler(
+                itemHandler, processSlotCount, this::canAutomationExtractFromSlot);
         this.itemHandlerOptional = LazyOptional.of(() -> itemHandler);
         this.automationItemHandlerOptional = LazyOptional.of(() -> automationItemHandler);
         this.energyOptional = LazyOptional.of(() -> this);
@@ -85,6 +87,18 @@ public abstract class BaseMachineBlockEntity extends BlockEntity implements IEne
      */
     protected boolean isProcessSlotInput(final int processSlot) {
         return processSlot == 0;
+    }
+
+    /**
+     * @return whether hoppers/pipes may pull items from the given process slot
+     */
+    protected boolean canAutomationExtractFromSlot(final int processSlot) {
+        return !isProcessSlotInput(processSlot);
+    }
+
+    /** @return {@code false} after overload or on the client */
+    protected boolean isServerProcessingEnabled() {
+        return level != null && !level.isClientSide && !destroyedByOverload;
     }
 
     /**
@@ -154,6 +168,7 @@ public abstract class BaseMachineBlockEntity extends BlockEntity implements IEne
         return itemHandler;
     }
 
+    @Override
     public IItemHandler getFullItemHandler() {
         return itemHandler;
     }
@@ -284,7 +299,7 @@ public abstract class BaseMachineBlockEntity extends BlockEntity implements IEne
     }
 
     protected boolean consumeEnergy(final double amount) {
-        if (amount <= 0.0D || storedEnergy < amount) {
+        if (destroyedByOverload || amount <= 0.0D || storedEnergy < amount) {
             return false;
         }
         storedEnergy -= amount;

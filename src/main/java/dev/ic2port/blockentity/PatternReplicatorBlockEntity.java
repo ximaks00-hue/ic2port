@@ -8,6 +8,9 @@ import dev.ic2port.item.UuMatterItem;
 import dev.ic2port.menu.PatternReplicatorMenu;
 import dev.ic2port.setup.BlockEntityRegistry;
 import dev.ic2port.setup.ModCapabilities;
+import dev.ic2port.util.EnergyOverloadHelper;
+import dev.ic2port.util.FullInventoryAccess;
+import dev.ic2port.util.ProcessOnlyItemHandler;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -32,7 +35,7 @@ import org.jetbrains.annotations.Nullable;
  * EV pattern replicator — consumes UU-matter to copy the item in the pattern slot.
  * 1000 EU + 8 UU-matter per item replicated.
  */
-public class PatternReplicatorBlockEntity extends BlockEntity implements IEnergyAcceptor, net.minecraft.world.MenuProvider {
+public class PatternReplicatorBlockEntity extends BlockEntity implements IEnergyAcceptor, net.minecraft.world.MenuProvider, FullInventoryAccess {
 
     public static final double ENERGY_CAPACITY = 50_000.0D;
     public static final int TIER = EnergyTier.EV;
@@ -60,11 +63,14 @@ public class PatternReplicatorBlockEntity extends BlockEntity implements IEnergy
             return false;
         }
     };
-    private final LazyOptional<IItemHandler> itemOptional = LazyOptional.of(() -> itemHandler);
+    private final ProcessOnlyItemHandler automationItemHandler = new ProcessOnlyItemHandler(
+            itemHandler, SLOT_COUNT, slot -> slot == SLOT_OUTPUT);
+    private final LazyOptional<IItemHandler> itemOptional = LazyOptional.of(() -> automationItemHandler);
     private final LazyOptional<IEnergyNode> energyOptional = LazyOptional.of(() -> this);
 
     private double storedEnergy;
     private int progress;
+    private boolean destroyedByOverload;
     private ItemStack lockedPattern = ItemStack.EMPTY;
 
     private final ContainerData data = new ContainerData() {
@@ -91,7 +97,7 @@ public class PatternReplicatorBlockEntity extends BlockEntity implements IEnergy
     }
 
     private void tickServer() {
-        if (level == null || level.isClientSide) return;
+        if (level == null || level.isClientSide || destroyedByOverload) return;
 
         ItemStack pattern = itemHandler.getStackInSlot(SLOT_PATTERN);
         ItemStack uuSlot = itemHandler.getStackInSlot(SLOT_UU_MATTER);
@@ -159,10 +165,12 @@ public class PatternReplicatorBlockEntity extends BlockEntity implements IEnergy
 
     @Override
     public double injectEnergy(final Direction directionFrom, final double amount, final int tier) {
-        if (level == null || level.isClientSide || amount <= 0.0D) {
+        if (level == null || level.isClientSide || amount <= 0.0D || destroyedByOverload) {
             return amount;
         }
         if (tier > getTier()) {
+            destroyedByOverload = true;
+            EnergyOverloadHelper.tryExplode(level, worldPosition, this, tier, getTier());
             return amount;
         }
         double space = ENERGY_CAPACITY - storedEnergy;
@@ -200,6 +208,11 @@ public class PatternReplicatorBlockEntity extends BlockEntity implements IEnergy
 
     public ContainerData getContainerData() { return data; }
     public ItemStackHandler getItemHandler() { return itemHandler; }
+
+    @Override
+    public IItemHandler getFullItemHandler() {
+        return itemHandler;
+    }
 
     @Override
     public @NotNull <T> LazyOptional<T> getCapability(final @NotNull Capability<T> cap,

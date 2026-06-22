@@ -16,15 +16,18 @@ import dev.ic2port.setup.BlockRegistry;
 import dev.ic2port.setup.ModCapabilities;
 import dev.ic2port.setup.ModConfig;
 import dev.ic2port.util.EnergyTransferHelper;
+import dev.ic2port.util.FullInventoryAccess;
+import dev.ic2port.util.ProcessOnlyItemHandler;
 import dev.ic2port.util.ReactorGridHelper;
 import dev.ic2port.util.ReactorItemFilters;
+import dev.ic2port.util.BlockEntitySpillHelper;
 import dev.ic2port.util.ReactorMeltdownHelper;
 import dev.ic2port.util.ReactorTickProfiler;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.world.Containers;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -43,7 +46,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class NuclearReactorBlockEntity extends BlockEntity
-        implements IReactor, IReactorMonitor, IEnergyEmitter, MenuProvider {
+        implements IReactor, IReactorMonitor, IEnergyEmitter, MenuProvider, FullInventoryAccess {
 
     public static final int GRID_WIDTH = 9;
     public static final int GRID_HEIGHT = 6;
@@ -96,7 +99,9 @@ public class NuclearReactorBlockEntity extends BlockEntity
             setChanged();
         }
     };
-    private final LazyOptional<IItemHandler> itemHandlerOptional = LazyOptional.of(() -> itemHandler);
+    private final ProcessOnlyItemHandler automationItemHandler = new ProcessOnlyItemHandler(
+            itemHandler, SLOT_COUNT, slot -> false);
+    private final LazyOptional<IItemHandler> itemHandlerOptional = LazyOptional.of(() -> automationItemHandler);
     private final LazyOptional<IEnergyNode> energyOptional = LazyOptional.of(() -> this);
 
     private final ContainerData data = new ContainerData() {
@@ -180,12 +185,7 @@ public class NuclearReactorBlockEntity extends BlockEntity
                 }
                 ItemStack stack = getStack(x, y);
                 if (!stack.isEmpty()) {
-                    Containers.dropItemStack(
-                            level,
-                            worldPosition.getX() + 0.5D,
-                            worldPosition.getY() + 0.5D,
-                            worldPosition.getZ() + 0.5D,
-                            stack);
+                    Block.popResource(level, worldPosition, stack);
                     setStack(x, y, ItemStack.EMPTY);
                 }
             }
@@ -318,20 +318,14 @@ public class NuclearReactorBlockEntity extends BlockEntity
         float explosionPower = ReactorMeltdownHelper.explosionPowerForInventory(this);
         int contaminationRadius = ReactorMeltdownHelper.contaminationRadiusForInventory(this);
 
-        for (int slot = 0; slot < SLOT_COUNT; slot++) {
-            ItemStack stack = itemHandler.getStackInSlot(slot);
-            if (!stack.isEmpty()) {
-                Containers.dropItemStack(level, worldPosition.getX(), worldPosition.getY(), worldPosition.getZ(), stack);
-                itemHandler.setStackInSlot(slot, ItemStack.EMPTY);
-            }
-        }
+        BlockEntitySpillHelper.spillItems(level, worldPosition, itemHandler);
 
         double centerX = worldPosition.getX() + 0.5D;
         double centerY = worldPosition.getY() + 0.5D;
         double centerZ = worldPosition.getZ() + 0.5D;
         ReactorMeltdownHelper.contaminateArea(level, worldPosition, contaminationRadius);
-        level.explode(null, centerX, centerY, centerZ, explosionPower, Level.ExplosionInteraction.BLOCK);
         level.removeBlock(worldPosition, false);
+        level.explode(null, centerX, centerY, centerZ, explosionPower, Level.ExplosionInteraction.BLOCK);
     }
 
     @Override
@@ -478,6 +472,11 @@ public class NuclearReactorBlockEntity extends BlockEntity
         }
         storedEnergy = Math.max(0.0D, storedEnergy - amount);
         setChanged();
+    }
+
+    @Override
+    public IItemHandler getFullItemHandler() {
+        return itemHandler;
     }
 
     public ContainerData getContainerData() {

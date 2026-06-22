@@ -8,6 +8,7 @@ import dev.ic2port.item.ReBatteryItem;
 import dev.ic2port.setup.ItemRegistry;
 import dev.ic2port.util.CannerOperationHelper;
 import dev.ic2port.util.FoodCanningHelper;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
@@ -118,7 +119,7 @@ public abstract class AbstractCannerBlockEntity extends BaseMachineBlockEntity {
     }
 
     private void tickServer() {
-        if (level == null || level.isClientSide) {
+        if (!isServerProcessingEnabled()) {
             return;
         }
         if (consumeOverclockerLayoutReset()) {
@@ -213,8 +214,7 @@ public abstract class AbstractCannerBlockEntity extends BaseMachineBlockEntity {
             return;
         }
         if (level != null) {
-            net.minecraft.world.Containers.dropItemStack(level, worldPosition.getX(), worldPosition.getY(),
-                    worldPosition.getZ(), tinCan);
+            Block.popResource(level, worldPosition, tinCan);
         }
     }
 

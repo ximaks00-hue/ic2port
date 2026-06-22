@@ -64,6 +64,16 @@ public class ElectrolyzerBlockEntity extends BaseMachineBlockEntity {
     @Override public int getTier() { return TIER; }
 
     @Override
+    protected boolean isProcessSlotInput(final int processSlot) {
+        return processSlot == SLOT_INPUT;
+    }
+
+    @Override
+    protected boolean canAutomationExtractFromSlot(final int processSlot) {
+        return processSlot == SLOT_OUTPUT_A || processSlot == SLOT_OUTPUT_B;
+    }
+
+    @Override
     protected boolean isValidProcessInput(final ItemStack stack) {
         return MachineRecipeHelper.acceptsSingleInput(
                 level, RecipeTypeRegistry.ELECTROLYZER.get(),
@@ -76,7 +86,7 @@ public class ElectrolyzerBlockEntity extends BaseMachineBlockEntity {
     }
 
     private void tickServer() {
-        if (level == null || level.isClientSide) return;
+        if (!isServerProcessingEnabled()) return;
         if (consumeOverclockerLayoutReset()) progress = 0;
 
         ItemStack input = getItemHandler().getStackInSlot(SLOT_INPUT);

@@ -1,11 +1,11 @@
 package dev.ic2port.util;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.world.Containers;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.fluids.FluidStack;
@@ -39,20 +39,20 @@ public final class BlockEntitySpillHelper {
     }
 
     public static void spillItems(final Level level, final BlockPos pos, final IItemHandler handler) {
-        final double x = pos.getX() + 0.5D;
-        final double y = pos.getY() + 0.5D;
-        final double z = pos.getZ() + 0.5D;
         for (int slot = 0; slot < handler.getSlots(); slot++) {
             ItemStack stack = handler.extractItem(slot, Integer.MAX_VALUE, false);
             if (!stack.isEmpty()) {
-                Containers.dropItemStack(level, x, y, z, stack);
+                Block.popResource(level, pos, stack);
             }
         }
     }
 
     public static void spillFluids(final Level level, final BlockPos pos, final BlockEntity blockEntity) {
         blockEntity.getCapability(ForgeCapabilities.FLUID_HANDLER).ifPresent(handler -> {
-            FluidStack drained = handler.drain(Integer.MAX_VALUE, IFluidHandler.FluidAction.EXECUTE);
+            IFluidHandler toDrain = handler instanceof InsertOnlyFluidHandler insertOnly
+                    ? insertOnly.getDelegate()
+                    : handler;
+            FluidStack drained = toDrain.drain(Integer.MAX_VALUE, IFluidHandler.FluidAction.EXECUTE);
             dropFluidAsBuckets(level, pos, drained);
         });
     }
@@ -66,11 +66,8 @@ public final class BlockEntitySpillHelper {
             return;
         }
         int amount = fluid.getAmount();
-        final double x = pos.getX() + 0.5D;
-        final double y = pos.getY() + 0.5D;
-        final double z = pos.getZ() + 0.5D;
         while (amount >= 1000) {
-            Containers.dropItemStack(level, x, y, z, new ItemStack(bucket));
+            Block.popResource(level, pos, new ItemStack(bucket));
             amount -= 1000;
         }
     }

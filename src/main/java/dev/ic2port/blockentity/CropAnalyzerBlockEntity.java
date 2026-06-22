@@ -7,6 +7,7 @@ import dev.ic2port.api.energy.IEnergyNode;
 import dev.ic2port.menu.CropAnalyzerMenu;
 import dev.ic2port.setup.BlockEntityRegistry;
 import dev.ic2port.setup.ModCapabilities;
+import dev.ic2port.util.EnergyOverloadHelper;
 import dev.ic2port.util.StationaryCropAnalyzerHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -65,6 +66,7 @@ public class CropAnalyzerBlockEntity extends BlockEntity implements IEnergyAccep
     private BlockPos targetPos = BlockPos.ZERO;
     private boolean hasTarget;
     private double scanProgress;
+    private boolean destroyedByOverload;
 
     public CropAnalyzerBlockEntity(final BlockPos pos, final BlockState state) {
         super(BlockEntityRegistry.CROP_ANALYZER_BE.get(), pos, state);
@@ -79,7 +81,7 @@ public class CropAnalyzerBlockEntity extends BlockEntity implements IEnergyAccep
     }
 
     private void tickServer() {
-        if (level == null || level.isClientSide) {
+        if (level == null || level.isClientSide || destroyedByOverload) {
             return;
         }
         if (storedEnergy < StationaryCropAnalyzerHelper.ENERGY_PER_TICK) {
@@ -177,10 +179,12 @@ public class CropAnalyzerBlockEntity extends BlockEntity implements IEnergyAccep
 
     @Override
     public double injectEnergy(final Direction directionFrom, final double amount, final int tier) {
-        if (level == null || level.isClientSide || amount <= 0.0D) {
+        if (level == null || level.isClientSide || amount <= 0.0D || destroyedByOverload) {
             return amount;
         }
         if (tier > TIER) {
+            destroyedByOverload = true;
+            EnergyOverloadHelper.tryExplode(level, worldPosition, this, tier, TIER);
             return amount;
         }
         double space = ENERGY_CAPACITY - storedEnergy;

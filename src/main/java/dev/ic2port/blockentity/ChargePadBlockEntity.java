@@ -139,13 +139,12 @@ public class ChargePadBlockEntity extends BlockEntity implements IEnergyAcceptor
         final double centerY = worldPosition.getY() + 0.5D;
         final double centerZ = worldPosition.getZ() + 0.5D;
 
-        level.explode(null, centerX, centerY, centerZ, radius, Level.ExplosionInteraction.BLOCK);
         level.removeBlock(worldPosition, false);
+        level.explode(null, centerX, centerY, centerZ, radius, Level.ExplosionInteraction.BLOCK);
     }
 
     private boolean isStandingOnPad(final Player player) {
-        BlockPos feet = player.blockPosition();
-        return feet.below().equals(worldPosition) || feet.equals(worldPosition);
+        return player.blockPosition().below().equals(worldPosition);
     }
 
     @Override

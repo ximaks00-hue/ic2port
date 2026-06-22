@@ -9,7 +9,9 @@ import dev.ic2port.setup.BlockEntityRegistry;
 import dev.ic2port.setup.ModCapabilities;
 import dev.ic2port.setup.ModConfig;
 import dev.ic2port.util.EnergyTransferHelper;
+import dev.ic2port.util.FullInventoryAccess;
 import dev.ic2port.util.ItemEnergyHelper;
+import dev.ic2port.util.ProcessOnlyItemHandler;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -36,7 +38,7 @@ import org.jetbrains.annotations.Nullable;
 /**
  * LV solid-fuel EU generator — burns vanilla fuel items and outputs 10 EU/t into an internal buffer.
  */
-public class SolidFuelGeneratorBlockEntity extends BlockEntity implements IEnergyEmitter, MenuProvider {
+public class SolidFuelGeneratorBlockEntity extends BlockEntity implements IEnergyEmitter, MenuProvider, FullInventoryAccess {
 
     public static final double GENERATION_PER_TICK = 10.0D;
     public static final int TIER = EnergyTier.LV;
@@ -62,7 +64,9 @@ public class SolidFuelGeneratorBlockEntity extends BlockEntity implements IEnerg
             return false;
         }
     };
-    private final LazyOptional<IItemHandler> itemHandlerOptional = LazyOptional.of(() -> itemHandler);
+    private final ProcessOnlyItemHandler automationItemHandler = new ProcessOnlyItemHandler(
+            itemHandler, SLOT_COUNT, slot -> slot == SLOT_DISCHARGE);
+    private final LazyOptional<IItemHandler> itemHandlerOptional = LazyOptional.of(() -> automationItemHandler);
     private final LazyOptional<IEnergyEmitter> energyOptional = LazyOptional.of(() -> this);
 
     private final ContainerData data = new ContainerData() {
@@ -132,7 +136,7 @@ public class SolidFuelGeneratorBlockEntity extends BlockEntity implements IEnerg
 
         double space = getEnergyCapacity() - storedEnergy;
         double toDraw = Math.min(space, BATTERY_DISCHARGE_PER_TICK);
-        double drawn = ItemEnergyHelper.dischargeItem(dischargeStack, toDraw);
+        double drawn = ItemEnergyHelper.dischargeItemAndModules(dischargeStack, toDraw, TIER);
         if (drawn > 0.0D) {
             itemHandler.setStackInSlot(SLOT_DISCHARGE, dischargeStack);
             storedEnergy += drawn;
@@ -234,6 +238,11 @@ public class SolidFuelGeneratorBlockEntity extends BlockEntity implements IEnerg
     }
 
     public ItemStackHandler getItemHandler() {
+        return itemHandler;
+    }
+
+    @Override
+    public IItemHandler getFullItemHandler() {
         return itemHandler;
     }
 

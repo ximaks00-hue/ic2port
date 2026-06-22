@@ -16,6 +16,7 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ContainerData;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.Nullable;
 
@@ -65,6 +66,11 @@ public class RecyclerBlockEntity extends BaseMachineBlockEntity {
     }
 
     @Override
+    protected boolean isValidProcessInput(final ItemStack stack) {
+        return RecyclerHelper.canRecycle(stack);
+    }
+
+    @Override
     protected ItemStackHandler createItemHandler(final int totalSlots, final int processSlots) {
         return new ItemStackHandler(totalSlots) {
             @Override
@@ -104,7 +110,7 @@ public class RecyclerBlockEntity extends BaseMachineBlockEntity {
     }
 
     private void tickServer() {
-        if (level == null || level.isClientSide) {
+        if (!isServerProcessingEnabled()) {
             return;
         }
         if (consumeOverclockerLayoutReset()) {
@@ -117,6 +123,12 @@ public class RecyclerBlockEntity extends BaseMachineBlockEntity {
         if (!RecyclerHelper.canRecycle(input)) {
             progress = 0;
             maxProgress = DEFAULT_PROCESSING_TIME;
+            setChanged();
+            return;
+        }
+
+        if (!output.isEmpty() && !output.is(ItemRegistry.SCRAP.get())) {
+            progress = 0;
             setChanged();
             return;
         }
@@ -139,12 +151,7 @@ public class RecyclerBlockEntity extends BaseMachineBlockEntity {
             if (canOutputScrap(output)) {
                 mergeProcessOutput(SLOT_OUTPUT, output, scrap);
             } else if (level != null) {
-                net.minecraft.world.Containers.dropItemStack(
-                        level,
-                        worldPosition.getX() + 0.5D,
-                        worldPosition.getY() + 0.5D,
-                        worldPosition.getZ() + 0.5D,
-                        scrap);
+                Block.popResource(level, worldPosition, scrap);
             }
         }
 

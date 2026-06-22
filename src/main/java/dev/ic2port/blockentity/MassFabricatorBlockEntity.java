@@ -94,6 +94,16 @@ public class MassFabricatorBlockEntity extends BaseMachineBlockEntity {
         return TIER;
     }
 
+    @Override
+    protected boolean isProcessSlotInput(final int processSlot) {
+        return processSlot == SLOT_SCRAP;
+    }
+
+    @Override
+    protected boolean canAutomationExtractFromSlot(final int processSlot) {
+        return processSlot == SLOT_OUTPUT;
+    }
+
     public static void serverTick(
             final Level level,
             final BlockPos pos,
@@ -103,7 +113,7 @@ public class MassFabricatorBlockEntity extends BaseMachineBlockEntity {
     }
 
     private void tickServer() {
-        if (level == null || level.isClientSide) {
+        if (!isServerProcessingEnabled()) {
             return;
         }
         if (consumeOverclockerLayoutReset()) {

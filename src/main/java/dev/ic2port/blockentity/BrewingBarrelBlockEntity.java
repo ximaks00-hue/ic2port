@@ -9,6 +9,8 @@ import dev.ic2port.util.BeerHelper;
 import dev.ic2port.util.PotionHelper;
 import dev.ic2port.util.RumHelper;
 import dev.ic2port.util.WhiskyHelper;
+import dev.ic2port.util.FullInventoryAccess;
+import dev.ic2port.util.ProcessOnlyItemHandler;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -20,8 +22,9 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ContainerData;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.Containers;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.capabilities.Capability;
@@ -35,7 +38,7 @@ import org.jetbrains.annotations.Nullable;
 /**
  * Ferments beer, rum, whisky, or potions over many ticks.
  */
-public class BrewingBarrelBlockEntity extends BlockEntity implements MenuProvider {
+public class BrewingBarrelBlockEntity extends BlockEntity implements MenuProvider, FullInventoryAccess {
 
     public static final int BEER_DURATION = 6000;
     public static final int SLOT_HOPS = 0;
@@ -61,6 +64,14 @@ public class BrewingBarrelBlockEntity extends BlockEntity implements MenuProvide
                 case SLOT_OUTPUT -> false;
                 default -> false;
             };
+        }
+
+        @Override
+        public @NotNull ItemStack insertItem(final int slot, final @NotNull ItemStack stack, final boolean simulate) {
+            if (brewing && slot != SLOT_OUTPUT) {
+                return stack;
+            }
+            return super.insertItem(slot, stack, simulate);
         }
     };
 
@@ -99,7 +110,9 @@ public class BrewingBarrelBlockEntity extends BlockEntity implements MenuProvide
     private int batchRedstone;
     private int batchGlowstone;
 
-    private final LazyOptional<IItemHandler> itemHandlerOptional = LazyOptional.of(this::getItemHandlerCapability);
+    private final ProcessOnlyItemHandler automationItemHandler = new ProcessOnlyItemHandler(
+            itemHandler, SLOT_COUNT, slot -> slot == SLOT_OUTPUT);
+    private final LazyOptional<IItemHandler> itemHandlerOptional = LazyOptional.of(() -> automationItemHandler);
 
     public BrewingBarrelBlockEntity(final BlockPos pos, final BlockState state) {
         super(BlockEntityRegistry.BREWING_BARREL_BE.get(), pos, state);
@@ -118,6 +131,10 @@ public class BrewingBarrelBlockEntity extends BlockEntity implements MenuProvide
             return;
         }
         if (brewing) {
+            if (!canOutputForActiveBrew()) {
+                setChanged();
+                return;
+            }
             brewProgress++;
             temperature = 22 + (int) (8 * Math.sin(brewProgress / 80.0D));
             if (brewProgress >= brewDurationMax) {
@@ -254,6 +271,16 @@ public class BrewingBarrelBlockEntity extends BlockEntity implements MenuProvide
         return output.isEmpty() || (output.is(product) && output.getCount() < output.getMaxStackSize());
     }
 
+    private boolean canOutputForActiveBrew() {
+        return switch (activeBrewType) {
+            case BEER -> canOutput(ItemRegistry.BEER.get());
+            case RUM -> canOutput(ItemRegistry.RUM.get());
+            case WHISKY -> canOutput(ItemRegistry.WHISKY.get());
+            case POTION -> canOutput(ItemRegistry.BREWED_POTION.get());
+            default -> false;
+        };
+    }
+
     private void finishBrew() {
         BrewType finished = activeBrewType;
         int progress = brewProgress;
@@ -303,15 +330,15 @@ public class BrewingBarrelBlockEntity extends BlockEntity implements MenuProvide
         if (level == null || level.isClientSide || stack.isEmpty()) {
             return;
         }
-        Containers.dropItemStack(
-                level,
-                worldPosition.getX() + 0.5D,
-                worldPosition.getY() + 0.5D,
-                worldPosition.getZ() + 0.5D,
-                stack);
+        Block.popResource(level, worldPosition, stack);
     }
 
     public ItemStackHandler getItemHandler() {
+        return itemHandler;
+    }
+
+    @Override
+    public IItemHandler getFullItemHandler() {
         return itemHandler;
     }
 
@@ -378,7 +405,7 @@ public class BrewingBarrelBlockEntity extends BlockEntity implements MenuProvide
     }
 
     public IItemHandler getItemHandlerCapability() {
-        return itemHandler;
+        return automationItemHandler;
     }
 
     @Override

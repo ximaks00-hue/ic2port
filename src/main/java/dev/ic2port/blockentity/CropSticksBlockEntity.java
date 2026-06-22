@@ -139,7 +139,9 @@ public class CropSticksBlockEntity extends BlockEntity implements ICropTile {
         if (!plant(seed.crop(), seed.stage(), seed.growth(), seed.gain(), seed.resistance(), scanLevel)) {
             return false;
         }
-        stack.shrink(seed.stackSize());
+        if (!player.getAbilities().instabuild) {
+            stack.shrink(seed.stackSize());
+        }
         return true;
     }
 

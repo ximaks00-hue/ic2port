@@ -5,6 +5,7 @@ import dev.ic2port.api.energy.IEnergyAcceptor;
 import dev.ic2port.api.energy.IEnergyNode;
 import dev.ic2port.setup.BlockEntityRegistry;
 import dev.ic2port.setup.ModCapabilities;
+import dev.ic2port.util.EnergyOverloadHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -54,6 +55,7 @@ public class PumpBlockEntity extends BlockEntity implements IEnergyAcceptor {
 
     private double storedEnergy;
     private int tickCount;
+    private boolean destroyedByOverload;
     @Nullable private BlockPos pendingSourcePos;
     private int pendingSourceDrain;
 
@@ -67,7 +69,7 @@ public class PumpBlockEntity extends BlockEntity implements IEnergyAcceptor {
     }
 
     private void tickServer() {
-        if (level == null || level.isClientSide) {
+        if (level == null || level.isClientSide || destroyedByOverload) {
             return;
         }
 
@@ -195,10 +197,12 @@ public class PumpBlockEntity extends BlockEntity implements IEnergyAcceptor {
 
     @Override
     public double injectEnergy(final Direction directionFrom, final double amount, final int tier) {
-        if (level == null || level.isClientSide || amount <= 0.0D) {
+        if (level == null || level.isClientSide || amount <= 0.0D || destroyedByOverload) {
             return amount;
         }
         if (tier > getTier()) {
+            destroyedByOverload = true;
+            EnergyOverloadHelper.tryExplode(level, worldPosition, this, tier, getTier());
             return amount;
         }
         double space = ENERGY_CAPACITY - storedEnergy;

@@ -9,8 +9,10 @@ import dev.ic2port.menu.EsuMenu;
 import dev.ic2port.setup.BlockEntityRegistry;
 import dev.ic2port.setup.ModCapabilities;
 import dev.ic2port.util.ContainerDataHelper;
+import dev.ic2port.util.EnergyStorageAutomationHandler;
 import dev.ic2port.util.EnergyStorageExplosionHelper;
 import dev.ic2port.util.EnergyTransferHelper;
+import dev.ic2port.util.FullInventoryAccess;
 import dev.ic2port.util.ItemEnergyHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -37,7 +39,7 @@ import org.jetbrains.annotations.Nullable;
  * Energy Storage Unit — EV tier, stores up to 10 million EU.
  * Outputs up to 2048 EU/t on the output face.
  */
-public class EsuBlockEntity extends BlockEntity implements IEnergyAcceptor, IEnergyEmitter, MenuProvider {
+public class EsuBlockEntity extends BlockEntity implements IEnergyAcceptor, IEnergyEmitter, MenuProvider, FullInventoryAccess {
 
     public static final double ENERGY_CAPACITY = 10_000_000.0D;
     public static final double MAX_OUTPUT_PER_TICK = 2048.0D;
@@ -62,7 +64,9 @@ public class EsuBlockEntity extends BlockEntity implements IEnergyAcceptor, IEne
             return false;
         }
     };
-    private final LazyOptional<IItemHandler> itemHandlerOptional = LazyOptional.of(() -> itemHandler);
+    private final EnergyStorageAutomationHandler automationItemHandler =
+            new EnergyStorageAutomationHandler(itemHandler, TIER);
+    private final LazyOptional<IItemHandler> itemHandlerOptional = LazyOptional.of(() -> automationItemHandler);
     private final LazyOptional<IEnergyNode> energyOptional = LazyOptional.of(() -> this);
 
     private final ContainerData data = new ContainerData() {
@@ -193,6 +197,11 @@ public class EsuBlockEntity extends BlockEntity implements IEnergyAcceptor, IEne
     }
 
     public ContainerData getContainerData() { return data; }
+
+    @Override
+    public IItemHandler getFullItemHandler() {
+        return itemHandler;
+    }
 
     @Override
     protected void saveAdditional(final CompoundTag tag) {

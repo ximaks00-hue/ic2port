@@ -70,8 +70,34 @@ public class AlloySmelterBlockEntity extends BaseMachineBlockEntity implements C
     }
 
     @Override
-    protected boolean isValidProcessInput(final ItemStack stack) {
-        return true;
+    protected boolean canAutomationExtractFromSlot(final int processSlot) {
+        return processSlot == SLOT_OUTPUT;
+    }
+
+    @Override
+    protected boolean isValidProcessInput(final int processSlot, final ItemStack stack) {
+        if (stack.isEmpty()) {
+            return true;
+        }
+        if (level == null || (processSlot != SLOT_INPUT_A && processSlot != SLOT_INPUT_B)) {
+            return false;
+        }
+        ItemStack other = getItemHandler().getStackInSlot(
+                processSlot == SLOT_INPUT_A ? SLOT_INPUT_B : SLOT_INPUT_A);
+        return acceptsAlloyIngredient(stack, other);
+    }
+
+    private boolean acceptsAlloyIngredient(final ItemStack stack, final ItemStack other) {
+        for (AlloySmelterRecipe recipe : level.getRecipeManager()
+                .getAllRecipesFor(RecipeTypeRegistry.ALLOY_SMELTER.get())) {
+            if (recipe.getInputA().test(stack) && (other.isEmpty() || recipe.getInputB().test(other))) {
+                return true;
+            }
+            if (recipe.getInputB().test(stack) && (other.isEmpty() || recipe.getInputA().test(other))) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public static void serverTick(final Level level, final BlockPos pos, final BlockState state,
@@ -80,7 +106,7 @@ public class AlloySmelterBlockEntity extends BaseMachineBlockEntity implements C
     }
 
     private void tickServer() {
-        if (level == null || level.isClientSide) return;
+        if (!isServerProcessingEnabled()) return;
         if (consumeOverclockerLayoutReset()) progress = 0;
 
         ItemStack inputA = getItemHandler().getStackInSlot(SLOT_INPUT_A);

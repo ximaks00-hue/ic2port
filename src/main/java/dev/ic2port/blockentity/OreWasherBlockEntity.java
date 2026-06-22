@@ -6,6 +6,7 @@ import dev.ic2port.menu.OreWasherMenu;
 import dev.ic2port.recipe.OreWasherRecipe;
 import dev.ic2port.setup.BlockEntityRegistry;
 import dev.ic2port.setup.RecipeTypeRegistry;
+import dev.ic2port.util.InsertOnlyFluidHandler;
 import dev.ic2port.util.MachineRecipeHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -55,7 +56,8 @@ public class OreWasherBlockEntity extends BaseMachineBlockEntity {
             setChanged();
         }
     };
-    private final LazyOptional<IFluidHandler> waterTankOptional = LazyOptional.of(() -> waterTank);
+    private final LazyOptional<IFluidHandler> waterTankOptional =
+            LazyOptional.of(() -> new InsertOnlyFluidHandler(waterTank));
 
     private int progress;
     private int maxProgress = DEFAULT_PROCESSING_TIME;
@@ -96,7 +98,7 @@ public class OreWasherBlockEntity extends BaseMachineBlockEntity {
     }
 
     private void tickServer() {
-        if (level == null || level.isClientSide) return;
+        if (!isServerProcessingEnabled()) return;
         if (consumeOverclockerLayoutReset()) progress = 0;
 
         pullWaterFromNeighbors();

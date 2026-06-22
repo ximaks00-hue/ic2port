@@ -10,8 +10,10 @@ import dev.ic2port.setup.BlockEntityRegistry;
 import dev.ic2port.setup.ModCapabilities;
 import dev.ic2port.setup.ModConfig;
 import dev.ic2port.util.ContainerDataHelper;
+import dev.ic2port.util.EnergyStorageAutomationHandler;
 import dev.ic2port.util.EnergyStorageExplosionHelper;
 import dev.ic2port.util.EnergyTransferHelper;
+import dev.ic2port.util.FullInventoryAccess;
 import dev.ic2port.util.ItemEnergyHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -34,7 +36,7 @@ import net.minecraftforge.items.ItemStackHandler;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class BatBoxBlockEntity extends BlockEntity implements IEnergyAcceptor, IEnergyEmitter, MenuProvider {
+public class BatBoxBlockEntity extends BlockEntity implements IEnergyAcceptor, IEnergyEmitter, MenuProvider, FullInventoryAccess {
 
     public static final double MAX_OUTPUT_PER_TICK = 32.0D;
     public static final int TIER = EnergyTier.LV;
@@ -58,7 +60,9 @@ public class BatBoxBlockEntity extends BlockEntity implements IEnergyAcceptor, I
             return false;
         }
     };
-    private final LazyOptional<IItemHandler> itemHandlerOptional = LazyOptional.of(() -> itemHandler);
+    private final EnergyStorageAutomationHandler automationItemHandler =
+            new EnergyStorageAutomationHandler(itemHandler, TIER);
+    private final LazyOptional<IItemHandler> itemHandlerOptional = LazyOptional.of(() -> automationItemHandler);
     private final LazyOptional<IEnergyNode> energyOptional = LazyOptional.of(() -> this);
 
     private final ContainerData data = new ContainerData() {
@@ -223,6 +227,11 @@ public class BatBoxBlockEntity extends BlockEntity implements IEnergyAcceptor, I
 
     public ContainerData getContainerData() {
         return data;
+    }
+
+    @Override
+    public IItemHandler getFullItemHandler() {
+        return itemHandler;
     }
 
     @Override
