@@ -40,7 +40,7 @@ public class CropmatronMenu extends AbstractContainerMenu {
         this.level = playerInventory.player.level();
         this.data = data;
 
-        IItemHandler inputHandler = blockEntity.getInputHandler();
+        IItemHandler inputHandler = blockEntity.getFullItemHandler();
         this.addSlot(new SlotItemHandler(inputHandler, 0, SUPPLY_X, SUPPLY_Y) {
             @Override
             public boolean mayPlace(final ItemStack stack) {

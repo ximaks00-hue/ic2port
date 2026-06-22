@@ -121,7 +121,7 @@ public class MassFabricatorBlockEntity extends BaseMachineBlockEntity {
         }
 
         ItemStack output = getItemHandler().getStackInSlot(SLOT_OUTPUT);
-        if (output.getCount() >= output.getMaxStackSize()) {
+        if (!canAddUuMatter(output)) {
             return;
         }
 

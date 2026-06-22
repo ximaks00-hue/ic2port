@@ -11,7 +11,6 @@ import net.minecraft.world.inventory.SimpleContainerData;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.items.IItemHandler;
 import dev.ic2port.util.ItemEnergyHelper;
 import net.minecraftforge.items.SlotItemHandler;
@@ -47,8 +46,7 @@ public class MFSUMenu extends AbstractContainerMenu {
         this.level = playerInventory.player.level();
         this.data = data;
 
-        IItemHandler itemHandler = blockEntity.getCapability(ForgeCapabilities.ITEM_HANDLER, null)
-                .orElseThrow(() -> new IllegalStateException("MFSU item handler capability is missing"));
+        IItemHandler itemHandler = blockEntity.getFullItemHandler();
 
         this.addSlot(new SlotItemHandler(itemHandler, MFSUBlockEntity.SLOT_CHARGE, SLOT_CHARGE_X, SLOT_CHARGE_Y) {
             @Override

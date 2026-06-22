@@ -227,6 +227,12 @@ public class CropHarvesterBlockEntity extends BlockEntity implements IEnergyAcce
 
             }
 
+            if (!hasOutputSpace()) {
+
+                break;
+
+            }
+
             BlockEntity blockEntity = level.getBlockEntity(offset);
 
             if (!(blockEntity instanceof CropSticksBlockEntity crop)) {

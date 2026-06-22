@@ -13,7 +13,6 @@ import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.SlotItemHandler;
 
@@ -37,8 +36,7 @@ public class EsuMenu extends AbstractContainerMenu {
         this.level = playerInventory.player.level();
         this.data = data;
 
-        IItemHandler itemHandler = blockEntity.getCapability(ForgeCapabilities.ITEM_HANDLER, null)
-                .orElseThrow(() -> new IllegalStateException("ESU item handler capability missing"));
+        IItemHandler itemHandler = blockEntity.getFullItemHandler();
 
         this.addSlot(new SlotItemHandler(itemHandler, EsuBlockEntity.SLOT_CHARGE, 56, 26) {
             @Override

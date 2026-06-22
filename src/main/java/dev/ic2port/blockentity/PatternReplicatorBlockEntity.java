@@ -50,6 +50,15 @@ public class PatternReplicatorBlockEntity extends BlockEntity implements IEnergy
 
     private final ItemStackHandler itemHandler = new ItemStackHandler(SLOT_COUNT) {
         @Override protected void onContentsChanged(final int slot) { setChanged(); }
+
+        @Override
+        public @NotNull ItemStack insertItem(final int slot, final @NotNull ItemStack stack, final boolean simulate) {
+            if (progress > 0 && slot != SLOT_OUTPUT) {
+                return stack;
+            }
+            return super.insertItem(slot, stack, simulate);
+        }
+
         @Override public boolean isItemValid(final int slot, final ItemStack stack) {
             if (slot == SLOT_UU_MATTER) {
                 return stack.getItem() instanceof UuMatterItem;

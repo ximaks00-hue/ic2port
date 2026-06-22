@@ -39,7 +39,7 @@ public class CropHarvesterMenu extends AbstractContainerMenu {
         this.level = playerInventory.player.level();
         this.data = data;
 
-        IItemHandler outputHandler = blockEntity.getOutputHandler();
+        IItemHandler outputHandler = blockEntity.getFullItemHandler();
         for (int slot = 0; slot < CropHarvesterBlockEntity.OUTPUT_SLOTS; slot++) {
             int row = slot / 3;
             int col = slot % 3;

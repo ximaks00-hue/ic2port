@@ -13,7 +13,6 @@ import net.minecraft.world.inventory.SimpleContainerData;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.SlotItemHandler;
 
@@ -48,8 +47,7 @@ public class NuclearReactorMenu extends AbstractContainerMenu {
         this.level = playerInventory.player.level();
         this.data = data;
 
-        IItemHandler itemHandler = blockEntity.getCapability(ForgeCapabilities.ITEM_HANDLER, null)
-                .orElseThrow(() -> new IllegalStateException("Nuclear reactor item handler capability is missing"));
+        IItemHandler itemHandler = blockEntity.getFullItemHandler();
 
         for (int row = 0; row < NuclearReactorBlockEntity.GRID_HEIGHT; row++) {
             for (int col = 0; col < NuclearReactorBlockEntity.GRID_WIDTH; col++) {

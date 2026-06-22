@@ -46,13 +46,13 @@ public class FusionReactorMenu extends AbstractContainerMenu {
                 slot <= FusionReactorBlockEntity.FUEL_SLOT_END;
                 slot++) {
             this.addSlot(new SlotItemHandler(
-                    blockEntity.getItemHandler(),
+                    blockEntity.getFullItemHandler(),
                     slot,
                     FUEL_START_X + (slot - FusionReactorBlockEntity.FUEL_SLOT_START) * 18,
                     FUEL_Y));
         }
         this.addSlot(new SlotItemHandler(
-                blockEntity.getItemHandler(),
+                blockEntity.getFullItemHandler(),
                 FusionReactorBlockEntity.MELTABLE_SLOT,
                 MELTABLE_X,
                 FUEL_Y));

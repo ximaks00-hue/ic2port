@@ -87,7 +87,7 @@ public class ThermalCentrifugeBlockEntity extends BaseMachineBlockEntity {
 
     @Override
     protected boolean isProcessSlotInput(final int processSlot) {
-        return processSlot == SLOT_INPUT;
+        return processSlot == SLOT_INPUT || processSlot == SLOT_ROTOR;
     }
 
     @Override

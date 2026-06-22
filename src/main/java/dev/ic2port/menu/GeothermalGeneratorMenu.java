@@ -12,7 +12,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.SlotItemHandler;
 
@@ -52,8 +51,7 @@ public class GeothermalGeneratorMenu extends AbstractContainerMenu {
         this.level = playerInventory.player.level();
         this.data = data;
 
-        IItemHandler itemHandler = blockEntity.getCapability(ForgeCapabilities.ITEM_HANDLER, null)
-                .orElseThrow(() -> new IllegalStateException("Geothermal generator item handler capability is missing"));
+        IItemHandler itemHandler = blockEntity.getFullItemHandler();
 
         this.addSlot(new SlotItemHandler(itemHandler, GeothermalGeneratorBlockEntity.SLOT_INPUT, SLOT_INPUT_X, SLOT_INPUT_Y) {
             @Override

@@ -43,7 +43,7 @@ public class BrewingBarrelMenu extends AbstractContainerMenu {
         this.level = playerInventory.player.level();
         this.data = data;
 
-        IItemHandler handler = blockEntity.getItemHandler();
+        IItemHandler handler = blockEntity.getFullItemHandler();
 
         this.addSlot(new SlotItemHandler(handler, BrewingBarrelBlockEntity.SLOT_HOPS, 49, 20) {
             @Override

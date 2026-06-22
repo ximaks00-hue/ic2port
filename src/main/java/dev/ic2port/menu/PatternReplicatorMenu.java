@@ -30,7 +30,7 @@ public class PatternReplicatorMenu extends AbstractContainerMenu {
         this.blockEntity = blockEntity;
         this.data = data;
 
-        IItemHandler handler = blockEntity.getItemHandler();
+        IItemHandler handler = blockEntity.getFullItemHandler();
         this.addSlot(new SlotItemHandler(handler, PatternReplicatorBlockEntity.SLOT_PATTERN, 56, 17));
         this.addSlot(new SlotItemHandler(handler, PatternReplicatorBlockEntity.SLOT_UU_MATTER, 56, 53) {
             @Override public boolean mayPlace(final ItemStack stack) {

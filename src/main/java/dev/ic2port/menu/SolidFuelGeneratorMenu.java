@@ -12,7 +12,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.common.ForgeHooks;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.items.IItemHandler;
 import dev.ic2port.util.ItemEnergyHelper;
 import net.minecraftforge.items.SlotItemHandler;
@@ -53,8 +52,7 @@ public class SolidFuelGeneratorMenu extends AbstractContainerMenu {
         this.level = playerInventory.player.level();
         this.data = data;
 
-        IItemHandler itemHandler = blockEntity.getCapability(ForgeCapabilities.ITEM_HANDLER, null)
-                .orElseThrow(() -> new IllegalStateException("Generator item handler capability is missing"));
+        IItemHandler itemHandler = blockEntity.getFullItemHandler();
 
         this.addSlot(new SlotItemHandler(itemHandler, SolidFuelGeneratorBlockEntity.SLOT_FUEL, SLOT_FUEL_X, SLOT_FUEL_Y) {
             @Override

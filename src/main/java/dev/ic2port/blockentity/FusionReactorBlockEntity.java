@@ -14,6 +14,7 @@ import dev.ic2port.util.FullInventoryAccess;
 import dev.ic2port.util.FusionFuelHelper;
 import dev.ic2port.util.FusionMeltableHelper;
 import dev.ic2port.util.FusionReactorHelper;
+import dev.ic2port.util.ProcessOnlyItemHandler;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -74,6 +75,10 @@ public class FusionReactorBlockEntity extends BlockEntity implements IEnergyAcce
             setChanged();
         }
     };
+
+    private final ProcessOnlyItemHandler automationItemHandler = new ProcessOnlyItemHandler(
+            itemHandler, SLOT_COUNT, slot -> false);
+    private final LazyOptional<IItemHandler> itemHandlerOptional = LazyOptional.of(() -> automationItemHandler);
 
     private final FluidTank lavaTank = new FluidTank(LAVA_CAPACITY_MB, fluid -> fluid.getFluid().isSame(Fluids.LAVA)) {
         @Override
@@ -141,6 +146,10 @@ public class FusionReactorBlockEntity extends BlockEntity implements IEnergyAcce
             return;
         }
 
+        if (autoExportLava && lavaTank.getFluidAmount() > 0) {
+            tryExportLava();
+        }
+
         if (validationCooldown-- <= 0) {
             validationCooldown = 40;
             boolean wasValid = structureValid;
@@ -182,30 +191,30 @@ public class FusionReactorBlockEntity extends BlockEntity implements IEnergyAcce
         int baseProduced = (int) Math.round(
                 FusionFuelHelper.countProductionRate(itemHandler, FUEL_SLOT_START, FUEL_SLOT_END)
                         * ModConfig.FUSION_LAVA_MULTIPLIER.get());
-        int produced = baseProduced;
+        if (baseProduced <= 0 || lavaTank.getFluidAmount() >= LAVA_CAPACITY_MB) {
+            setChanged();
+            return;
+        }
 
+        int tankSpace = lavaTank.getCapacity() - lavaTank.getFluidAmount();
+        int fillBase = Math.min(baseProduced, tankSpace);
+        int fillBonus = 0;
         ItemStack meltable = itemHandler.getStackInSlot(MELTABLE_SLOT);
-        boolean consumeMeltable = false;
         if (!meltable.isEmpty()) {
-            produced += FusionMeltableHelper.getBonusMb(meltable);
-            consumeMeltable = true;
+            int bonusMb = FusionMeltableHelper.getBonusMb(meltable);
+            if (tankSpace - fillBase >= bonusMb) {
+                fillBonus = bonusMb;
+            }
         }
-
-        if (produced <= 0 || lavaTank.getFluidAmount() >= LAVA_CAPACITY_MB) {
+        int totalFill = fillBase + fillBonus;
+        if (totalFill <= 0) {
             setChanged();
             return;
         }
 
-        FluidStack toFill = new FluidStack(Fluids.LAVA, produced);
-        int filled = lavaTank.fill(toFill, IFluidHandler.FluidAction.SIMULATE);
-        if (filled <= 0) {
-            setChanged();
-            return;
-        }
+        lavaTank.fill(new FluidStack(Fluids.LAVA, totalFill), IFluidHandler.FluidAction.EXECUTE);
 
-        lavaTank.fill(new FluidStack(Fluids.LAVA, filled), IFluidHandler.FluidAction.EXECUTE);
-
-        if (consumeMeltable && filled > baseProduced) {
+        if (fillBonus > 0) {
             meltable.shrink(1);
             itemHandler.setStackInSlot(MELTABLE_SLOT, meltable);
         }
@@ -218,6 +227,40 @@ public class FusionReactorBlockEntity extends BlockEntity implements IEnergyAcce
         }
         notifyComparatorOutput();
         setChanged();
+    }
+
+    private void tryExportLava() {
+        if (level == null || lavaTank.getFluidAmount() <= 0) {
+            return;
+        }
+
+        for (Direction direction : Direction.values()) {
+            BlockEntity neighbor = level.getBlockEntity(worldPosition.relative(direction));
+            if (neighbor == null) {
+                continue;
+            }
+            IFluidHandler handler = neighbor.getCapability(
+                    ForgeCapabilities.FLUID_HANDLER, direction.getOpposite()).orElse(null);
+            if (handler == null) {
+                continue;
+            }
+            int drained = lavaTank.drain(500, IFluidHandler.FluidAction.SIMULATE).getAmount();
+            if (drained <= 0) {
+                continue;
+            }
+            FluidStack toFill = lavaTank.drain(drained, IFluidHandler.FluidAction.EXECUTE);
+            int filled = handler.fill(toFill, IFluidHandler.FluidAction.EXECUTE);
+            if (filled > 0) {
+                if (filled < toFill.getAmount()) {
+                    lavaTank.fill(
+                            new FluidStack(toFill.getFluid(), toFill.getAmount() - filled),
+                            IFluidHandler.FluidAction.EXECUTE);
+                }
+                setChanged();
+                return;
+            }
+            lavaTank.fill(toFill, IFluidHandler.FluidAction.EXECUTE);
+        }
     }
 
     private boolean shouldMeltdown() {
@@ -354,7 +397,8 @@ public class FusionReactorBlockEntity extends BlockEntity implements IEnergyAcce
 
     @Override
     public double injectEnergy(final Direction directionFrom, final double amount, final int tier) {
-        if (level == null || level.isClientSide || amount <= 0.0D || destroyedByOverload) {
+        if (level == null || level.isClientSide || amount <= 0.0D
+                || destroyedByOverload || meltdownTriggered) {
             return amount;
         }
         if (tier > getTier()) {
@@ -436,6 +480,9 @@ public class FusionReactorBlockEntity extends BlockEntity implements IEnergyAcce
         if (cap == ForgeCapabilities.FLUID_HANDLER) {
             return fluidOptional.cast();
         }
+        if (cap == ForgeCapabilities.ITEM_HANDLER) {
+            return itemHandlerOptional.cast();
+        }
         if (cap == ModCapabilities.ENERGY_NODE_CAPABILITY) {
             return energyOptional.cast();
         }
@@ -447,5 +494,6 @@ public class FusionReactorBlockEntity extends BlockEntity implements IEnergyAcce
         super.invalidateCaps();
         fluidOptional.invalidate();
         energyOptional.invalidate();
+        itemHandlerOptional.invalidate();
     }
 }

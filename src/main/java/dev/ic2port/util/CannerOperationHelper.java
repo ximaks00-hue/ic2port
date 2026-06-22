@@ -130,7 +130,7 @@ public final class CannerOperationHelper {
         if (repair <= 0) {
             return;
         }
-        cell.setDamageValue(cell.getDamageValue() - repair);
+        cell.setDamageValue(Math.max(0, cell.getDamageValue() - repair));
         water.shrink(1);
     }
 

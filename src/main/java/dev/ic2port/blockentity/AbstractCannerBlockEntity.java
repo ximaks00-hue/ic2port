@@ -6,6 +6,7 @@ import dev.ic2port.item.ElectricItem;
 import dev.ic2port.item.FluidCellItem;
 import dev.ic2port.item.ReBatteryItem;
 import dev.ic2port.setup.ItemRegistry;
+import dev.ic2port.item.IUpgradeItem;
 import dev.ic2port.util.CannerOperationHelper;
 import dev.ic2port.util.FoodCanningHelper;
 import net.minecraft.world.level.block.Block;
@@ -19,6 +20,8 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraftforge.items.ItemStackHandler;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Shared canner processing logic for LV and vacuum variants.
@@ -86,6 +89,42 @@ public abstract class AbstractCannerBlockEntity extends BaseMachineBlockEntity {
     @Override
     protected boolean isProcessSlotInput(final int processSlot) {
         return processSlot == SLOT_TOOL || processSlot == SLOT_SUPPLY;
+    }
+
+    @Override
+    protected ItemStackHandler createItemHandler(final int totalSlots, final int processSlots) {
+        return new ItemStackHandler(totalSlots) {
+            @Override
+            public boolean isItemValid(final int slot, final ItemStack stack) {
+                if (slot >= processSlots) {
+                    return stack.isEmpty() || stack.getItem() instanceof IUpgradeItem;
+                }
+                if (!isProcessSlotInput(slot)) {
+                    return false;
+                }
+                return !stack.isEmpty() && isValidProcessInput(slot, stack);
+            }
+
+            @Override
+            public @NotNull ItemStack insertItem(
+                    final int slot,
+                    final @NotNull ItemStack stack,
+                    final boolean simulate) {
+                if (progress > 0 && slot < processSlots) {
+                    return stack;
+                }
+                return super.insertItem(slot, stack, simulate);
+            }
+
+            @Override
+            protected void onContentsChanged(final int slot) {
+                if (slot >= processSlots) {
+                    clampStoredEnergyToCapacity();
+                    markUpgradeLayoutChanged();
+                }
+                setChanged();
+            }
+        };
     }
 
     @Override
