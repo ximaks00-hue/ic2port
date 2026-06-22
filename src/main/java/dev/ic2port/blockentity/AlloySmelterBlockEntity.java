@@ -6,6 +6,7 @@ import dev.ic2port.menu.AlloySmelterMenu;
 import dev.ic2port.recipe.AlloySmelterRecipe;
 import dev.ic2port.setup.BlockEntityRegistry;
 import dev.ic2port.setup.RecipeTypeRegistry;
+import dev.ic2port.util.MachineRecipeHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -64,6 +65,11 @@ public class AlloySmelterBlockEntity extends BaseMachineBlockEntity implements C
     @Override public int getTier() { return TIER; }
 
     @Override
+    protected boolean isProcessSlotInput(final int processSlot) {
+        return processSlot == SLOT_INPUT_A || processSlot == SLOT_INPUT_B;
+    }
+
+    @Override
     protected boolean isValidProcessInput(final ItemStack stack) {
         return true;
     }
@@ -80,6 +86,7 @@ public class AlloySmelterBlockEntity extends BaseMachineBlockEntity implements C
         ItemStack inputA = getItemHandler().getStackInSlot(SLOT_INPUT_A);
         ItemStack inputB = getItemHandler().getStackInSlot(SLOT_INPUT_B);
 
+        ResourceLocation previousRecipeId = activeRecipeId;
         Optional<AlloySmelterRecipe> recipeOpt = resolveActiveRecipe(inputA, inputB);
         if (recipeOpt.isEmpty()) {
             progress = 0;
@@ -90,9 +97,12 @@ public class AlloySmelterBlockEntity extends BaseMachineBlockEntity implements C
         }
 
         AlloySmelterRecipe recipe = recipeOpt.get();
+        if (MachineRecipeHelper.shouldResetProgress(previousRecipeId, activeRecipeId, progress)) {
+            progress = 0;
+        }
         maxProgress = getScaledProcessTime(
                 recipe.getProcessingTime() > 0 ? recipe.getProcessingTime() : DEFAULT_PROCESSING_TIME);
-        progress = Math.min(progress, maxProgress);
+        progress = MachineRecipeHelper.clampProgress(progress, maxProgress);
 
         if (!canOutput(recipe)) return;
         if (!consumeEnergy(getRecipeEnergyPerTick(recipe, ENERGY_PER_TICK))) return;
@@ -125,10 +135,14 @@ public class AlloySmelterBlockEntity extends BaseMachineBlockEntity implements C
     }
 
     private Optional<AlloySmelterRecipe> resolveActiveRecipe(final ItemStack inputA, final ItemStack inputB) {
-        if (inputA.isEmpty() || inputB.isEmpty()) return Optional.empty();
-        return level.getRecipeManager()
-                .getRecipeFor(RecipeTypeRegistry.ALLOY_SMELTER.get(), this, level)
-                .filter(r -> activeRecipeId == null || r.getId().equals(activeRecipeId));
+        if (inputA.isEmpty() || inputB.isEmpty()) {
+            activeRecipeId = null;
+            return Optional.empty();
+        }
+        Optional<AlloySmelterRecipe> resolved = level.getRecipeManager()
+                .getRecipeFor(RecipeTypeRegistry.ALLOY_SMELTER.get(), this, level);
+        activeRecipeId = resolved.map(AlloySmelterRecipe::getId).orElse(null);
+        return resolved;
     }
 
     @Override public int getContainerSize() { return SLOT_COUNT; }

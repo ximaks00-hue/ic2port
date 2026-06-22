@@ -45,7 +45,8 @@ public class ChainsawItem extends ElectricItem {
     @Override
     public boolean mineBlock(final ItemStack stack, final Level level, final BlockState state,
                              final BlockPos pos, final LivingEntity entity) {
-        if (!level.isClientSide && state.getDestroySpeed(level, pos) > 0.0F) {
+        if (!level.isClientSide && state.getDestroySpeed(level, pos) > 0.0F
+                && (state.is(BlockTags.MINEABLE_WITH_AXE) || state.is(BlockTags.LOGS))) {
             drawEnergy(stack, EU_PER_BLOCK);
         }
         return true;
@@ -53,9 +54,10 @@ public class ChainsawItem extends ElectricItem {
 
     @Override
     public boolean hurtEnemy(final ItemStack stack, final LivingEntity target, final LivingEntity attacker) {
-        if (getStoredEnergy(stack) >= EU_PER_ATTACK) {
-            drawEnergy(stack, EU_PER_ATTACK);
+        if (getStoredEnergy(stack) < EU_PER_ATTACK) {
+            return false;
         }
+        drawEnergy(stack, EU_PER_ATTACK);
         return true;
     }
 
@@ -67,6 +69,9 @@ public class ChainsawItem extends ElectricItem {
 
     @Override
     public boolean canPerformAction(final ItemStack stack, final ToolAction toolAction) {
+        if (getStoredEnergy(stack) < EU_PER_BLOCK) {
+            return false;
+        }
         return toolAction == ToolActions.AXE_DIG
                 || toolAction == ToolActions.AXE_STRIP
                 || toolAction == ToolActions.AXE_SCRAPE

@@ -93,10 +93,6 @@ public class ChargePadBlockEntity extends BlockEntity implements IEnergyAcceptor
             }
             budget -= chargeStack(player, player.getItemBySlot(slot), budget);
         }
-
-        if (storedEnergy < ENERGY_CAPACITY) {
-            setChanged();
-        }
     }
 
     private double chargeStack(final Player player, final ItemStack stack, final double budget) {
@@ -106,6 +102,7 @@ public class ChargePadBlockEntity extends BlockEntity implements IEnergyAcceptor
         double transferred = ItemEnergyHelper.chargeItem(stack, budget, TIER);
         if (transferred > 0.0D) {
             storedEnergy -= transferred;
+            setChanged();
             player.getInventory().setChanged();
         }
         return transferred;

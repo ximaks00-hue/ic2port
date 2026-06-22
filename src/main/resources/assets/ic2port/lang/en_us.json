@@ -178,6 +178,8 @@
   "item.ic2port.electric_wrench": "Electric Wrench",
   "item.ic2port.electric_wrench.info": "EU: %s / %s | Cost: %s EU/use",
   "message.ic2port.electric_wrench.no_energy": "Not enough EU — charge first",
+  "message.ic2port.electric_wrench.damaged": "Machine damaged — block not recovered",
+  "message.ic2port.wrench.damaged": "Machine damaged — block not recovered",
   "item.ic2port.diamond_drill": "Diamond Drill",
   "item.ic2port.diamond_drill.energy": "Charge: %s / %s EU",
   "item.ic2port.diamond_drill.mode": "Mode: %s",

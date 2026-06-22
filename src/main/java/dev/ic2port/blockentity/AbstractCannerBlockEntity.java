@@ -188,9 +188,11 @@ public abstract class AbstractCannerBlockEntity extends BaseMachineBlockEntity {
                 && ItemStack.isSameItemSameTags(tins, filled)
                 && tins.getCount() < tins.getMaxStackSize()) {
             tins.grow(1);
+            getItemHandler().setStackInSlot(layout.tinSlot(), tins);
         }
 
         FoodCanningHelper.consumeOnePoint(food);
+        getItemHandler().setStackInSlot(layout.foodSlot(), food);
     }
 
     private void finishTinCanPress(final ItemStack slot0, final ItemStack slot1) {
@@ -249,6 +251,7 @@ public abstract class AbstractCannerBlockEntity extends BaseMachineBlockEntity {
         }
         if (existing.is(ItemRegistry.TIN_CAN.get()) && existing.getCount() < existing.getMaxStackSize()) {
             existing.grow(1);
+            getItemHandler().setStackInSlot(slot, existing);
             return true;
         }
         return false;

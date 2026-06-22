@@ -60,6 +60,9 @@ public class MiningLaserItem extends ElectricItem {
 
     @Override
     public boolean canPerformAction(final ItemStack stack, final net.minecraftforge.common.ToolAction toolAction) {
+        if (getStoredEnergy(stack) < EU_PER_BLOCK) {
+            return false;
+        }
         return toolAction == ToolActions.PICKAXE_DIG;
     }
 }

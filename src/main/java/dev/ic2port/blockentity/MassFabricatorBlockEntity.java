@@ -160,7 +160,7 @@ public class MassFabricatorBlockEntity extends BaseMachineBlockEntity {
     @Override
     public void load(final CompoundTag tag) {
         super.load(tag);
-        fabricationProgress = Math.min(tag.getDouble("FabricationProgress"), EU_PER_UU_MATTER);
+        fabricationProgress = Math.max(0.0D, tag.getDouble("FabricationProgress"));
     }
 
     public ContainerData getContainerData() {

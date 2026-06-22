@@ -11,6 +11,7 @@ import dev.ic2port.block.NuclearReactorBlock;
 import dev.ic2port.block.SolidFuelGeneratorBlock;
 import dev.ic2port.block.GeothermalGeneratorBlock;
 import dev.ic2port.block.WindMillBlock;
+import dev.ic2port.util.WrenchHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.sounds.SoundEvents;
@@ -35,6 +36,21 @@ public class WrenchItem extends Item {
         Level level = context.getLevel();
         BlockPos pos = context.getClickedPos();
         BlockState state = level.getBlockState(pos);
+        var player = context.getPlayer();
+
+        if (player != null && player.isShiftKeyDown() && WrenchHelper.isIc2PortBlock(state.getBlock())) {
+            if (WrenchHelper.tryDismantle(context, WrenchHelper.STANDARD_DROP_CHANCE, WrenchHelper.STANDARD_DROP_CHANCE)) {
+                if (!level.isClientSide) {
+                    context.getItemInHand().hurtAndBreak(
+                            1,
+                            player,
+                            p -> p.broadcastBreakEvent(context.getHand()));
+                }
+                return InteractionResult.sidedSuccess(level.isClientSide);
+            }
+            return InteractionResult.FAIL;
+        }
+
         DirectionProperty facingProperty = getFacingProperty(state);
         if (facingProperty == null) {
             return InteractionResult.PASS;
@@ -62,11 +78,11 @@ public class WrenchItem extends Item {
                     SoundSource.BLOCKS,
                     0.6F,
                     1.2F);
-            if (context.getPlayer() != null) {
-                context.getPlayer().getItemInHand(context.getHand()).hurtAndBreak(
+            if (player != null) {
+                context.getItemInHand().hurtAndBreak(
                         1,
-                        context.getPlayer(),
-                        player -> player.broadcastBreakEvent(context.getHand()));
+                        player,
+                        p -> p.broadcastBreakEvent(context.getHand()));
             }
         }
 

@@ -43,7 +43,8 @@ public class BasicDrillItem extends ElectricItem {
     @Override
     public boolean mineBlock(final ItemStack stack, final Level level, final BlockState state,
                              final BlockPos pos, final LivingEntity entity) {
-        if (!level.isClientSide && state.getDestroySpeed(level, pos) > 0.0F) {
+        if (!level.isClientSide && state.getDestroySpeed(level, pos) > 0.0F
+                && (state.is(BlockTags.MINEABLE_WITH_PICKAXE) || state.is(BlockTags.MINEABLE_WITH_SHOVEL))) {
             drawEnergy(stack, EU_PER_BLOCK);
         }
         return true;
@@ -57,6 +58,9 @@ public class BasicDrillItem extends ElectricItem {
 
     @Override
     public boolean canPerformAction(final ItemStack stack, final ToolAction toolAction) {
+        if (getStoredEnergy(stack) < EU_PER_BLOCK) {
+            return false;
+        }
         return toolAction == ToolActions.PICKAXE_DIG || toolAction == ToolActions.SHOVEL_DIG;
     }
 

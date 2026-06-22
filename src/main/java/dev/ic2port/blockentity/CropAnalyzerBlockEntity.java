@@ -88,8 +88,11 @@ public class CropAnalyzerBlockEntity extends BlockEntity implements IEnergyAccep
 
         CropSticksBlockEntity crop = resolveTarget();
         if (crop == null) {
-            hasTarget = false;
-            scanProgress = 0.0D;
+            if (hasTarget || scanProgress > 0.0D) {
+                hasTarget = false;
+                scanProgress = 0.0D;
+                setChanged();
+            }
             return;
         }
 

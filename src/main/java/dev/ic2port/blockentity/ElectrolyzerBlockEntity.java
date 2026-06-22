@@ -80,6 +80,7 @@ public class ElectrolyzerBlockEntity extends BaseMachineBlockEntity {
         if (consumeOverclockerLayoutReset()) progress = 0;
 
         ItemStack input = getItemHandler().getStackInSlot(SLOT_INPUT);
+        ResourceLocation previousRecipeId = activeRecipeId;
         Optional<ElectrolyzerRecipe> recipeOpt = resolveActiveRecipe(input);
         if (recipeOpt.isEmpty()) {
             progress = 0;
@@ -90,7 +91,7 @@ public class ElectrolyzerBlockEntity extends BaseMachineBlockEntity {
         }
 
         ElectrolyzerRecipe recipe = recipeOpt.get();
-        if (MachineRecipeHelper.shouldResetProgress(null, activeRecipeId, progress)) {
+        if (MachineRecipeHelper.shouldResetProgress(previousRecipeId, activeRecipeId, progress)) {
             progress = 0;
         }
         maxProgress = getScaledProcessTime(

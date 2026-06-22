@@ -49,15 +49,24 @@ public class DetectorCableBlockEntity extends BlockEntity implements IEnergyCond
     }
 
     private void tickForward() {
-        if (level == null || level.isClientSide || burnedOut) return;
+        if (level == null || level.isClientSide || burnedOut) {
+            return;
+        }
         if (storedEnergy <= TRANSFER_LOSS) {
             storedEnergy = 0.0D;
             inputDirection = null;
             return;
         }
+        double before = storedEnergy;
         storedEnergy = EnergyTransferHelper.forwardCablePacket(
                 level, worldPosition, inputDirection, storedEnergy, TRANSFER_LOSS, TIER);
-        if (storedEnergy > 0.0D) setChanged();
+        double forwarded = Math.max(0.0D, before - TRANSFER_LOSS - storedEnergy);
+        if (forwarded > 0.0D) {
+            currentFlow += forwarded;
+        }
+        if (storedEnergy > 0.0D) {
+            setChanged();
+        }
         inputDirection = null;
     }
 

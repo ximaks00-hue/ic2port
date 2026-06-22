@@ -79,6 +79,7 @@ public class OreWasherBlockEntity extends BaseMachineBlockEntity {
         if (consumeOverclockerLayoutReset()) progress = 0;
 
         ItemStack input = getItemHandler().getStackInSlot(SLOT_INPUT);
+        ResourceLocation previousRecipeId = activeRecipeId;
         Optional<OreWasherRecipe> recipeOpt = resolveActiveRecipe(input);
         if (recipeOpt.isEmpty()) {
             progress = 0;
@@ -89,6 +90,9 @@ public class OreWasherBlockEntity extends BaseMachineBlockEntity {
         }
 
         OreWasherRecipe recipe = recipeOpt.get();
+        if (MachineRecipeHelper.shouldResetProgress(previousRecipeId, activeRecipeId, progress)) {
+            progress = 0;
+        }
         maxProgress = getScaledProcessTime(
                 recipe.getProcessingTime() > 0 ? recipe.getProcessingTime() : DEFAULT_PROCESSING_TIME);
         progress = MachineRecipeHelper.clampProgress(progress, maxProgress);

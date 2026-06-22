@@ -1,6 +1,7 @@
 package dev.ic2port.item;
 
 import dev.ic2port.api.energy.EnergyTier;
+import dev.ic2port.util.WrenchHelper;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
@@ -15,7 +16,7 @@ import java.util.List;
 
 /**
  * MV electric wrench — dismantles IC2 blocks. Costs 500 EU per use.
- * When the player is sneaking, it has a configurable chance to drop the block without damage.
+ * When the player is sneaking, it has a higher chance to drop the block without damage.
  */
 public class ElectricWrenchItem extends ElectricItem {
 
@@ -42,11 +43,16 @@ public class ElectricWrenchItem extends ElectricItem {
         }
 
         var blockState = level.getBlockState(context.getClickedPos());
-        if (blockState.is(Blocks.AIR)) {
+        if (blockState.is(Blocks.AIR) || !WrenchHelper.isIc2PortBlock(blockState.getBlock())) {
             return InteractionResult.PASS;
         }
+
+        if (!WrenchHelper.tryDismantle(context)) {
+            return InteractionResult.FAIL;
+        }
+
         drawEnergy(stack, EU_PER_USE);
-        return InteractionResult.PASS;
+        return InteractionResult.CONSUME;
     }
 
     @Override

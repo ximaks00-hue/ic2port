@@ -179,6 +179,8 @@
   "item.ic2port.electric_wrench": "Электрогаечный ключ",
   "item.ic2port.electric_wrench.info": "EU: %s / %s | Расход: %s EU/использование",
   "message.ic2port.electric_wrench.no_energy": "Недостаточно EU — зарядите сначала",
+  "message.ic2port.electric_wrench.damaged": "Машина повреждена — блок не получен",
+  "message.ic2port.wrench.damaged": "Машина повреждена — блок не получен",
   "item.ic2port.diamond_drill": "Алмазный бур",
   "item.ic2port.diamond_drill.energy": "Заряд: %s / %s EU",
   "item.ic2port.diamond_drill.mode": "Режим: %s",

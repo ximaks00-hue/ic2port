@@ -42,7 +42,8 @@ public class AlloySmelterRecipe implements Recipe<Container>, IMachineRecipe {
     public boolean matches(final Container container, final Level level) {
         ItemStack a = container.getItem(0);
         ItemStack b = container.getItem(1);
-        return !a.isEmpty() && !b.isEmpty() && inputA.test(a) && inputB.test(b);
+        return !a.isEmpty() && !b.isEmpty()
+                && ((inputA.test(a) && inputB.test(b)) || (inputA.test(b) && inputB.test(a)));
     }
 
     @Override

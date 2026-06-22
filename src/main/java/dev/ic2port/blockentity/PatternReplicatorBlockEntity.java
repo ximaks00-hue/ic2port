@@ -48,9 +48,16 @@ public class PatternReplicatorBlockEntity extends BlockEntity implements IEnergy
     private final ItemStackHandler itemHandler = new ItemStackHandler(SLOT_COUNT) {
         @Override protected void onContentsChanged(final int slot) { setChanged(); }
         @Override public boolean isItemValid(final int slot, final ItemStack stack) {
-            if (slot == SLOT_UU_MATTER) return stack.getItem() instanceof UuMatterItem;
-            if (slot == SLOT_OUTPUT) return false;
-            return true;
+            if (slot == SLOT_UU_MATTER) {
+                return stack.getItem() instanceof UuMatterItem;
+            }
+            if (slot == SLOT_OUTPUT) {
+                return false;
+            }
+            if (slot == SLOT_PATTERN) {
+                return !stack.isEmpty() && !(stack.getItem() instanceof UuMatterItem);
+            }
+            return false;
         }
     };
     private final LazyOptional<IItemHandler> itemOptional = LazyOptional.of(() -> itemHandler);
@@ -58,6 +65,7 @@ public class PatternReplicatorBlockEntity extends BlockEntity implements IEnergy
 
     private double storedEnergy;
     private int progress;
+    private ItemStack lockedPattern = ItemStack.EMPTY;
 
     private final ContainerData data = new ContainerData() {
         @Override public int get(final int i) {
@@ -89,13 +97,23 @@ public class PatternReplicatorBlockEntity extends BlockEntity implements IEnergy
         ItemStack uuSlot = itemHandler.getStackInSlot(SLOT_UU_MATTER);
         ItemStack output = itemHandler.getStackInSlot(SLOT_OUTPUT);
 
+        if (progress > 0 && lockedPattern.isEmpty() && !pattern.isEmpty()) {
+            lockedPattern = pattern.copy();
+        }
+
         if (pattern.isEmpty() || uuSlot.getCount() < UU_PER_CRAFT) {
             cancelReplication();
             return;
         }
 
+        if (progress > 0 && !lockedPattern.isEmpty() && !ItemStack.isSameItemSameTags(lockedPattern, pattern)) {
+            cancelReplication();
+            return;
+        }
+
+        ItemStack expectedOutput = progress > 0 && !lockedPattern.isEmpty() ? lockedPattern : pattern;
         if (!output.isEmpty()) {
-            if (!ItemStack.isSameItemSameTags(output, pattern)
+            if (!ItemStack.isSameItemSameTags(output, expectedOutput)
                     || output.getCount() + 1 > output.getMaxStackSize()) {
                 cancelReplication();
                 return;
@@ -106,6 +124,7 @@ public class PatternReplicatorBlockEntity extends BlockEntity implements IEnergy
             if (storedEnergy < EU_PER_CRAFT) {
                 return;
             }
+            lockedPattern = pattern.copy();
             storedEnergy -= EU_PER_CRAFT;
         }
 
@@ -114,7 +133,7 @@ public class PatternReplicatorBlockEntity extends BlockEntity implements IEnergy
 
         if (progress >= REPLICATION_TICKS) {
             uuSlot.shrink(UU_PER_CRAFT);
-            ItemStack result = pattern.copy();
+            ItemStack result = lockedPattern.isEmpty() ? pattern.copy() : lockedPattern.copy();
             result.setCount(1);
             if (output.isEmpty()) {
                 itemHandler.setStackInSlot(SLOT_OUTPUT, result);
@@ -122,6 +141,7 @@ public class PatternReplicatorBlockEntity extends BlockEntity implements IEnergy
                 output.grow(1);
             }
             progress = 0;
+            lockedPattern = ItemStack.EMPTY;
             setChanged();
         }
     }
@@ -131,6 +151,7 @@ public class PatternReplicatorBlockEntity extends BlockEntity implements IEnergy
             storedEnergy = Math.min(ENERGY_CAPACITY, storedEnergy + EU_PER_CRAFT);
         }
         progress = 0;
+        lockedPattern = ItemStack.EMPTY;
         setChanged();
     }
 
@@ -158,6 +179,9 @@ public class PatternReplicatorBlockEntity extends BlockEntity implements IEnergy
         super.saveAdditional(tag);
         tag.putDouble("StoredEnergy", storedEnergy);
         tag.putInt("Progress", progress);
+        if (!lockedPattern.isEmpty()) {
+            tag.put("LockedPattern", lockedPattern.save(new CompoundTag()));
+        }
         tag.put("Items", itemHandler.serializeNBT());
     }
 
@@ -166,6 +190,9 @@ public class PatternReplicatorBlockEntity extends BlockEntity implements IEnergy
         super.load(tag);
         storedEnergy = Math.min(tag.getDouble("StoredEnergy"), ENERGY_CAPACITY);
         progress = tag.getInt("Progress");
+        lockedPattern = tag.contains("LockedPattern")
+                ? ItemStack.of(tag.getCompound("LockedPattern"))
+                : ItemStack.EMPTY;
         if (tag.contains("Items")) itemHandler.deserializeNBT(tag.getCompound("Items"));
     }
 
