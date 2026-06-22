@@ -110,8 +110,10 @@ public class SolidFuelGeneratorBlockEntity extends BlockEntity implements IEnerg
         }
 
         if (burnTime > 0) {
-            burnTime--;
-            produceEnergy();
+            if (storedEnergy < getEnergyCapacity()) {
+                burnTime--;
+                produceEnergy();
+            }
         } else if (storedEnergy < getEnergyCapacity()) {
             tryConsumeFuel();
         }

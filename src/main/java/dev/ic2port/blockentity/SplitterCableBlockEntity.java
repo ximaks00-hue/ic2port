@@ -58,9 +58,9 @@ public class SplitterCableBlockEntity extends BlockEntity implements IEnergyCond
             return;
         }
         Direction out = getOutputFace();
-        double packet = storedEnergy;
+        double packet = storedEnergy - TRANSFER_LOSS;
         double remainder = EnergyTransferHelper.injectIntoNeighbor(level, worldPosition, out, packet, TIER);
-        storedEnergy = Math.max(0.0D, remainder - TRANSFER_LOSS);
+        storedEnergy = Math.max(0.0D, remainder);
         setChanged();
     }
 

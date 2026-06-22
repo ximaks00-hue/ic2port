@@ -1,11 +1,13 @@
 package dev.ic2port.item;
 
 import dev.ic2port.block.BatBoxBlock;
+import dev.ic2port.block.EsuBlock;
 import dev.ic2port.block.EVTransformerBlock;
 import dev.ic2port.block.LVTransformerBlock;
 import dev.ic2port.block.MFEBlock;
 import dev.ic2port.block.MFSUBlock;
 import dev.ic2port.block.MVTransformerBlock;
+import dev.ic2port.block.NuclearReactorBlock;
 import dev.ic2port.block.SolidFuelGeneratorBlock;
 import dev.ic2port.block.GeothermalGeneratorBlock;
 import dev.ic2port.block.WindMillBlock;
@@ -81,6 +83,12 @@ public class WrenchItem extends Item {
         }
         if (state.hasProperty(MFSUBlock.FACING)) {
             return MFSUBlock.FACING;
+        }
+        if (state.hasProperty(EsuBlock.FACING)) {
+            return EsuBlock.FACING;
+        }
+        if (state.hasProperty(NuclearReactorBlock.FACING)) {
+            return NuclearReactorBlock.FACING;
         }
         if (state.hasProperty(LVTransformerBlock.FACING)) {
             return LVTransformerBlock.FACING;

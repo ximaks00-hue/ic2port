@@ -35,15 +35,30 @@ public class FrequencyTransmitterItem extends Item {
         BlockPos pos = context.getClickedPos();
         ItemStack stack = context.getItemInHand();
 
-        if (!level.isClientSide && level.getBlockEntity(pos) instanceof dev.ic2port.blockentity.TeleporterBlockEntity) {
+        if (!(level.getBlockEntity(pos) instanceof dev.ic2port.blockentity.TeleporterBlockEntity)) {
+            return InteractionResult.PASS;
+        }
+
+        if (level.isClientSide) {
+            return InteractionResult.SUCCESS;
+        }
+
+        var player = context.getPlayer();
+        if (player == null) {
+            return InteractionResult.PASS;
+        }
+
+        if (player.isShiftKeyDown() || !hasLinkedTarget(stack)) {
             CompoundTag tag = stack.getOrCreateTag();
             tag.putLong(TAG_POS, pos.asLong());
             tag.putString(TAG_DIM, level.dimension().location().toString());
-            context.getPlayer().displayClientMessage(
+            player.displayClientMessage(
                     Component.translatable("item.ic2port.frequency_transmitter.linked",
                             pos.getX(), pos.getY(), pos.getZ()), true);
+            return InteractionResult.SUCCESS;
         }
-        return InteractionResult.sidedSuccess(level.isClientSide);
+
+        return InteractionResult.PASS;
     }
 
     @Override

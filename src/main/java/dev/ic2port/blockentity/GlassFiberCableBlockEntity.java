@@ -54,33 +54,10 @@ public class GlassFiberCableBlockEntity extends BlockEntity implements IEnergyCo
             return;
         }
 
-        double packet = storedEnergy;
-        if (packet <= TRANSFER_LOSS) {
-            inputDirection = null;
-            return;
-        }
-
-        double deliverable = packet - TRANSFER_LOSS;
-        Direction blockedSide = inputDirection;
-
-        for (Direction direction : Direction.values()) {
-            if (direction == blockedSide || deliverable <= 0.0D) {
-                continue;
-            }
-
-            double remainder = EnergyTransferHelper.injectIntoNeighbor(
-                    level, worldPosition, direction, deliverable, TIER);
-            double transferred = deliverable - remainder;
-            if (transferred > 0.0D) {
-                storedEnergy -= transferred;
-                deliverable = remainder;
-                setChanged();
-            }
-        }
-
-        storedEnergy = Math.max(0.0D, storedEnergy);
-        if (storedEnergy <= TRANSFER_LOSS) {
-            storedEnergy = 0.0D;
+        storedEnergy = EnergyTransferHelper.forwardCablePacket(
+                level, worldPosition, inputDirection, storedEnergy, TRANSFER_LOSS, TIER);
+        if (storedEnergy > 0.0D) {
+            setChanged();
         }
         inputDirection = null;
     }
