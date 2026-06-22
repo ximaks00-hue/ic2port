@@ -50,7 +50,10 @@ public class SplitterCableBlockEntity extends BlockEntity implements IEnergyCond
     }
 
     private void tickServer() {
-        if (level == null || level.isClientSide || burnedOut || storedEnergy <= TRANSFER_LOSS) {
+        if (level == null || level.isClientSide || burnedOut) {
+            return;
+        }
+        if (storedEnergy <= TRANSFER_LOSS) {
             storedEnergy = 0.0D;
             return;
         }

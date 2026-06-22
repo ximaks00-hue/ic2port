@@ -49,20 +49,24 @@ public class FusionReactorValveBlockEntity extends BlockEntity {
             if (neighbor == null) {
                 continue;
             }
-            neighbor.getCapability(ForgeCapabilities.FLUID_HANDLER, direction.getOpposite()).ifPresent(handler -> {
-                int drained = reactor.getLavaTank().drain(500, IFluidHandler.FluidAction.SIMULATE).getAmount();
-                if (drained <= 0) {
-                    return;
-                }
-                FluidStack toFill = new FluidStack(Fluids.LAVA, drained);
-                int filled = handler.fill(toFill, IFluidHandler.FluidAction.EXECUTE);
-                if (filled > 0) {
-                    reactor.getLavaTank().drain(filled, IFluidHandler.FluidAction.EXECUTE);
-                    reactor.setChanged();
-                    reactor.notifyComparatorOutput();
-                    notifyComparatorOutput();
-                }
-            });
+            IFluidHandler handler = neighbor.getCapability(ForgeCapabilities.FLUID_HANDLER, direction.getOpposite())
+                    .orElse(null);
+            if (handler == null) {
+                continue;
+            }
+            int drained = reactor.getLavaTank().drain(500, IFluidHandler.FluidAction.SIMULATE).getAmount();
+            if (drained <= 0) {
+                return;
+            }
+            FluidStack toFill = new FluidStack(Fluids.LAVA, drained);
+            int filled = handler.fill(toFill, IFluidHandler.FluidAction.EXECUTE);
+            if (filled > 0) {
+                reactor.getLavaTank().drain(filled, IFluidHandler.FluidAction.EXECUTE);
+                reactor.setChanged();
+                reactor.notifyComparatorOutput();
+                notifyComparatorOutput();
+            }
+            return;
         }
     }
 

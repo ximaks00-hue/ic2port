@@ -32,6 +32,7 @@ public class TerraformerBlockEntity extends BlockEntity implements IEnergyAccept
     public static final double EU_PER_TICK = 10.0D;
     public static final int RANGE = 4;
     private static final int WORK_INTERVAL = 20;
+    private static final double EU_PER_OPERATION = EU_PER_TICK * WORK_INTERVAL;
 
     public static final int SLOT_BLUEPRINT = 0;
     public static final int SLOT_COUNT = 1;
@@ -57,7 +58,7 @@ public class TerraformerBlockEntity extends BlockEntity implements IEnergyAccept
     }
 
     private void tickServer() {
-        if (level == null || level.isClientSide || storedEnergy < EU_PER_TICK) return;
+        if (level == null || level.isClientSide || storedEnergy < EU_PER_OPERATION) return;
 
         tickCount++;
         if (tickCount < WORK_INTERVAL) return;
@@ -66,11 +67,11 @@ public class TerraformerBlockEntity extends BlockEntity implements IEnergyAccept
         ItemStack blueprint = itemHandler.getStackInSlot(SLOT_BLUEPRINT);
         if (!(blueprint.getItem() instanceof TerraformerBlueprintItem tf)) return;
 
-        storedEnergy -= EU_PER_TICK;
-        setChanged();
-
         BlockPos target = worldPosition.offset(scanX, 0, scanZ);
-        applyBlueprint(tf.getMode(), target);
+        if (applyBlueprint(tf.getMode(), target)) {
+            storedEnergy -= EU_PER_OPERATION;
+            setChanged();
+        }
 
         scanX++;
         if (scanX > RANGE) {
@@ -82,15 +83,16 @@ public class TerraformerBlockEntity extends BlockEntity implements IEnergyAccept
         }
     }
 
-    private void applyBlueprint(final TerraformerBlueprintItem.Mode mode, final BlockPos target) {
+    private boolean applyBlueprint(final TerraformerBlueprintItem.Mode mode, final BlockPos target) {
         BlockPos surface = findSurface(target);
-        if (surface == null) return;
+        if (surface == null) return false;
         switch (mode) {
             case CULTIVATION -> {
                 BlockState below = level.getBlockState(surface);
                 if (below.is(Blocks.DIRT) || below.is(Blocks.GRASS_BLOCK)) {
                     level.setBlock(surface, Blocks.FARMLAND.defaultBlockState(),
                             net.minecraft.world.level.block.Block.UPDATE_ALL);
+                    return true;
                 }
             }
             case IRRIGATION -> {
@@ -98,6 +100,7 @@ public class TerraformerBlockEntity extends BlockEntity implements IEnergyAccept
                 if (below.is(Blocks.DIRT)) {
                     level.setBlock(surface, Blocks.MUD.defaultBlockState(),
                             net.minecraft.world.level.block.Block.UPDATE_ALL);
+                    return true;
                 }
             }
             case DESERTIFICATION -> {
@@ -105,9 +108,11 @@ public class TerraformerBlockEntity extends BlockEntity implements IEnergyAccept
                 if (below.is(Blocks.GRASS_BLOCK) || below.is(Blocks.DIRT)) {
                     level.setBlock(surface, Blocks.SAND.defaultBlockState(),
                             net.minecraft.world.level.block.Block.UPDATE_ALL);
+                    return true;
                 }
             }
         }
+        return false;
     }
 
     @Nullable

@@ -88,7 +88,7 @@ public class PatternReplicatorBlockEntity extends BlockEntity implements IEnergy
         ItemStack uuSlot = itemHandler.getStackInSlot(SLOT_UU_MATTER);
         ItemStack output = itemHandler.getStackInSlot(SLOT_OUTPUT);
 
-        if (pattern.isEmpty() || uuSlot.getCount() < UU_PER_CRAFT || storedEnergy < EU_PER_CRAFT) {
+        if (pattern.isEmpty() || uuSlot.getCount() < UU_PER_CRAFT) {
             progress = 0;
             setChanged();
             return;
@@ -102,15 +102,14 @@ public class PatternReplicatorBlockEntity extends BlockEntity implements IEnergy
             }
         }
 
-        final double euPerTick = EU_PER_CRAFT / REPLICATION_TICKS;
-        if (storedEnergy < euPerTick) {
-            progress = 0;
-            setChanged();
-            return;
+        if (progress == 0) {
+            if (storedEnergy < EU_PER_CRAFT) {
+                return;
+            }
+            storedEnergy -= EU_PER_CRAFT;
         }
 
         progress++;
-        storedEnergy -= euPerTick;
         setChanged();
 
         if (progress >= REPLICATION_TICKS) {
