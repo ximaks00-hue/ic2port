@@ -1,0 +1,34 @@
+# Gradle
+.gradle/
+build/
+out/
+classes/
+
+# IDE
+.idea/
+*.iml
+*.ipr
+*.iws
+.project
+.classpath
+.settings/
+.vscode/
+
+# Forge / Minecraft
+run/
+run-data/
+logs/
+crash-reports/
+debug.log
+latest.log
+
+# Generated
+src/generated/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Reference artifacts (large binaries)
+reference/ic2/jars/*.jar
+!reference/ic2/jars/.gitkeep
