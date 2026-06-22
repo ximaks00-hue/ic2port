@@ -97,12 +97,20 @@ public class PatternReplicatorBlockEntity extends BlockEntity implements IEnergy
         if (!output.isEmpty()) {
             if (!ItemStack.isSameItemSameTags(output, pattern)
                     || output.getCount() + 1 > output.getMaxStackSize()) {
+                progress = 0;
                 return;
             }
         }
 
+        final double euPerTick = EU_PER_CRAFT / REPLICATION_TICKS;
+        if (storedEnergy < euPerTick) {
+            progress = 0;
+            setChanged();
+            return;
+        }
+
         progress++;
-        storedEnergy -= EU_PER_CRAFT / REPLICATION_TICKS;
+        storedEnergy -= euPerTick;
         setChanged();
 
         if (progress >= REPLICATION_TICKS) {

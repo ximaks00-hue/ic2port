@@ -53,6 +53,7 @@
   "block.ic2port.teleporter.no_energy": "Not enough EU to teleport",
   "block.ic2port.teleporter.invalid_target": "No teleporter at linked coordinates",
   "block.ic2port.teleporter.same_block": "Cannot teleport to itself",
+  "block.ic2port.teleporter.success": "Teleported (%d EU used)",
   "block.ic2port.terraformer": "Terraformer",
   "block.ic2port.pattern_replicator": "Pattern Replicator",
   "item.ic2port.frequency_transmitter": "Frequency Transmitter",

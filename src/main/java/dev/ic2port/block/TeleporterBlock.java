@@ -3,7 +3,6 @@ package dev.ic2port.block;
 import dev.ic2port.blockentity.TeleporterBlockEntity;
 import dev.ic2port.item.FrequencyTransmitterItem;
 import dev.ic2port.util.TeleportLink;
-import dev.ic2port.setup.BlockEntityRegistry;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
@@ -52,10 +51,13 @@ public class TeleporterBlock extends BaseEntityBlock {
                 player.displayClientMessage(Component.translatable("block.ic2port.teleporter.same_block"), true);
                 return InteractionResult.CONSUME;
             }
+            int euCost = (int) teleporter.estimateEuCost(player, link);
             String failure = teleporter.tryTeleportPlayer(player, link);
             if (failure != null) {
                 player.displayClientMessage(
                         Component.translatable("block.ic2port.teleporter." + failure), true);
+            } else {
+                player.displayClientMessage(Component.translatable("block.ic2port.teleporter.success", euCost), true);
             }
             return InteractionResult.CONSUME;
         }

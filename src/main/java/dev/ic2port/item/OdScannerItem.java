@@ -2,6 +2,7 @@ package dev.ic2port.item;
 
 import dev.ic2port.api.energy.EnergyTier;
 import dev.ic2port.util.OreScannerHelper;
+import dev.ic2port.util.ScannerItemHelper;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
@@ -44,11 +45,11 @@ public class OdScannerItem extends ElectricItem {
         }
 
         final Map<String, Integer> counts = OreScannerHelper.scanColumn(level, player.blockPosition());
-        player.getCooldowns().addCooldown(this, USE_COOLDOWN_TICKS);
-        drawEnergy(stack, SCAN_COST);
+        // IC2: EU is always consumed after a scan, including empty results.
+        ScannerItemHelper.finalizeScan(player, this, stack, this, SCAN_COST, USE_COOLDOWN_TICKS);
 
         if (counts.isEmpty()) {
-            player.displayClientMessage(Component.translatable("message.ic2port.od_scanner.empty"), true);
+            ScannerItemHelper.showEmptyResult(player);
         } else {
             player.displayClientMessage(OreScannerHelper.formatResult(counts), true);
         }

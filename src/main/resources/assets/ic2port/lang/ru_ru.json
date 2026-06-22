@@ -53,6 +53,7 @@
   "block.ic2port.teleporter.no_energy": "Недостаточно EU для телепортации",
   "block.ic2port.teleporter.invalid_target": "На связанных координатах нет телепортера",
   "block.ic2port.teleporter.same_block": "Нельзя телепортироваться к себе",
+  "block.ic2port.teleporter.success": "Телепортация выполнена (%d EU)",
   "block.ic2port.terraformer": "Терраформер",
   "block.ic2port.pattern_replicator": "Репликатор паттернов",
   "item.ic2port.frequency_transmitter": "Частотный передатчик",

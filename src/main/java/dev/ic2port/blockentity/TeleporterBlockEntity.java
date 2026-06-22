@@ -5,6 +5,7 @@ import dev.ic2port.api.energy.IEnergyAcceptor;
 import dev.ic2port.api.energy.IEnergyNode;
 import dev.ic2port.setup.BlockEntityRegistry;
 import dev.ic2port.setup.ModCapabilities;
+import dev.ic2port.util.TeleporterCostHelper;
 import dev.ic2port.util.TeleportLink;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -21,14 +22,12 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 /**
- * HV teleporter block — teleports players to a linked teleporter at an EU cost of 100 EU per 1000 m² (minimum 500 EU).
+ * HV teleporter block — IC2 cost formula based on cargo weight and euclidean distance.
  */
 public class TeleporterBlockEntity extends BlockEntity implements IEnergyAcceptor {
 
     public static final double ENERGY_CAPACITY = 500_000.0D;
     public static final int TIER = EnergyTier.HV;
-    public static final double EU_PER_BLOCK_DISTANCE = 0.1D;
-    public static final double MIN_EU_COST = 500.0D;
 
     private final LazyOptional<IEnergyNode> energyOptional = LazyOptional.of(() -> this);
     private double storedEnergy;
@@ -66,14 +65,8 @@ public class TeleporterBlockEntity extends BlockEntity implements IEnergyAccepto
             return "invalid_target";
         }
 
-        double dx = destination.getX() - worldPosition.getX();
-        double dy = destination.getY() - worldPosition.getY();
-        double dz = destination.getZ() - worldPosition.getZ();
-        double dist = Math.sqrt(dx * dx + dy * dy + dz * dz);
-        double euCost = Math.max(MIN_EU_COST, dist * EU_PER_BLOCK_DISTANCE);
-        if (!destLevel.dimension().equals(serverLevel.dimension())) {
-            euCost = Math.max(euCost, MIN_EU_COST * 4.0D);
-        }
+        double euCost = TeleporterCostHelper.calculateEuCost(
+                player, worldPosition, serverLevel.dimension(), destination, destLevel.dimension());
 
         if (storedEnergy < euCost) {
             return "no_energy";
@@ -94,6 +87,19 @@ public class TeleporterBlockEntity extends BlockEntity implements IEnergyAccepto
             return "invalid_target";
         }
         return null;
+    }
+
+    /** Estimated EU for the given player and link (same formula as {@link #tryTeleportPlayer}). */
+    public double estimateEuCost(final Player player, final TeleportLink link) {
+        if (level == null || !(level instanceof ServerLevel serverLevel)) {
+            return 0.0D;
+        }
+        ServerLevel destLevel = serverLevel.getServer().getLevel(link.dimension());
+        if (destLevel == null) {
+            return 0.0D;
+        }
+        return TeleporterCostHelper.calculateEuCost(
+                player, worldPosition, serverLevel.dimension(), link.pos(), destLevel.dimension());
     }
 
     @Override
