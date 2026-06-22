@@ -70,6 +70,13 @@ public abstract class ElectricItem extends Item implements IElectricItem {
         return drawn;
     }
 
+    /** Sync held-item EU changes to the client after {@link #drawEnergy}. */
+    public static void syncHolderInventory(final net.minecraft.world.entity.LivingEntity holder) {
+        if (holder instanceof net.minecraft.world.entity.player.Player player) {
+            player.getInventory().setChanged();
+        }
+    }
+
     @Override
     public boolean isBarVisible(final ItemStack stack) {
         return getStoredEnergy(stack) > 0.0D;

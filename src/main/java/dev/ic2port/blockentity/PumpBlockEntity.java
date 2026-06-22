@@ -33,6 +33,7 @@ public class PumpBlockEntity extends BlockEntity implements IEnergyAcceptor {
     public static final int TIER = EnergyTier.MV;
     public static final int TANK_CAPACITY_MB = 4000;
     private static final int PUMP_INTERVAL_TICKS = 10;
+    private static final int MB_PER_SOURCE = 1000;
 
     private final FluidTank tank = new FluidTank(TANK_CAPACITY_MB) {
         @Override
@@ -53,6 +54,8 @@ public class PumpBlockEntity extends BlockEntity implements IEnergyAcceptor {
 
     private double storedEnergy;
     private int tickCount;
+    @Nullable private BlockPos pendingSourcePos;
+    private int pendingSourceDrain;
 
     public PumpBlockEntity(final BlockPos pos, final BlockState state) {
         super(BlockEntityRegistry.PUMP_BE.get(), pos, state);
@@ -64,11 +67,28 @@ public class PumpBlockEntity extends BlockEntity implements IEnergyAcceptor {
     }
 
     private void tickServer() {
-        if (level == null || level.isClientSide || storedEnergy < EU_PER_BUCKET) return;
+        if (level == null || level.isClientSide) {
+            return;
+        }
+
+        tryExportFluid();
+
+        if (storedEnergy < EU_PER_BUCKET) {
+            return;
+        }
 
         tickCount++;
         if (tickCount < PUMP_INTERVAL_TICKS) return;
         tickCount = 0;
+
+        if (pendingSourcePos != null && tryContinuePendingDrain()) {
+            return;
+        }
+
+        int space = tank.getCapacity() - tank.getFluidAmount();
+        if (space <= 0) {
+            return;
+        }
 
         for (int depth = 1; depth <= 64; depth++) {
             BlockPos target = worldPosition.below(depth);
@@ -76,20 +96,100 @@ public class PumpBlockEntity extends BlockEntity implements IEnergyAcceptor {
             BlockState blockState = level.getBlockState(target);
             if (blockState.getFluidState().isSource()) {
                 net.minecraft.world.level.material.Fluid fluid = blockState.getFluidState().getType();
-                FluidStack toFill = new FluidStack(fluid, 1000);
-                int filled = tank.fill(toFill, IFluidHandler.FluidAction.SIMULATE);
-                if (filled < 1000) {
-                    break;
+                int toPump = Math.min(MB_PER_SOURCE, space);
+                FluidStack toFill = new FluidStack(fluid, toPump);
+                int filled = tank.fill(toFill, IFluidHandler.FluidAction.EXECUTE);
+                if (filled <= 0) {
+                    continue;
                 }
-                tank.fill(toFill, IFluidHandler.FluidAction.EXECUTE);
-                level.setBlock(target, Blocks.AIR.defaultBlockState(),
-                        net.minecraft.world.level.block.Block.UPDATE_ALL);
-                storedEnergy -= EU_PER_BUCKET;
+                storedEnergy -= EU_PER_BUCKET * ((double) filled / MB_PER_SOURCE);
+                if (filled >= MB_PER_SOURCE) {
+                    level.setBlock(target, Blocks.AIR.defaultBlockState(),
+                            net.minecraft.world.level.block.Block.UPDATE_ALL);
+                    pendingSourcePos = null;
+                    pendingSourceDrain = 0;
+                } else {
+                    pendingSourcePos = target.immutable();
+                    pendingSourceDrain = filled;
+                }
                 setChanged();
                 break;
             } else if (!blockState.isAir() && !blockState.getFluidState().isSource()) {
                 break;
             }
+        }
+    }
+
+    private boolean tryContinuePendingDrain() {
+        if (level == null || pendingSourcePos == null || storedEnergy < EU_PER_BUCKET) {
+            return false;
+        }
+
+        BlockState blockState = level.getBlockState(pendingSourcePos);
+        if (!blockState.getFluidState().isSource()) {
+            pendingSourcePos = null;
+            pendingSourceDrain = 0;
+            return false;
+        }
+
+        int space = tank.getCapacity() - tank.getFluidAmount();
+        int remaining = MB_PER_SOURCE - pendingSourceDrain;
+        int toPump = Math.min(remaining, space);
+        if (toPump <= 0) {
+            return false;
+        }
+
+        net.minecraft.world.level.material.Fluid fluid = blockState.getFluidState().getType();
+        int filled = tank.fill(new FluidStack(fluid, toPump), IFluidHandler.FluidAction.EXECUTE);
+        if (filled <= 0) {
+            return false;
+        }
+
+        storedEnergy -= EU_PER_BUCKET * ((double) filled / MB_PER_SOURCE);
+        pendingSourceDrain += filled;
+        if (pendingSourceDrain >= MB_PER_SOURCE) {
+            level.setBlock(pendingSourcePos, Blocks.AIR.defaultBlockState(),
+                    net.minecraft.world.level.block.Block.UPDATE_ALL);
+            pendingSourcePos = null;
+            pendingSourceDrain = 0;
+        }
+        setChanged();
+        return true;
+    }
+
+    private void tryExportFluid() {
+        if (level == null || tank.getFluidAmount() <= 0) {
+            return;
+        }
+
+        for (Direction direction : Direction.values()) {
+            if (direction == Direction.DOWN) {
+                continue;
+            }
+            BlockEntity neighbor = level.getBlockEntity(worldPosition.relative(direction));
+            if (neighbor == null) {
+                continue;
+            }
+            IFluidHandler handler = neighbor.getCapability(
+                    ForgeCapabilities.FLUID_HANDLER, direction.getOpposite()).orElse(null);
+            if (handler == null) {
+                continue;
+            }
+            int drained = tank.drain(500, IFluidHandler.FluidAction.SIMULATE).getAmount();
+            if (drained <= 0) {
+                continue;
+            }
+            FluidStack toFill = tank.drain(drained, IFluidHandler.FluidAction.EXECUTE);
+            int filled = handler.fill(toFill, IFluidHandler.FluidAction.EXECUTE);
+            if (filled > 0) {
+                if (filled < toFill.getAmount()) {
+                    tank.fill(new FluidStack(toFill.getFluid(), toFill.getAmount() - filled),
+                            IFluidHandler.FluidAction.EXECUTE);
+                }
+                setChanged();
+                return;
+            }
+            tank.fill(toFill, IFluidHandler.FluidAction.EXECUTE);
         }
     }
 
@@ -120,6 +220,10 @@ public class PumpBlockEntity extends BlockEntity implements IEnergyAcceptor {
         super.saveAdditional(tag);
         tag.putDouble("StoredEnergy", storedEnergy);
         tag.put("Tank", tank.writeToNBT(new CompoundTag()));
+        if (pendingSourcePos != null) {
+            tag.putLong("PendingSource", pendingSourcePos.asLong());
+            tag.putInt("PendingSourceDrain", pendingSourceDrain);
+        }
     }
 
     @Override
@@ -128,6 +232,13 @@ public class PumpBlockEntity extends BlockEntity implements IEnergyAcceptor {
         storedEnergy = Math.min(tag.getDouble("StoredEnergy"), ENERGY_CAPACITY);
         if (tag.contains("Tank")) {
             tank.readFromNBT(tag.getCompound("Tank"));
+        }
+        if (tag.contains("PendingSource")) {
+            pendingSourcePos = BlockPos.of(tag.getLong("PendingSource"));
+            pendingSourceDrain = tag.getInt("PendingSourceDrain");
+        } else {
+            pendingSourcePos = null;
+            pendingSourceDrain = 0;
         }
     }
 

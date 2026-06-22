@@ -48,6 +48,7 @@ public class ChainsawItem extends ElectricItem {
         if (!level.isClientSide && state.getDestroySpeed(level, pos) > 0.0F
                 && (state.is(BlockTags.MINEABLE_WITH_AXE) || state.is(BlockTags.LOGS))) {
             drawEnergy(stack, EU_PER_BLOCK);
+            syncHolderInventory(entity);
         }
         return true;
     }
@@ -58,6 +59,7 @@ public class ChainsawItem extends ElectricItem {
             return false;
         }
         drawEnergy(stack, EU_PER_ATTACK);
+        syncHolderInventory(attacker);
         return true;
     }
 

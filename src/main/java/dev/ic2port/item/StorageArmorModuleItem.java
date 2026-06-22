@@ -180,6 +180,7 @@ public abstract class StorageArmorModuleItem extends ArmorModuleItem {
             }
             if (ItemStack.isSameItemSameTags(existing, can) && existing.getCount() < existing.getMaxStackSize()) {
                 existing.grow(1);
+                handler.setStackInSlot(slot, existing);
                 saveInventory(moduleStack, handler);
                 return;
             }

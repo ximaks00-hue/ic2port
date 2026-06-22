@@ -143,12 +143,14 @@ public class GeothermalGeneratorBlockEntity extends BlockEntity implements IEner
         }
 
         inputStack.shrink(1);
+        itemHandler.setStackInSlot(SLOT_INPUT, inputStack);
         fluidTank.fill(new FluidStack(Fluids.LAVA, LAVA_MB_PER_BUCKET), IFluidHandler.FluidAction.EXECUTE);
 
         if (outputStack.isEmpty()) {
             itemHandler.setStackInSlot(SLOT_OUTPUT, new ItemStack(Items.BUCKET));
         } else {
             outputStack.grow(1);
+            itemHandler.setStackInSlot(SLOT_OUTPUT, outputStack);
         }
         setChanged();
     }

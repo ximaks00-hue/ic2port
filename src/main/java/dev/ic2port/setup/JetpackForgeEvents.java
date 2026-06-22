@@ -116,6 +116,8 @@ public final class JetpackForgeEvents {
 
             player.setItemSlot(EquipmentSlot.CHEST, chest);
 
+            player.getInventory().setChanged();
+
             spawnSmoke(player);
 
         }

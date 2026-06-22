@@ -35,7 +35,7 @@ public class AlloySmelterMenu extends MachineWithUpgradesMenu {
                 MachineMenuLayout.SLOT_OUTPUT_X, MachineMenuLayout.SLOT_OUTPUT_Y) {
             @Override public boolean mayPlace(final ItemStack stack) { return false; }
         });
-        addUpgradeSlots(handler);
+        addUpgradeSlots(handler, blockEntity.getProcessSlotCount());
         addPlayerInventoryAndHotbar(playerInventory);
         addDataSlots(data);
     }
@@ -46,7 +46,7 @@ public class AlloySmelterMenu extends MachineWithUpgradesMenu {
 
     @Override
     public ItemStack quickMoveStack(final Player player, final int index) {
-        return quickMoveMachineStack(player, index);
+        return quickMoveMachineStack(player, index, blockEntity.getProcessSlotCount(), 2);
     }
 
     @Override

@@ -72,6 +72,10 @@ public class TeleporterBlockEntity extends BlockEntity implements IEnergyAccepto
             return "no_energy";
         }
 
+        if (!isSafeTeleportDestination(destLevel, destination)) {
+            return "blocked_destination";
+        }
+
         double tx = destination.getX() + 0.5;
         double ty = destination.getY() + 1.0;
         double tz = destination.getZ() + 0.5;
@@ -87,6 +91,13 @@ public class TeleporterBlockEntity extends BlockEntity implements IEnergyAccepto
         storedEnergy -= euCost;
         setChanged();
         return null;
+    }
+
+    private static boolean isSafeTeleportDestination(final ServerLevel level, final BlockPos teleporterPos) {
+        BlockPos feet = teleporterPos.above();
+        BlockPos head = feet.above();
+        return level.getBlockState(feet).getCollisionShape(level, feet).isEmpty()
+                && level.getBlockState(head).getCollisionShape(level, head).isEmpty();
     }
 
     /** Estimated EU for the given player and link (same formula as {@link #tryTeleportPlayer}). */

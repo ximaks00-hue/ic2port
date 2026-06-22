@@ -134,6 +134,7 @@ public class SolidFuelGeneratorBlockEntity extends BlockEntity implements IEnerg
         double toDraw = Math.min(space, BATTERY_DISCHARGE_PER_TICK);
         double drawn = ItemEnergyHelper.dischargeItem(dischargeStack, toDraw);
         if (drawn > 0.0D) {
+            itemHandler.setStackInSlot(SLOT_DISCHARGE, dischargeStack);
             storedEnergy += drawn;
             setChanged();
         }
@@ -161,6 +162,7 @@ public class SolidFuelGeneratorBlockEntity extends BlockEntity implements IEnerg
         }
 
         fuelStack.shrink(1);
+        itemHandler.setStackInSlot(SLOT_FUEL, fuelStack);
         totalBurnTime = fuelBurnTime;
         burnTime = fuelBurnTime;
         setChanged();

@@ -81,6 +81,7 @@ public class RecyclerBlockEntity extends BaseMachineBlockEntity {
             @Override
             protected void onContentsChanged(final int slot) {
                 if (slot >= processSlots) {
+                    clampStoredEnergyToCapacity();
                     markUpgradeLayoutChanged();
                 } else {
                     setChanged();
@@ -122,10 +123,6 @@ public class RecyclerBlockEntity extends BaseMachineBlockEntity {
 
         maxProgress = getScaledProcessTime(DEFAULT_PROCESSING_TIME);
 
-        if (!canOutputScrap(output)) {
-            return;
-        }
-
         if (!consumeEnergy(getScaledEnergyPerTick(ENERGY_PER_TICK))) {
             return;
         }
@@ -136,13 +133,18 @@ public class RecyclerBlockEntity extends BaseMachineBlockEntity {
             return;
         }
 
-        input.shrink(1);
+        shrinkProcessInput(SLOT_INPUT, input, 1);
         if (level.random.nextFloat() < SCRAP_CHANCE) {
             ItemStack scrap = new ItemStack(ItemRegistry.SCRAP.get());
-            if (output.isEmpty()) {
-                getItemHandler().setStackInSlot(SLOT_OUTPUT, scrap);
-            } else {
-                output.grow(scrap.getCount());
+            if (canOutputScrap(output)) {
+                mergeProcessOutput(SLOT_OUTPUT, output, scrap);
+            } else if (level != null) {
+                net.minecraft.world.Containers.dropItemStack(
+                        level,
+                        worldPosition.getX() + 0.5D,
+                        worldPosition.getY() + 0.5D,
+                        worldPosition.getZ() + 0.5D,
+                        scrap);
             }
         }
 

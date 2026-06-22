@@ -251,6 +251,8 @@ public class CropmatronBlockEntity extends BlockEntity implements IEnergyAccepto
 
                     supply.setDamageValue(damage);
 
+                    inputHandler.setStackInSlot(0, supply);
+
                 }
 
             } else {

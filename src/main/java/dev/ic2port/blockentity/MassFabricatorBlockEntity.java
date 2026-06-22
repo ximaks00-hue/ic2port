@@ -80,6 +80,7 @@ public class MassFabricatorBlockEntity extends BaseMachineBlockEntity {
             @Override
             protected void onContentsChanged(final int slot) {
                 if (slot >= processSlots) {
+                    clampStoredEnergyToCapacity();
                     markUpgradeLayoutChanged();
                 } else {
                     setChanged();
@@ -123,6 +124,7 @@ public class MassFabricatorBlockEntity extends BaseMachineBlockEntity {
         boolean boosted = !scrap.isEmpty();
         if (boosted) {
             scrap.shrink(1);
+            getItemHandler().setStackInSlot(SLOT_SCRAP, scrap);
         }
         fabricationProgress += draw * (boosted ? SCRAP_SPEED_MULTIPLIER : 1.0D);
 
@@ -134,6 +136,7 @@ public class MassFabricatorBlockEntity extends BaseMachineBlockEntity {
                 getItemHandler().setStackInSlot(SLOT_OUTPUT, output);
             } else {
                 output.grow(1);
+                getItemHandler().setStackInSlot(SLOT_OUTPUT, output);
             }
 
             if (output.getCount() >= output.getMaxStackSize()) {

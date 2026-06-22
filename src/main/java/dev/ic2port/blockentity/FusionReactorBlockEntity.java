@@ -201,6 +201,7 @@ public class FusionReactorBlockEntity extends BlockEntity implements IEnergyAcce
 
         if (consumeMeltable && filled > baseProduced) {
             meltable.shrink(1);
+            itemHandler.setStackInSlot(MELTABLE_SLOT, meltable);
         }
 
         if (fuelConsumeCooldown <= 0) {
@@ -250,12 +251,42 @@ public class FusionReactorBlockEntity extends BlockEntity implements IEnergyAcce
             if (stack.isEmpty()) {
                 continue;
             }
-            if (stack.is(ItemRegistry.FUEL_ROD.get())) {
-                itemHandler.setStackInSlot(slot, new ItemStack(ItemRegistry.DEPLETED_FUEL_ROD.get()));
-            } else if (stack.is(ItemRegistry.MOX_FUEL_ROD.get())) {
-                itemHandler.setStackInSlot(slot, new ItemStack(ItemRegistry.DEPLETED_FUEL_ROD.get()));
+            if (!stack.is(ItemRegistry.FUEL_ROD.get()) && !stack.is(ItemRegistry.MOX_FUEL_ROD.get())) {
+                continue;
+            }
+            stack.shrink(1);
+            ItemStack depleted = new ItemStack(ItemRegistry.DEPLETED_FUEL_ROD.get());
+            if (stack.isEmpty()) {
+                itemHandler.setStackInSlot(slot, depleted);
+            } else {
+                itemHandler.setStackInSlot(slot, stack);
+                insertDepletedRod(depleted);
             }
             return;
+        }
+    }
+
+    private void insertDepletedRod(final ItemStack depleted) {
+        for (int slot = FUEL_SLOT_START; slot <= FUEL_SLOT_END; slot++) {
+            ItemStack existing = itemHandler.getStackInSlot(slot);
+            if (existing.isEmpty()) {
+                itemHandler.setStackInSlot(slot, depleted);
+                return;
+            }
+            if (existing.is(ItemRegistry.DEPLETED_FUEL_ROD.get())
+                    && existing.getCount() < existing.getMaxStackSize()) {
+                existing.grow(1);
+                itemHandler.setStackInSlot(slot, existing);
+                return;
+            }
+        }
+        if (level != null) {
+            net.minecraft.world.Containers.dropItemStack(
+                    level,
+                    worldPosition.getX() + 0.5D,
+                    worldPosition.getY() + 0.5D,
+                    worldPosition.getZ() + 0.5D,
+                    depleted);
         }
     }
 

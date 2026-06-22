@@ -46,6 +46,7 @@ public class BasicDrillItem extends ElectricItem {
         if (!level.isClientSide && state.getDestroySpeed(level, pos) > 0.0F
                 && (state.is(BlockTags.MINEABLE_WITH_PICKAXE) || state.is(BlockTags.MINEABLE_WITH_SHOVEL))) {
             drawEnergy(stack, EU_PER_BLOCK);
+            syncHolderInventory(entity);
         }
         return true;
     }

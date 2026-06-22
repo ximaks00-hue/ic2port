@@ -209,13 +209,9 @@ public class InductionFurnaceBlockEntity extends BaseMachineBlockEntity {
             }
         }
 
-        input.shrink(1);
+        shrinkProcessInput(inputSlot, input, 1);
         ItemStack result = recipe.getOutput().copy();
-        if (output.isEmpty()) {
-            getItemHandler().setStackInSlot(outputSlot, result);
-        } else {
-            output.grow(result.getCount());
-        }
+        mergeProcessOutput(outputSlot, output, result);
 
         if (laneA) {
             progressA = 0;

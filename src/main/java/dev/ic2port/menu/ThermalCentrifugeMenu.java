@@ -74,23 +74,10 @@ public class ThermalCentrifugeMenu extends MachineWithUpgradesMenu {
             }
         });
 
-        addUpgradeSlots(itemHandler, MACHINE_SLOT_COUNT);
+        addUpgradeSlots(itemHandler, blockEntity.getProcessSlotCount());
         addPlayerInventory(playerInventory);
         addPlayerHotbar(playerInventory);
         addDataSlots(data);
-    }
-
-    protected void addUpgradeSlots(final IItemHandler itemHandler, final int machineSlotCount) {
-        for (int index = 0; index < MachineMenuLayout.UPGRADE_SLOT_COUNT; index++) {
-            final int slotIndex = machineSlotCount + index;
-            final int y = MachineMenuLayout.UPGRADE_SLOT_START_Y + index * MachineMenuLayout.UPGRADE_SLOT_SPACING;
-            this.addSlot(new SlotItemHandler(itemHandler, slotIndex, MachineMenuLayout.UPGRADE_SLOT_X, y) {
-                @Override
-                public boolean mayPlace(final ItemStack stack) {
-                    return stack.getItem() instanceof dev.ic2port.item.IUpgradeItem;
-                }
-            });
-        }
     }
 
     public boolean isCrafting() {

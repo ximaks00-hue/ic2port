@@ -102,6 +102,7 @@ public class ElectricFoamSprayerItem extends ElectricItem {
         }
         if (player.isShiftKeyDown()) {
             cycleSprayRange(stack);
+            player.getInventory().setChanged();
             player.displayClientMessage(
                     Component.translatable("message.ic2port.electric_foam_sprayer.range", getSprayRange(stack)),
                     true);
@@ -129,6 +130,7 @@ public class ElectricFoamSprayerItem extends ElectricItem {
         if (!player.getAbilities().instabuild) {
             setFoamStored(sprayer, getFoamStored(sprayer) - 1);
             drawEnergy(sprayer, ENERGY_PER_BLOCK);
+            syncHolderInventory(player);
         }
         return true;
     }
@@ -145,6 +147,7 @@ public class ElectricFoamSprayerItem extends ElectricItem {
         if (!player.getAbilities().instabuild) {
             pellet.shrink(1);
         }
+        player.getInventory().setChanged();
         return true;
     }
 

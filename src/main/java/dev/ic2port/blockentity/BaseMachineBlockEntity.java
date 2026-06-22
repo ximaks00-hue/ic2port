@@ -9,6 +9,7 @@ import dev.ic2port.network.packet.EnergySyncS2CPacket;
 import dev.ic2port.setup.ModCapabilities;
 import dev.ic2port.setup.ModConfig;
 import dev.ic2port.recipe.IMachineRecipe;
+import dev.ic2port.util.BlockEntitySpillHelper;
 import dev.ic2port.util.MachineUpgradeMath;
 import dev.ic2port.util.ProcessOnlyItemHandler;
 import net.minecraft.core.BlockPos;
@@ -200,6 +201,22 @@ public abstract class BaseMachineBlockEntity extends BlockEntity implements IEne
         return getScaledEnergyPerTick(fallbackPerTick);
     }
 
+    /** Merges crafted output and notifies the item handler for hopper/GUI sync. */
+    protected void mergeProcessOutput(final int outputSlot, final ItemStack output, final ItemStack result) {
+        if (output.isEmpty()) {
+            getItemHandler().setStackInSlot(outputSlot, result);
+        } else {
+            output.grow(result.getCount());
+            getItemHandler().setStackInSlot(outputSlot, output);
+        }
+    }
+
+    /** Shrinks a process input and writes it back to the handler. */
+    protected void shrinkProcessInput(final int inputSlot, final ItemStack input, final int amount) {
+        input.shrink(amount);
+        getItemHandler().setStackInSlot(inputSlot, input);
+    }
+
     @Override
     public double getCapacity() {
         return energyCapacity + countEnergyStorageUpgrades() * ENERGY_PER_STORAGE_UPGRADE;
@@ -252,9 +269,8 @@ public abstract class BaseMachineBlockEntity extends BlockEntity implements IEne
         }
         destroyedByOverload = true;
 
-        for (int slot = 0; slot < itemHandler.getSlots(); slot++) {
-            itemHandler.setStackInSlot(slot, ItemStack.EMPTY);
-        }
+        BlockEntitySpillHelper.spillAll(level, worldPosition, this, itemHandler);
+
         storedEnergy = 0.0D;
 
         float radius = ModConfig.EXPLOSION_BASE_RADIUS.get().floatValue()

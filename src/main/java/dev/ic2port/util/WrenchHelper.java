@@ -1,13 +1,13 @@
 package dev.ic2port.util;
 
 import dev.ic2port.Reference;
+import dev.ic2port.blockentity.BaseMachineBlockEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
-import net.minecraft.world.Containers;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.UseOnContext;
@@ -17,6 +17,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
+import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.registries.ForgeRegistries;
 import org.jetbrains.annotations.Nullable;
 
@@ -101,18 +102,12 @@ public final class WrenchHelper {
         if (blockEntity == null) {
             return;
         }
-        blockEntity.getCapability(ForgeCapabilities.ITEM_HANDLER).ifPresent(handler -> {
-            for (int slot = 0; slot < handler.getSlots(); slot++) {
-                ItemStack stack = handler.extractItem(slot, Integer.MAX_VALUE, false);
-                if (!stack.isEmpty()) {
-                    Containers.dropItemStack(
-                            level,
-                            pos.getX() + 0.5D,
-                            pos.getY() + 0.5D,
-                            pos.getZ() + 0.5D,
-                            stack);
-                }
-            }
-        });
+        if (blockEntity instanceof BaseMachineBlockEntity machine) {
+            BlockEntitySpillHelper.spillItems(level, pos, machine.getFullItemHandler());
+        } else {
+            blockEntity.getCapability(ForgeCapabilities.ITEM_HANDLER).ifPresent(handler ->
+                    BlockEntitySpillHelper.spillItems(level, pos, handler));
+        }
+        BlockEntitySpillHelper.spillFluids(level, pos, blockEntity);
     }
 }

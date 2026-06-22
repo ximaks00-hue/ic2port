@@ -125,6 +125,7 @@ public class EsuBlockEntity extends BlockEntity implements IEnergyAcceptor, IEne
             double toTransfer = Math.min(Math.min(storedEnergy, remaining), MAX_OUTPUT_PER_TICK);
             double transferred = ItemEnergyHelper.chargeItem(chargeStack, toTransfer, TIER);
             if (transferred > 0.0D) {
+                itemHandler.setStackInSlot(SLOT_CHARGE, chargeStack);
                 storedEnergy -= transferred;
                 remaining -= transferred;
                 setChanged();
@@ -138,6 +139,7 @@ public class EsuBlockEntity extends BlockEntity implements IEnergyAcceptor, IEne
             double toDraw = Math.min(space, MAX_OUTPUT_PER_TICK);
             double drawn = ItemEnergyHelper.dischargeItemAndModules(dischargeStack, toDraw, TIER);
             if (drawn > 0.0D) {
+                itemHandler.setStackInSlot(SLOT_DISCHARGE, dischargeStack);
                 storedEnergy += drawn;
                 setChanged();
             }

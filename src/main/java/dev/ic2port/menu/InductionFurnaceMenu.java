@@ -48,7 +48,7 @@ public class InductionFurnaceMenu extends MachineWithUpgradesMenu {
         addLaneSlot(itemHandler, InductionFurnaceBlockEntity.SLOT_INPUT_B, LANE_B_INPUT_X, LANE_B_Y, true);
         addLaneSlot(itemHandler, InductionFurnaceBlockEntity.SLOT_OUTPUT_B, LANE_B_OUTPUT_X, LANE_B_Y, false);
 
-        addUpgradeSlots(itemHandler);
+        addUpgradeSlots(itemHandler, blockEntity.getProcessSlotCount());
         addPlayerInventory(playerInventory);
         addPlayerHotbar(playerInventory);
         addDataSlots(data);

@@ -48,7 +48,7 @@ public class CannerMenu extends MachineWithUpgradesMenu {
                 MachineMenuLayout.SLOT_OUTPUT_X,
                 MachineMenuLayout.SLOT_OUTPUT_Y));
 
-        addUpgradeSlots(itemHandler);
+        addUpgradeSlots(itemHandler, blockEntity.getProcessSlotCount());
         addPlayerInventory(playerInventory);
         addPlayerHotbar(playerInventory);
         addDataSlots(data);
@@ -68,7 +68,7 @@ public class CannerMenu extends MachineWithUpgradesMenu {
 
     @Override
     public ItemStack quickMoveStack(final Player player, final int index) {
-        return quickMoveMachineStack(player, index);
+        return quickMoveMachineStack(player, index, blockEntity.getProcessSlotCount(), 2);
     }
 
     @Override

@@ -64,6 +64,7 @@ public class ElectricTreeTapItem extends ElectricItem {
             return false;
         }
         drawEnergy(tool, ENERGY_PER_TAP);
+        syncHolderInventory(player);
         return true;
     }
 

@@ -132,13 +132,9 @@ public class ElectricFurnaceBlockEntity extends BaseMachineBlockEntity {
             return;
         }
 
-        input.shrink(1);
+        shrinkProcessInput(SLOT_INPUT, input, 1);
         ItemStack result = recipe.getOutput().copy();
-        if (output.isEmpty()) {
-            getItemHandler().setStackInSlot(SLOT_OUTPUT, result);
-        } else {
-            output.grow(result.getCount());
-        }
+        mergeProcessOutput(SLOT_OUTPUT, output, result);
 
         progress = 0;
         activeRecipeId = null;

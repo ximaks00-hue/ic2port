@@ -134,13 +134,9 @@ public class MaceratorBlockEntity extends BaseMachineBlockEntity {
             return;
         }
 
-        input.shrink(1);
+        shrinkProcessInput(SLOT_INPUT, input, 1);
         ItemStack result = recipe.getOutput().copy();
-        if (output.isEmpty()) {
-            getItemHandler().setStackInSlot(SLOT_OUTPUT, result);
-        } else {
-            output.grow(result.getCount());
-        }
+        mergeProcessOutput(SLOT_OUTPUT, output, result);
 
         progress = 0;
         activeRecipeId = null;
@@ -157,6 +153,20 @@ public class MaceratorBlockEntity extends BaseMachineBlockEntity {
                 MaceratorRecipe::getInput);
         activeRecipeId = resolved.map(MaceratorRecipe::getId).orElse(null);
         return resolved;
+    }
+
+    /** Read-only recipe lookup for debug/status — does not mutate {@link #activeRecipeId}. */
+    private Optional<MaceratorRecipe> peekActiveRecipe(final ItemStack input) {
+        if (level == null || input.isEmpty()) {
+            return Optional.empty();
+        }
+        return MachineRecipeHelper.resolveSingleInputRecipe(
+                level,
+                RecipeTypeRegistry.MACERATOR.get(),
+                MaceratorRecipe.class,
+                input,
+                activeRecipeId,
+                MaceratorRecipe::getInput);
     }
 
     private boolean canOutput(final MaceratorRecipe recipe, final ItemStack output) {
@@ -195,6 +205,7 @@ public class MaceratorBlockEntity extends BaseMachineBlockEntity {
                 return false;
             }
             input.grow(transferable);
+            getItemHandler().setStackInSlot(SLOT_INPUT, input);
             stack.shrink(transferable);
             setChanged();
             return true;
@@ -205,9 +216,7 @@ public class MaceratorBlockEntity extends BaseMachineBlockEntity {
 
     public Component getStatusMessage() {
         ItemStack input = getItemHandler().getStackInSlot(SLOT_INPUT);
-        Optional<MaceratorRecipe> recipe = level != null && !input.isEmpty()
-                ? resolveActiveRecipe(input)
-                : Optional.empty();
+        Optional<MaceratorRecipe> recipe = peekActiveRecipe(input);
         int requiredTicks = recipe.map(MaceratorRecipe::getProcessingTime)
                 .filter(time -> time > 0)
                 .map(this::getScaledProcessTime)

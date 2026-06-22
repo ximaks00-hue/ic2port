@@ -20,9 +20,10 @@ public abstract class MachineWithUpgradesMenu extends AbstractContainerMenu {
         super(menuType, containerId);
     }
 
-    protected void addUpgradeSlots(final IItemHandler itemHandler) {
+    /** @param processSlotCount machine process slots in the handler (inputs + outputs), before upgrades */
+    protected void addUpgradeSlots(final IItemHandler itemHandler, final int processSlotCount) {
         for (int index = 0; index < MachineMenuLayout.UPGRADE_SLOT_COUNT; index++) {
-            final int slotIndex = MachineMenuLayout.upgradeSlotIndex(index);
+            final int slotIndex = processSlotCount + index;
             final int y = MachineMenuLayout.UPGRADE_SLOT_START_Y + index * MachineMenuLayout.UPGRADE_SLOT_SPACING;
             this.addSlot(new SlotItemHandler(itemHandler, slotIndex, MachineMenuLayout.UPGRADE_SLOT_X, y) {
                 @Override
@@ -31,6 +32,10 @@ public abstract class MachineWithUpgradesMenu extends AbstractContainerMenu {
                 }
             });
         }
+    }
+
+    protected void addUpgradeSlots(final IItemHandler itemHandler) {
+        addUpgradeSlots(itemHandler, MachineMenuLayout.MACHINE_SLOT_COUNT);
     }
 
     protected SlotItemHandler createProcessInputSlot(
@@ -69,6 +74,18 @@ public abstract class MachineWithUpgradesMenu extends AbstractContainerMenu {
     }
 
     protected ItemStack quickMoveMachineStack(final Player player, final int index) {
+        return quickMoveMachineStack(player, index, MachineMenuLayout.MACHINE_SLOT_COUNT, 1);
+    }
+
+    /**
+     * @param processSlotCount total machine slots (inputs + outputs) before upgrade slots
+     * @param inputInsertEnd   exclusive upper bound for shift-insert into input slots only
+     */
+    protected ItemStack quickMoveMachineStack(
+            final Player player,
+            final int index,
+            final int processSlotCount,
+            final int inputInsertEnd) {
         ItemStack quickMoved = ItemStack.EMPTY;
         var slot = this.slots.get(index);
 
@@ -79,13 +96,12 @@ public abstract class MachineWithUpgradesMenu extends AbstractContainerMenu {
         ItemStack sourceStack = slot.getItem();
         quickMoved = sourceStack.copy();
 
-        int machineSlots = MachineMenuLayout.MACHINE_SLOT_COUNT;
-        int upgradeStart = machineSlots;
-        int upgradeEnd = MachineMenuLayout.playerInventoryStartIndex();
+        int upgradeStart = processSlotCount;
+        int upgradeEnd = processSlotCount + MachineMenuLayout.UPGRADE_SLOT_COUNT;
         int playerStart = upgradeEnd;
         int playerEnd = this.slots.size();
 
-        if (index < machineSlots) {
+        if (index < processSlotCount) {
             if (!this.moveItemStackTo(sourceStack, playerStart, playerEnd, true)) {
                 return ItemStack.EMPTY;
             }
@@ -96,10 +112,10 @@ public abstract class MachineWithUpgradesMenu extends AbstractContainerMenu {
             }
         } else if (sourceStack.getItem() instanceof IUpgradeItem) {
             if (!this.moveItemStackTo(sourceStack, upgradeStart, upgradeEnd, false)
-                    && !this.moveItemStackTo(sourceStack, 0, 1, false)) {
+                    && !this.moveItemStackTo(sourceStack, 0, inputInsertEnd, false)) {
                 return ItemStack.EMPTY;
             }
-        } else if (!this.moveItemStackTo(sourceStack, 0, 1, false)) {
+        } else if (!this.moveItemStackTo(sourceStack, 0, inputInsertEnd, false)) {
             return ItemStack.EMPTY;
         }
 

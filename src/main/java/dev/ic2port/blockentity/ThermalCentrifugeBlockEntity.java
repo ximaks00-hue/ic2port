@@ -206,17 +206,23 @@ public class ThermalCentrifugeBlockEntity extends BaseMachineBlockEntity {
 
         progress++;
         if (progress < maxProgress) {
-            CentrifugeRotorItem.applyWear(getItemHandler().getStackInSlot(SLOT_ROTOR), 1);
+            applyRotorWear(1);
             setChanged();
             return;
         }
 
-        input.shrink(recipe.getInputCount());
+        shrinkProcessInput(SLOT_INPUT, input, recipe.getInputCount());
         depositOutputs(recipe);
-        CentrifugeRotorItem.applyWear(getItemHandler().getStackInSlot(SLOT_ROTOR), 1);
+        applyRotorWear(1);
         progress = 0;
         activeRecipeId = null;
         setChanged();
+    }
+
+    private void applyRotorWear(final int amount) {
+        ItemStack rotor = getItemHandler().getStackInSlot(SLOT_ROTOR);
+        CentrifugeRotorItem.applyWear(rotor, amount);
+        getItemHandler().setStackInSlot(SLOT_ROTOR, rotor);
     }
 
     private void decayRotorHeat(final double amount) {
@@ -245,6 +251,7 @@ public class ThermalCentrifugeBlockEntity extends BaseMachineBlockEntity {
                 getItemHandler().setStackInSlot(outputSlot, result);
             } else {
                 existing.grow(result.getCount());
+                getItemHandler().setStackInSlot(outputSlot, existing);
             }
             outputSlot++;
         }

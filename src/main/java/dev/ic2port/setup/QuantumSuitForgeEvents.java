@@ -124,6 +124,7 @@ public final class QuantumSuitForgeEvents {
             }
             player.setDeltaMovement(motion.x, 0.45D, motion.z);
             spawnJetpackSmoke(player);
+            player.getInventory().setChanged();
             return;
         }
 
@@ -137,6 +138,7 @@ public final class QuantumSuitForgeEvents {
             player.setDeltaMovement(motion.x, -0.15D, motion.z);
             player.fallDistance = 0.0F;
         }
+        player.getInventory().setChanged();
     }
 
     private static void tickLeggings(final Player player) {
@@ -182,6 +184,7 @@ public final class QuantumSuitForgeEvents {
             if (motion.y <= 0.1D) {
                 quantum.drawEnergy(boots, QuantumSuitItem.EU_JUMP_BOOST);
                 player.setDeltaMovement(motion.x, 0.55D, motion.z);
+                player.getInventory().setChanged();
             }
         }
     }

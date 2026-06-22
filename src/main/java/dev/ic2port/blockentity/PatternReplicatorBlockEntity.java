@@ -133,12 +133,14 @@ public class PatternReplicatorBlockEntity extends BlockEntity implements IEnergy
 
         if (progress >= REPLICATION_TICKS) {
             uuSlot.shrink(UU_PER_CRAFT);
+            itemHandler.setStackInSlot(SLOT_UU_MATTER, uuSlot);
             ItemStack result = lockedPattern.isEmpty() ? pattern.copy() : lockedPattern.copy();
             result.setCount(1);
             if (output.isEmpty()) {
                 itemHandler.setStackInSlot(SLOT_OUTPUT, result);
             } else {
                 output.grow(1);
+                itemHandler.setStackInSlot(SLOT_OUTPUT, output);
             }
             progress = 0;
             lockedPattern = ItemStack.EMPTY;

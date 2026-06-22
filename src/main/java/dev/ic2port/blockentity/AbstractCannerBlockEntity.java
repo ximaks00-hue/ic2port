@@ -30,6 +30,7 @@ public abstract class AbstractCannerBlockEntity extends BaseMachineBlockEntity {
 
     protected int progress;
     protected int maxProgress;
+    private CannerOperationHelper.Operation activeOperation = CannerOperationHelper.Operation.NONE;
 
     protected final ContainerData data = new ContainerData() {
         @Override
@@ -129,8 +130,14 @@ public abstract class AbstractCannerBlockEntity extends BaseMachineBlockEntity {
         CannerOperationHelper.Operation operation = CannerOperationHelper.detect(slot0, slot1, isVacuumCanner());
         if (operation == CannerOperationHelper.Operation.NONE) {
             progress = 0;
+            activeOperation = CannerOperationHelper.Operation.NONE;
             setChanged();
             return;
+        }
+
+        if (operation != activeOperation) {
+            progress = 0;
+            activeOperation = operation;
         }
 
         maxProgress = getScaledProcessTime(getBaseProcessTime());
@@ -144,7 +151,7 @@ public abstract class AbstractCannerBlockEntity extends BaseMachineBlockEntity {
             return;
         }
 
-        finishOperation(operation, slot0, slot1);
+        finishOperation(activeOperation, slot0, slot1);
         progress = 0;
         setChanged();
     }
@@ -160,6 +167,8 @@ public abstract class AbstractCannerBlockEntity extends BaseMachineBlockEntity {
             case CELL_EMPTY -> finishCellEmpty();
             default -> {
                 CannerOperationHelper.finishProcess(slot0, slot1, operation);
+                getItemHandler().setStackInSlot(SLOT_TOOL, slot0);
+                getItemHandler().setStackInSlot(SLOT_SUPPLY, slot1);
                 if (operation == CannerOperationHelper.Operation.HYDRATION_REFILL) {
                     if (getItemHandler().getStackInSlot(SLOT_TOOL).is(ItemRegistry.HYDRATION_CELL.get())
                             && getItemHandler().getStackInSlot(SLOT_SUPPLY).isEmpty()) {
@@ -197,6 +206,8 @@ public abstract class AbstractCannerBlockEntity extends BaseMachineBlockEntity {
 
     private void finishTinCanPress(final ItemStack slot0, final ItemStack slot1) {
         CannerOperationHelper.finishProcess(slot0, slot1, CannerOperationHelper.Operation.TIN_CAN_PRESS);
+        getItemHandler().setStackInSlot(SLOT_TOOL, slot0);
+        getItemHandler().setStackInSlot(SLOT_SUPPLY, slot1);
         ItemStack tinCan = new ItemStack(ItemRegistry.TIN_CAN.get());
         if (tryInsertTinCan(SLOT_TOOL, tinCan) || tryInsertTinCan(SLOT_SUPPLY, tinCan)) {
             return;
@@ -262,6 +273,9 @@ public abstract class AbstractCannerBlockEntity extends BaseMachineBlockEntity {
         super.saveAdditional(tag);
         tag.putInt("Progress", progress);
         tag.putInt("MaxProgress", maxProgress);
+        if (activeOperation != CannerOperationHelper.Operation.NONE) {
+            tag.putString("ActiveOperation", activeOperation.name());
+        }
     }
 
     @Override
@@ -269,6 +283,9 @@ public abstract class AbstractCannerBlockEntity extends BaseMachineBlockEntity {
         super.load(tag);
         progress = tag.getInt("Progress");
         maxProgress = tag.contains("MaxProgress") ? tag.getInt("MaxProgress") : getBaseProcessTime();
+        activeOperation = tag.contains("ActiveOperation")
+                ? CannerOperationHelper.Operation.valueOf(tag.getString("ActiveOperation"))
+                : CannerOperationHelper.Operation.NONE;
     }
 
     public ContainerData getContainerData() {

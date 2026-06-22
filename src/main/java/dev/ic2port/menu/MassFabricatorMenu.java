@@ -61,7 +61,7 @@ public class MassFabricatorMenu extends MachineWithUpgradesMenu {
             }
         });
 
-        addUpgradeSlots(itemHandler);
+        addUpgradeSlots(itemHandler, blockEntity.getProcessSlotCount());
         addPlayerInventory(playerInventory);
         addPlayerHotbar(playerInventory);
         addDataSlots(data);

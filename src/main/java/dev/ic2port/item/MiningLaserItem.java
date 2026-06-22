@@ -54,6 +54,7 @@ public class MiningLaserItem extends ElectricItem {
             serverLevel.destroyBlock(pos, true, player);
         }
         drawEnergy(stack, EU_PER_BLOCK);
+        player.getInventory().setChanged();
         player.getCooldowns().addCooldown(this, 10);
         return InteractionResultHolder.success(stack);
     }

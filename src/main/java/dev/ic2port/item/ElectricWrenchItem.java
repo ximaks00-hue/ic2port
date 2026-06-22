@@ -52,6 +52,7 @@ public class ElectricWrenchItem extends ElectricItem {
         }
 
         drawEnergy(stack, EU_PER_USE);
+        player.getInventory().setChanged();
         return InteractionResult.CONSUME;
     }
 

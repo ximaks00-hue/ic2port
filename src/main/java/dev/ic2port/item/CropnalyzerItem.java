@@ -66,6 +66,7 @@ public class CropnalyzerItem extends ElectricItem {
         }
 
         drawEnergy(stack, EU_PER_SCAN);
+        player.getInventory().setChanged();
         player.getCooldowns().addCooldown(this, USE_COOLDOWN_TICKS);
         level.playSound(
                 null,

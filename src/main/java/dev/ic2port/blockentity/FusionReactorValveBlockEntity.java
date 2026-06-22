@@ -56,7 +56,7 @@ public class FusionReactorValveBlockEntity extends BlockEntity {
             }
             int drained = reactor.getLavaTank().drain(500, IFluidHandler.FluidAction.SIMULATE).getAmount();
             if (drained <= 0) {
-                return;
+                continue;
             }
             FluidStack toFill = new FluidStack(Fluids.LAVA, drained);
             int filled = handler.fill(toFill, IFluidHandler.FluidAction.EXECUTE);
@@ -65,8 +65,8 @@ public class FusionReactorValveBlockEntity extends BlockEntity {
                 reactor.setChanged();
                 reactor.notifyComparatorOutput();
                 notifyComparatorOutput();
+                return;
             }
-            return;
         }
     }
 

@@ -181,6 +181,8 @@ public class BrewingBarrelBlockEntity extends BlockEntity implements MenuProvide
         batchSugarCane = 0;
         hops.shrink(BeerHelper.HOPS_COST);
         wheat.shrink(BeerHelper.WHEAT_COST);
+        itemHandler.setStackInSlot(SLOT_HOPS, hops);
+        itemHandler.setStackInSlot(SLOT_WHEAT, wheat);
         itemHandler.setStackInSlot(SLOT_WATER, new ItemStack(Items.BUCKET));
         startBrew(BrewType.BEER, BEER_DURATION);
     }
@@ -197,6 +199,7 @@ public class BrewingBarrelBlockEntity extends BlockEntity implements MenuProvide
         batchHops = 0;
         batchWheat = 0;
         cane.shrink(RumHelper.SUGAR_CANE_COST);
+        itemHandler.setStackInSlot(SLOT_HOPS, cane);
         startBrew(BrewType.RUM, RumHelper.BREW_DURATION);
     }
 
@@ -212,6 +215,7 @@ public class BrewingBarrelBlockEntity extends BlockEntity implements MenuProvide
         batchWheat = WhiskyHelper.GRIST_COST;
         batchSugarCane = 0;
         wheat.shrink(WhiskyHelper.GRIST_COST);
+        itemHandler.setStackInSlot(SLOT_WHEAT, wheat);
         startBrew(BrewType.WHISKY, WhiskyHelper.BREW_DURATION);
     }
 
@@ -232,6 +236,8 @@ public class BrewingBarrelBlockEntity extends BlockEntity implements MenuProvide
         batchSugarCane = 0;
         redstone.shrink(PotionHelper.REDSTONE_COST);
         glowstone.shrink(PotionHelper.GLOWSTONE_COST);
+        itemHandler.setStackInSlot(SLOT_HOPS, redstone);
+        itemHandler.setStackInSlot(SLOT_WHEAT, glowstone);
         startBrew(BrewType.POTION, PotionHelper.BREW_DURATION);
     }
 
@@ -283,6 +289,7 @@ public class BrewingBarrelBlockEntity extends BlockEntity implements MenuProvide
         int transferable = Math.min(product.getCount(), output.getMaxStackSize() - output.getCount());
         if (transferable > 0) {
             output.grow(transferable);
+            itemHandler.setStackInSlot(SLOT_OUTPUT, output);
         }
         int remainder = product.getCount() - transferable;
         if (remainder > 0) {

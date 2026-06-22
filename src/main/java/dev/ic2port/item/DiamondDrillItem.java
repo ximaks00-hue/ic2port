@@ -176,6 +176,7 @@ public class DiamondDrillItem extends ElectricItem {
             final LivingEntity entity) {
         if (!level.isClientSide && isEffectiveBlock(state)) {
             drawEnergy(stack, getEnergyCost(stack));
+            syncHolderInventory(entity);
         }
         return true;
     }
