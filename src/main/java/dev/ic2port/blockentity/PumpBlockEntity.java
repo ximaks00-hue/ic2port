@@ -78,7 +78,9 @@ public class PumpBlockEntity extends BlockEntity implements IEnergyAcceptor {
                 net.minecraft.world.level.material.Fluid fluid = blockState.getFluidState().getType();
                 FluidStack toFill = new FluidStack(fluid, 1000);
                 int filled = tank.fill(toFill, IFluidHandler.FluidAction.SIMULATE);
-                if (filled <= 0) break;
+                if (filled < 1000) {
+                    break;
+                }
                 tank.fill(toFill, IFluidHandler.FluidAction.EXECUTE);
                 level.setBlock(target, Blocks.AIR.defaultBlockState(),
                         net.minecraft.world.level.block.Block.UPDATE_ALL);

@@ -72,7 +72,7 @@ public class MassFabricatorBlockEntity extends BaseMachineBlockEntity {
                     return stack.getItem() instanceof ScrapItem;
                 }
                 if (slot == SLOT_OUTPUT) {
-                    return stack.is(ItemRegistry.UU_MATTER.get()) || stack.isEmpty();
+                    return false;
                 }
                 return false;
             }

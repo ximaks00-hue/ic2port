@@ -38,7 +38,15 @@ public class TerraformerBlockEntity extends BlockEntity implements IEnergyAccept
     public static final int SLOT_COUNT = 1;
 
     private final ItemStackHandler itemHandler = new ItemStackHandler(SLOT_COUNT) {
-        @Override protected void onContentsChanged(final int slot) { setChanged(); }
+        @Override
+        protected void onContentsChanged(final int slot) {
+            setChanged();
+        }
+
+        @Override
+        public boolean isItemValid(final int slot, final ItemStack stack) {
+            return slot == SLOT_BLUEPRINT && stack.getItem() instanceof TerraformerBlueprintItem;
+        }
     };
     private final LazyOptional<IItemHandler> itemOptional = LazyOptional.of(() -> itemHandler);
     private final LazyOptional<IEnergyNode> energyOptional = LazyOptional.of(() -> this);

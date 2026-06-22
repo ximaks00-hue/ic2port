@@ -20,6 +20,7 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ContainerData;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.Containers;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
@@ -57,11 +58,7 @@ public class BrewingBarrelBlockEntity extends BlockEntity implements MenuProvide
                         || stack.is(Items.REDSTONE);
                 case SLOT_WHEAT -> stack.is(Items.WHEAT) || stack.is(Items.GLOWSTONE_DUST);
                 case SLOT_WATER -> stack.is(Items.WATER_BUCKET);
-                case SLOT_OUTPUT -> stack.is(ItemRegistry.BEER.get())
-                        || stack.is(ItemRegistry.RUM.get())
-                        || stack.is(ItemRegistry.WHISKY.get())
-                        || stack.is(ItemRegistry.BREWED_POTION.get())
-                        || stack.isEmpty();
+                case SLOT_OUTPUT -> false;
                 default -> false;
             };
         }
@@ -269,13 +266,42 @@ public class BrewingBarrelBlockEntity extends BlockEntity implements MenuProvide
             setChanged();
             return;
         }
+        mergeOutput(product);
+        setChanged();
+    }
+
+    private void mergeOutput(final ItemStack product) {
         ItemStack output = itemHandler.getStackInSlot(SLOT_OUTPUT);
         if (output.isEmpty()) {
             itemHandler.setStackInSlot(SLOT_OUTPUT, product);
-        } else {
-            output.grow(product.getCount());
+            return;
         }
-        setChanged();
+        if (!ItemStack.isSameItemSameTags(output, product)) {
+            dropOverflow(product);
+            return;
+        }
+        int transferable = Math.min(product.getCount(), output.getMaxStackSize() - output.getCount());
+        if (transferable > 0) {
+            output.grow(transferable);
+        }
+        int remainder = product.getCount() - transferable;
+        if (remainder > 0) {
+            ItemStack leftover = product.copy();
+            leftover.setCount(remainder);
+            dropOverflow(leftover);
+        }
+    }
+
+    private void dropOverflow(final ItemStack stack) {
+        if (level == null || level.isClientSide || stack.isEmpty()) {
+            return;
+        }
+        Containers.dropItemStack(
+                level,
+                worldPosition.getX() + 0.5D,
+                worldPosition.getY() + 0.5D,
+                worldPosition.getZ() + 0.5D,
+                stack);
     }
 
     public ItemStackHandler getItemHandler() {

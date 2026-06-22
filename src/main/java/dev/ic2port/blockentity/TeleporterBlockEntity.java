@@ -72,9 +72,6 @@ public class TeleporterBlockEntity extends BlockEntity implements IEnergyAccepto
             return "no_energy";
         }
 
-        storedEnergy -= euCost;
-        setChanged();
-
         double tx = destination.getX() + 0.5;
         double ty = destination.getY() + 1.0;
         double tz = destination.getZ() + 0.5;
@@ -86,6 +83,9 @@ public class TeleporterBlockEntity extends BlockEntity implements IEnergyAccepto
         } else {
             return "invalid_target";
         }
+
+        storedEnergy -= euCost;
+        setChanged();
         return null;
     }
 

@@ -77,6 +77,16 @@ public final class ItemEnergyHelper {
         return ArmorModuleEnergyHelper.canDischargeAnyModule(stack, storageTier);
     }
 
+    /** Whether automation may insert into a storage block's charge slot. */
+    public static boolean isValidChargeSlot(final ItemStack stack, final int storageTier) {
+        return canCharge(stack, storageTier);
+    }
+
+    /** Whether automation may insert into a storage block's discharge slot. */
+    public static boolean isValidDischargeSlot(final ItemStack stack, final int storageTier) {
+        return canDischargeInto(stack, storageTier);
+    }
+
     /**
      * @return EU transferred into the item
      */

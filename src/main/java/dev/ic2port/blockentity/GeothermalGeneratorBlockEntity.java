@@ -67,7 +67,7 @@ public class GeothermalGeneratorBlockEntity extends BlockEntity implements IEner
                 return stack.is(Items.LAVA_BUCKET);
             }
             if (slot == SLOT_OUTPUT) {
-                return stack.isEmpty() || stack.is(Items.BUCKET);
+                return false;
             }
             return false;
         }

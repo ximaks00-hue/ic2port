@@ -46,6 +46,17 @@ public class MFEBlockEntity extends BlockEntity implements IEnergyAcceptor, IEne
         protected void onContentsChanged(final int slot) {
             setChanged();
         }
+
+        @Override
+        public boolean isItemValid(final int slot, final ItemStack stack) {
+            if (slot == SLOT_CHARGE) {
+                return ItemEnergyHelper.isValidChargeSlot(stack, TIER);
+            }
+            if (slot == SLOT_DISCHARGE) {
+                return ItemEnergyHelper.isValidDischargeSlot(stack, TIER);
+            }
+            return false;
+        }
     };
     private final LazyOptional<IItemHandler> itemHandlerOptional = LazyOptional.of(() -> itemHandler);
     private final LazyOptional<IEnergyNode> energyOptional = LazyOptional.of(() -> this);

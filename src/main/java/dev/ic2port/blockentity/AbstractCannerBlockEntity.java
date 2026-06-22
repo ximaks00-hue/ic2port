@@ -184,7 +184,9 @@ public abstract class AbstractCannerBlockEntity extends BaseMachineBlockEntity {
 
         if (tins.is(ItemRegistry.TIN_CAN.get())) {
             getItemHandler().setStackInSlot(layout.tinSlot(), filled);
-        } else if (tins.is(ItemRegistry.FILLED_TIN_CAN.get())) {
+        } else if (tins.is(ItemRegistry.FILLED_TIN_CAN.get())
+                && ItemStack.isSameItemSameTags(tins, filled)
+                && tins.getCount() < tins.getMaxStackSize()) {
             tins.grow(1);
         }
 

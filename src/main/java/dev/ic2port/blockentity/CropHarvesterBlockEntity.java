@@ -87,7 +87,17 @@ public class CropHarvesterBlockEntity extends BlockEntity implements IEnergyAcce
 
 
 
-    private final ItemStackHandler outputHandler = new ItemStackHandler(OUTPUT_SLOTS);
+    private final ItemStackHandler outputHandler = new ItemStackHandler(OUTPUT_SLOTS) {
+        @Override
+        protected void onContentsChanged(final int slot) {
+            setChanged();
+        }
+
+        @Override
+        public boolean isItemValid(final int slot, final ItemStack stack) {
+            return false;
+        }
+    };
 
     private final LazyOptional<IItemHandler> outputOptional = LazyOptional.of(() -> outputHandler);
 
