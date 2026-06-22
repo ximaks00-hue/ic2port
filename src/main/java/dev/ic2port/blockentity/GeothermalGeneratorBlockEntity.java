@@ -1,5 +1,6 @@
 package dev.ic2port.blockentity;
 
+import dev.ic2port.util.ContainerDataHelper;
 import dev.ic2port.api.energy.EnergyTier;
 import dev.ic2port.api.energy.IEnergyEmitter;
 import dev.ic2port.block.GeothermalGeneratorBlock;
@@ -93,9 +94,7 @@ public class GeothermalGeneratorBlockEntity extends BlockEntity implements IEner
 
         @Override
         public void set(final int index, final int value) {
-            if (index == 0) {
-                storedEnergy = value;
-            }
+            ContainerDataHelper.ignoreClientWrite();
         }
 
         @Override

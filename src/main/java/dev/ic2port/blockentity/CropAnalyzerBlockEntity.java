@@ -1,5 +1,6 @@
 package dev.ic2port.blockentity;
 
+import dev.ic2port.util.ContainerDataHelper;
 import dev.ic2port.api.energy.EnergyTier;
 import dev.ic2port.api.energy.IEnergyAcceptor;
 import dev.ic2port.api.energy.IEnergyNode;
@@ -51,9 +52,7 @@ public class CropAnalyzerBlockEntity extends BlockEntity implements IEnergyAccep
 
         @Override
         public void set(final int index, final int value) {
-            if (index == 0) {
-                storedEnergy = value;
-            }
+            ContainerDataHelper.ignoreClientWrite();
         }
 
         @Override

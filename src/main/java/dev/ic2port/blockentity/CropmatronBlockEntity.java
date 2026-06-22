@@ -16,6 +16,7 @@ import dev.ic2port.setup.ItemRegistry;
 
 import dev.ic2port.setup.ModCapabilities;
 
+import dev.ic2port.util.ContainerDataHelper;
 import dev.ic2port.util.CropMatronHelper;
 
 import net.minecraft.core.BlockPos;
@@ -138,11 +139,7 @@ public class CropmatronBlockEntity extends BlockEntity implements IEnergyAccepto
 
         public void set(final int index, final int value) {
 
-            if (index == 0) {
-
-                storedEnergy = value;
-
-            }
+            ContainerDataHelper.ignoreClientWrite();
 
         }
 

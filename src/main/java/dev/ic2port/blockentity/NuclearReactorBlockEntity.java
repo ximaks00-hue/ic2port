@@ -1,5 +1,6 @@
 package dev.ic2port.blockentity;
 
+import dev.ic2port.util.ContainerDataHelper;
 import dev.ic2port.api.energy.EnergyTier;
 import dev.ic2port.api.energy.IEnergyEmitter;
 import dev.ic2port.api.energy.IEnergyNode;
@@ -116,11 +117,7 @@ public class NuclearReactorBlockEntity extends BlockEntity
 
         @Override
         public void set(final int index, final int value) {
-            if (index == DATA_HEAT) {
-                heat = value;
-            } else if (index == DATA_CHAMBER_COUNT) {
-                chamberCount = value;
-            }
+            ContainerDataHelper.ignoreClientWrite();
         }
 
         @Override

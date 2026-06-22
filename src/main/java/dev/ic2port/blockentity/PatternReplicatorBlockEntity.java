@@ -1,5 +1,6 @@
 package dev.ic2port.blockentity;
 
+import dev.ic2port.util.ContainerDataHelper;
 import dev.ic2port.api.energy.EnergyTier;
 import dev.ic2port.api.energy.IEnergyAcceptor;
 import dev.ic2port.api.energy.IEnergyNode;
@@ -68,7 +69,7 @@ public class PatternReplicatorBlockEntity extends BlockEntity implements IEnergy
                 default -> 0;
             };
         }
-        @Override public void set(final int i, final int v) { if (i == 0) progress = v; }
+        @Override public void set(final int i, final int v) { ContainerDataHelper.ignoreClientWrite(); }
         @Override public int getCount() { return 4; }
     };
 
@@ -89,15 +90,14 @@ public class PatternReplicatorBlockEntity extends BlockEntity implements IEnergy
         ItemStack output = itemHandler.getStackInSlot(SLOT_OUTPUT);
 
         if (pattern.isEmpty() || uuSlot.getCount() < UU_PER_CRAFT) {
-            progress = 0;
-            setChanged();
+            cancelReplication();
             return;
         }
 
         if (!output.isEmpty()) {
             if (!ItemStack.isSameItemSameTags(output, pattern)
                     || output.getCount() + 1 > output.getMaxStackSize()) {
-                progress = 0;
+                cancelReplication();
                 return;
             }
         }
@@ -124,6 +124,14 @@ public class PatternReplicatorBlockEntity extends BlockEntity implements IEnergy
             progress = 0;
             setChanged();
         }
+    }
+
+    private void cancelReplication() {
+        if (progress > 0) {
+            storedEnergy = Math.min(ENERGY_CAPACITY, storedEnergy + EU_PER_CRAFT);
+        }
+        progress = 0;
+        setChanged();
     }
 
     @Override

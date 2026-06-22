@@ -10,6 +10,7 @@ import dev.ic2port.setup.BlockEntityRegistry;
 import dev.ic2port.setup.ModCapabilities;
 import dev.ic2port.setup.ModConfig;
 import dev.ic2port.util.EnergyStorageExplosionHelper;
+import dev.ic2port.util.ContainerDataHelper;
 import dev.ic2port.util.EnergyTransferHelper;
 import dev.ic2port.util.ItemEnergyHelper;
 import net.minecraft.core.BlockPos;
@@ -61,9 +62,7 @@ public class MFSUBlockEntity extends BlockEntity implements IEnergyAcceptor, IEn
 
         @Override
         public void set(final int index, final int value) {
-            if (index == 0) {
-                storedEnergy = value;
-            }
+            ContainerDataHelper.ignoreClientWrite();
         }
 
         @Override

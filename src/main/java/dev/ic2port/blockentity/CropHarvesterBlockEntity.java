@@ -15,6 +15,8 @@ import dev.ic2port.setup.BlockEntityRegistry;
 
 import dev.ic2port.setup.ModCapabilities;
 
+import dev.ic2port.util.ContainerDataHelper;
+
 import net.minecraft.core.BlockPos;
 
 import net.minecraft.core.Direction;
@@ -117,11 +119,7 @@ public class CropHarvesterBlockEntity extends BlockEntity implements IEnergyAcce
 
         public void set(final int index, final int value) {
 
-            if (index == 0) {
-
-                storedEnergy = value;
-
-            }
+            ContainerDataHelper.ignoreClientWrite();
 
         }
 

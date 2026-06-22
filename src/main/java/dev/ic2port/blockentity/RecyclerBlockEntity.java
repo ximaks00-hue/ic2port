@@ -1,5 +1,6 @@
 package dev.ic2port.blockentity;
 
+import dev.ic2port.util.ContainerDataHelper;
 import dev.ic2port.api.energy.EnergyTier;
 import dev.ic2port.menu.RecyclerMenu;
 import dev.ic2port.setup.BlockEntityRegistry;
@@ -50,9 +51,7 @@ public class RecyclerBlockEntity extends BaseMachineBlockEntity {
 
         @Override
         public void set(final int index, final int value) {
-            if (index == 0) {
-                progress = value;
-            }
+            ContainerDataHelper.ignoreClientWrite();
         }
 
         @Override

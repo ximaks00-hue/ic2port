@@ -1,5 +1,6 @@
 package dev.ic2port.blockentity;
 
+import dev.ic2port.util.ContainerDataHelper;
 import dev.ic2port.api.energy.EnergyTier;
 import dev.ic2port.api.energy.IEnergyEmitter;
 import dev.ic2port.block.SolidFuelGeneratorBlock;
@@ -67,13 +68,7 @@ public class SolidFuelGeneratorBlockEntity extends BlockEntity implements IEnerg
 
         @Override
         public void set(final int index, final int value) {
-            switch (index) {
-                case 0 -> storedEnergy = value;
-                case 2 -> burnTime = value;
-                case 3 -> totalBurnTime = value;
-                default -> {
-                }
-            }
+            ContainerDataHelper.ignoreClientWrite();
         }
 
         @Override

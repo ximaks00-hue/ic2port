@@ -1,5 +1,6 @@
 package dev.ic2port.blockentity;
 
+import dev.ic2port.util.ContainerDataHelper;
 import dev.ic2port.api.energy.EnergyTier;
 import dev.ic2port.menu.ElectricFurnaceMenu;
 import dev.ic2port.recipe.ElectricFurnaceRecipe;
@@ -51,9 +52,7 @@ public class ElectricFurnaceBlockEntity extends BaseMachineBlockEntity {
 
         @Override
         public void set(final int index, final int value) {
-            if (index == 0) {
-                progress = value;
-            }
+            ContainerDataHelper.ignoreClientWrite();
         }
 
         @Override

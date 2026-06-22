@@ -1,5 +1,6 @@
 package dev.ic2port.blockentity;
 
+import dev.ic2port.util.ContainerDataHelper;
 import dev.ic2port.brewing.BrewType;
 import dev.ic2port.menu.BrewingBarrelMenu;
 import dev.ic2port.setup.BlockEntityRegistry;
@@ -81,15 +82,7 @@ public class BrewingBarrelBlockEntity extends BlockEntity implements MenuProvide
 
         @Override
         public void set(final int index, final int value) {
-            switch (index) {
-                case 0 -> brewProgress = value;
-                case 1 -> brewDurationMax = value;
-                case 2 -> brewing = value != 0;
-                case 3 -> temperature = value;
-                case 4 -> activeBrewType = BrewType.fromIndex(value);
-                default -> {
-                }
-            }
+            ContainerDataHelper.ignoreClientWrite();
         }
 
         @Override

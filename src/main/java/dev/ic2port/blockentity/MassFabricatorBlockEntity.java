@@ -1,5 +1,6 @@
 package dev.ic2port.blockentity;
 
+import dev.ic2port.util.ContainerDataHelper;
 import dev.ic2port.api.energy.EnergyTier;
 import dev.ic2port.item.ScrapItem;
 import dev.ic2port.menu.MassFabricatorMenu;
@@ -46,9 +47,7 @@ public class MassFabricatorBlockEntity extends BaseMachineBlockEntity {
 
         @Override
         public void set(final int index, final int value) {
-            if (index == 0) {
-                fabricationProgress = value;
-            }
+            ContainerDataHelper.ignoreClientWrite();
         }
 
         @Override

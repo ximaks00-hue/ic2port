@@ -9,6 +9,7 @@ import dev.ic2port.menu.BatBoxMenu;
 import dev.ic2port.setup.BlockEntityRegistry;
 import dev.ic2port.setup.ModCapabilities;
 import dev.ic2port.setup.ModConfig;
+import dev.ic2port.util.ContainerDataHelper;
 import dev.ic2port.util.EnergyStorageExplosionHelper;
 import dev.ic2port.util.EnergyTransferHelper;
 import dev.ic2port.util.ItemEnergyHelper;
@@ -61,9 +62,7 @@ public class BatBoxBlockEntity extends BlockEntity implements IEnergyAcceptor, I
 
         @Override
         public void set(final int index, final int value) {
-            if (index == 0) {
-                storedEnergy = value;
-            }
+            ContainerDataHelper.ignoreClientWrite();
         }
 
         @Override
