@@ -48,8 +48,11 @@ public class HvSolarPanelBlockEntity extends BlockEntity implements IEnergyEmitt
         if (storedEnergy > 0.0D) {
             double toSend = Math.min(storedEnergy, MAX_OUTPUT_PER_TICK);
             double remainder = EnergyTransferHelper.injectIntoNeighbor(level, worldPosition, Direction.DOWN, toSend, TIER);
-            storedEnergy -= toSend - remainder;
-            setChanged();
+            double transferred = toSend - remainder;
+            if (transferred > 0.0D) {
+                storedEnergy -= transferred;
+                setChanged();
+            }
         }
     }
 

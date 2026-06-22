@@ -1,7 +1,7 @@
 ﻿{
   "variants": {
     "": {
-      "model": "ic2port:block/solar_panel"
+      "model": "ic2port:block/hv_solar_panel"
     }
   }
 }

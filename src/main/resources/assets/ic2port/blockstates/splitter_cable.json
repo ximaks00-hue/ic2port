@@ -6,57 +6,52 @@
       }
     },
     {
-      "when": {
-        "north": "true"
-      },
-      "apply": {
-        "model": "ic2port:block/copper_cable_arm"
-      }
+      "when": { "north": "true" },
+      "apply": { "model": "ic2port:block/copper_cable_arm" }
     },
     {
-      "when": {
-        "south": "true"
-      },
-      "apply": {
-        "model": "ic2port:block/copper_cable_arm",
-        "y": 180
-      }
+      "when": { "south": "true" },
+      "apply": { "model": "ic2port:block/copper_cable_arm", "y": 180 }
     },
     {
-      "when": {
-        "east": "true"
-      },
-      "apply": {
-        "model": "ic2port:block/copper_cable_arm",
-        "y": 90
-      }
+      "when": { "east": "true" },
+      "apply": { "model": "ic2port:block/copper_cable_arm", "y": 90 }
     },
     {
-      "when": {
-        "west": "true"
-      },
-      "apply": {
-        "model": "ic2port:block/copper_cable_arm",
-        "y": 270
-      }
+      "when": { "west": "true" },
+      "apply": { "model": "ic2port:block/copper_cable_arm", "y": 270 }
     },
     {
-      "when": {
-        "up": "true"
-      },
-      "apply": {
-        "model": "ic2port:block/copper_cable_arm",
-        "x": 270
-      }
+      "when": { "up": "true" },
+      "apply": { "model": "ic2port:block/copper_cable_arm", "x": 270 }
     },
     {
-      "when": {
-        "down": "true"
-      },
-      "apply": {
-        "model": "ic2port:block/copper_cable_arm",
-        "x": 90
-      }
+      "when": { "down": "true" },
+      "apply": { "model": "ic2port:block/copper_cable_arm", "x": 90 }
+    },
+    {
+      "when": { "facing": "north" },
+      "apply": { "model": "ic2port:block/splitter_cable_marker" }
+    },
+    {
+      "when": { "facing": "south" },
+      "apply": { "model": "ic2port:block/splitter_cable_marker", "y": 180 }
+    },
+    {
+      "when": { "facing": "east" },
+      "apply": { "model": "ic2port:block/splitter_cable_marker", "y": 90 }
+    },
+    {
+      "when": { "facing": "west" },
+      "apply": { "model": "ic2port:block/splitter_cable_marker", "y": 270 }
+    },
+    {
+      "when": { "facing": "up" },
+      "apply": { "model": "ic2port:block/splitter_cable_marker", "x": 270 }
+    },
+    {
+      "when": { "facing": "down" },
+      "apply": { "model": "ic2port:block/splitter_cable_marker", "x": 90 }
     }
   ]
 }

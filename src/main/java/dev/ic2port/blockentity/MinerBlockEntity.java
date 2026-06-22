@@ -36,6 +36,8 @@ public class MinerBlockEntity extends BlockEntity implements IEnergyAcceptor {
     public static final int TIER = EnergyTier.HV;
     public static final int OUTPUT_SLOTS = 9;
     private static final int MINE_INTERVAL_TICKS = 20;
+    /** Blocks harder than iron-tier tools are skipped (e.g. obsidian). */
+    private static final float MAX_MINABLE_HARDNESS = 5.0F;
 
     private final ItemStackHandler outputHandler = new ItemStackHandler(OUTPUT_SLOTS) {
         @Override
@@ -90,7 +92,7 @@ public class MinerBlockEntity extends BlockEntity implements IEnergyAcceptor {
         }
 
         float hardness = targetState.getDestroySpeed(level, targetPos);
-        if (hardness < 0.0F) {
+        if (hardness < 0.0F || hardness > MAX_MINABLE_HARDNESS) {
             mineY--;
             setChanged();
             return;

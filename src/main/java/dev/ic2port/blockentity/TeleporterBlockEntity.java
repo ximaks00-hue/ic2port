@@ -71,6 +71,9 @@ public class TeleporterBlockEntity extends BlockEntity implements IEnergyAccepto
         double dz = destination.getZ() - worldPosition.getZ();
         double dist = Math.sqrt(dx * dx + dy * dy + dz * dz);
         double euCost = Math.max(MIN_EU_COST, dist * EU_PER_BLOCK_DISTANCE);
+        if (!destLevel.dimension().equals(serverLevel.dimension())) {
+            euCost = Math.max(euCost, MIN_EU_COST * 4.0D);
+        }
 
         if (storedEnergy < euCost) {
             return "no_energy";

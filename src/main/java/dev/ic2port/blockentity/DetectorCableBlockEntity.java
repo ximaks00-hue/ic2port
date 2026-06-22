@@ -95,7 +95,7 @@ public class DetectorCableBlockEntity extends BlockEntity implements IEnergyCond
 
     public int getRedstoneStrength() {
         if (lastTickFlow < 1.0D) return 0;
-        return Math.min(15, (int) (lastTickFlow / 32.0D) + 1);
+        return Math.min(15, (int) Math.ceil(lastTickFlow * 15.0D / BUFFER_CAPACITY));
     }
 
     @Override public double getCapacity() { return BUFFER_CAPACITY; }
