@@ -167,6 +167,9 @@ public class SolidFuelGeneratorBlockEntity extends BlockEntity implements IEnerg
 
         ItemStack container = fuelStack.getItem().getCraftingRemainingItem(fuelStack);
         fuelStack.shrink(1);
+        if (!container.isEmpty() && !fuelStack.isEmpty() && level != null) {
+            Block.popResource(level, worldPosition, container);
+        }
         if (fuelStack.isEmpty() && !container.isEmpty()) {
             itemHandler.setStackInSlot(SLOT_FUEL, container);
         } else {

@@ -131,15 +131,19 @@ public class MassFabricatorBlockEntity extends BaseMachineBlockEntity {
         }
 
         ItemStack scrap = getItemHandler().getStackInSlot(SLOT_SCRAP);
-        boolean boosted = !scrap.isEmpty();
+        output = getItemHandler().getStackInSlot(SLOT_OUTPUT);
+        boolean boosted = !scrap.isEmpty() && canAddUuMatter(output);
         if (boosted) {
             scrap.shrink(1);
             getItemHandler().setStackInSlot(SLOT_SCRAP, scrap);
         }
         fabricationProgress += draw * (boosted ? SCRAP_SPEED_MULTIPLIER : 1.0D);
 
-        output = getItemHandler().getStackInSlot(SLOT_OUTPUT);
-        while (fabricationProgress >= EU_PER_UU_MATTER && canAddUuMatter(output)) {
+        while (fabricationProgress >= EU_PER_UU_MATTER) {
+            output = getItemHandler().getStackInSlot(SLOT_OUTPUT);
+            if (!canAddUuMatter(output)) {
+                break;
+            }
             fabricationProgress -= EU_PER_UU_MATTER;
 
             if (output.isEmpty()) {

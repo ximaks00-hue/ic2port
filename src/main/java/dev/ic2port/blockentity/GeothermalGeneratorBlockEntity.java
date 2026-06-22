@@ -171,12 +171,19 @@ public class GeothermalGeneratorBlockEntity extends BlockEntity implements IEner
             return;
         }
 
-        int drained = fluidTank.drain(LAVA_MB_PER_TICK, IFluidHandler.FluidAction.EXECUTE).getAmount();
+        double produced = Math.min(GENERATION_PER_TICK, space);
+        int drainMb = produced >= GENERATION_PER_TICK
+                ? LAVA_MB_PER_TICK
+                : Math.max(1, (int) Math.ceil(LAVA_MB_PER_TICK * (produced / GENERATION_PER_TICK)));
+        drainMb = Math.min(drainMb, fluidTank.getFluidAmount());
+
+        int drained = fluidTank.drain(drainMb, IFluidHandler.FluidAction.EXECUTE).getAmount();
         if (drained <= 0) {
             return;
         }
 
-        storedEnergy += Math.min(GENERATION_PER_TICK, space);
+        double actualProduced = GENERATION_PER_TICK * ((double) drained / LAVA_MB_PER_TICK);
+        storedEnergy += Math.min(actualProduced, space);
         setChanged();
     }
 

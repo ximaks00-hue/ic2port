@@ -75,10 +75,22 @@ public class FusionReactorBlockEntity extends BlockEntity implements IEnergyAcce
         protected void onContentsChanged(final int slot) {
             setChanged();
         }
+
+        @Override
+        public @NotNull ItemStack insertItem(
+                final int slot,
+                final @NotNull ItemStack stack,
+                final boolean simulate) {
+            if (structureValid && heat >= HEAT_TARGET
+                    && slot >= FUEL_SLOT_START && slot <= FUEL_SLOT_END) {
+                return stack;
+            }
+            return super.insertItem(slot, stack, simulate);
+        }
     };
 
     private final ProcessOnlyItemHandler automationItemHandler = new ProcessOnlyItemHandler(
-            itemHandler, SLOT_COUNT, slot -> false);
+            itemHandler, SLOT_COUNT, this::canAutomationExtractFromSlot);
     private final LazyOptional<IItemHandler> itemHandlerOptional = LazyOptional.of(() -> automationItemHandler);
 
     private final FluidTank lavaTank = new FluidTank(LAVA_CAPACITY_MB, fluid -> fluid.getFluid().isSame(Fluids.LAVA)) {
@@ -293,6 +305,20 @@ public class FusionReactorBlockEntity extends BlockEntity implements IEnergyAcce
         lavaTank.setFluid(FluidStack.EMPTY);
         heat = 0.0D;
         storedEnergy = 0.0D;
+    }
+
+    private boolean canAutomationExtractFromSlot(final int slot) {
+        if (slot == MELTABLE_SLOT) {
+            return !structureValid || heat < HEAT_TARGET;
+        }
+        if (slot >= FUEL_SLOT_START && slot <= FUEL_SLOT_END) {
+            if (!structureValid || heat < HEAT_TARGET) {
+                return true;
+            }
+            ItemStack stack = itemHandler.getStackInSlot(slot);
+            return !stack.isEmpty() && stack.is(ItemRegistry.DEPLETED_FUEL_ROD.get());
+        }
+        return false;
     }
 
     private void consumePartialFuelRod() {

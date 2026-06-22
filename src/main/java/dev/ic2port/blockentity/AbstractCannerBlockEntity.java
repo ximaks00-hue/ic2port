@@ -182,6 +182,16 @@ public abstract class AbstractCannerBlockEntity extends BaseMachineBlockEntity {
 
         maxProgress = getScaledProcessTime(getBaseProcessTime());
         if (!canStillCompleteOperation(operation, slot0, slot1)) {
+            if (CannerOperationHelper.detect(slot0, slot1, isVacuumCanner())
+                    == CannerOperationHelper.Operation.NONE) {
+                progress = 0;
+                activeOperation = CannerOperationHelper.Operation.NONE;
+            }
+            setChanged();
+            return;
+        }
+        if (!canAdvanceOperation(operation, slot0, slot1)) {
+            setChanged();
             return;
         }
         if (!consumeEnergy(getEnergyPerTick())) {
@@ -194,7 +204,7 @@ public abstract class AbstractCannerBlockEntity extends BaseMachineBlockEntity {
             return;
         }
 
-        if (!finishOperation(activeOperation, slot0, slot1)) {
+        if (!finishOperation(activeOperation)) {
             progress = maxProgress;
         } else {
             progress = 0;
@@ -202,23 +212,19 @@ public abstract class AbstractCannerBlockEntity extends BaseMachineBlockEntity {
         setChanged();
     }
 
-    private boolean finishOperation(
-            final CannerOperationHelper.Operation operation,
-            final ItemStack slot0,
-            final ItemStack slot1) {
+    private boolean finishOperation(final CannerOperationHelper.Operation operation) {
         return switch (operation) {
-            case FOOD_CAN -> finishFoodCan(slot0, slot1);
-            case TIN_CAN_PRESS -> finishTinCanPress(slot0, slot1);
+            case FOOD_CAN -> finishFoodCan();
+            case TIN_CAN_PRESS -> finishTinCanPress();
             case CELL_FILL -> finishCellFill();
             case CELL_EMPTY -> finishCellEmpty();
-            default -> finishDefaultOperation(operation, slot0, slot1);
+            default -> finishDefaultOperation(operation);
         };
     }
 
-    private boolean finishDefaultOperation(
-            final CannerOperationHelper.Operation operation,
-            final ItemStack slot0,
-            final ItemStack slot1) {
+    private boolean finishDefaultOperation(final CannerOperationHelper.Operation operation) {
+        ItemStack slot0 = getItemHandler().getStackInSlot(SLOT_TOOL).copy();
+        ItemStack slot1 = getItemHandler().getStackInSlot(SLOT_SUPPLY).copy();
         ItemStack beforeTool = getItemHandler().getStackInSlot(SLOT_TOOL).copy();
         ItemStack beforeSupply = getItemHandler().getStackInSlot(SLOT_SUPPLY).copy();
         CannerOperationHelper.finishProcess(slot0, slot1, operation);
@@ -248,7 +254,36 @@ public abstract class AbstractCannerBlockEntity extends BaseMachineBlockEntity {
         return CannerOperationHelper.detect(slot0, slot1, isVacuumCanner()) == operation;
     }
 
-    private boolean finishFoodCan(final ItemStack slot0, final ItemStack slot1) {
+    private boolean canAdvanceOperation(
+            final CannerOperationHelper.Operation operation,
+            final ItemStack slot0,
+            final ItemStack slot1) {
+        if (operation == CannerOperationHelper.Operation.FOOD_CAN) {
+            FoodCanningHelper.FoodCanLayout layout = FoodCanningHelper.detectLayout(slot0, slot1);
+            return layout != null && FoodCanningHelper.canProcessLayout(layout);
+        }
+        if (operation == CannerOperationHelper.Operation.TIN_CAN_PRESS) {
+            return canFitTinCanOutput();
+        }
+        return true;
+    }
+
+    private boolean canFitTinCanOutput() {
+        for (int slot = SLOT_TOOL; slot <= SLOT_SUPPLY; slot++) {
+            ItemStack existing = getItemHandler().getStackInSlot(slot);
+            if (existing.isEmpty()) {
+                return true;
+            }
+            if (existing.is(ItemRegistry.TIN_CAN.get()) && existing.getCount() < existing.getMaxStackSize()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean finishFoodCan() {
+        ItemStack slot0 = getItemHandler().getStackInSlot(SLOT_TOOL);
+        ItemStack slot1 = getItemHandler().getStackInSlot(SLOT_SUPPLY);
         FoodCanningHelper.FoodCanLayout layout = FoodCanningHelper.detectLayout(slot0, slot1);
         if (layout == null || !FoodCanningHelper.canProcessLayout(layout)) {
             return false;
@@ -276,7 +311,9 @@ public abstract class AbstractCannerBlockEntity extends BaseMachineBlockEntity {
         return deposited;
     }
 
-    private boolean finishTinCanPress(final ItemStack slot0, final ItemStack slot1) {
+    private boolean finishTinCanPress() {
+        ItemStack slot0 = getItemHandler().getStackInSlot(SLOT_TOOL).copy();
+        ItemStack slot1 = getItemHandler().getStackInSlot(SLOT_SUPPLY).copy();
         CannerOperationHelper.finishProcess(slot0, slot1, CannerOperationHelper.Operation.TIN_CAN_PRESS);
         getItemHandler().setStackInSlot(SLOT_TOOL, slot0);
         getItemHandler().setStackInSlot(SLOT_SUPPLY, slot1);
@@ -293,61 +330,51 @@ public abstract class AbstractCannerBlockEntity extends BaseMachineBlockEntity {
     private boolean finishCellFill() {
         ItemStack slot0 = getItemHandler().getStackInSlot(SLOT_TOOL);
         ItemStack slot1 = getItemHandler().getStackInSlot(SLOT_SUPPLY);
-        ItemStack[] pair = CannerOperationHelper.orientCellFillPublic(slot0, slot1);
-        if (pair == null) {
+        final int cellSlot;
+        final int bucketSlot;
+        if (slot0.is(ItemRegistry.FLUID_CELL.get()) && FluidCellItem.isEmpty(slot0)
+                && (slot1.is(Items.WATER_BUCKET) || slot1.is(Items.LAVA_BUCKET))) {
+            cellSlot = SLOT_TOOL;
+            bucketSlot = SLOT_SUPPLY;
+        } else if (slot1.is(ItemRegistry.FLUID_CELL.get()) && FluidCellItem.isEmpty(slot1)
+                && (slot0.is(Items.WATER_BUCKET) || slot0.is(Items.LAVA_BUCKET))) {
+            cellSlot = SLOT_SUPPLY;
+            bucketSlot = SLOT_TOOL;
+        } else {
             return false;
         }
-        boolean cellInSlot0 = pair[0] == slot0;
-        int cellSlot = cellInSlot0 ? SLOT_TOOL : SLOT_SUPPLY;
-        int bucketSlot = cellInSlot0 ? SLOT_SUPPLY : SLOT_TOOL;
         ItemStack bucketStack = getItemHandler().getStackInSlot(bucketSlot);
-        var fluid = bucketStack.is(net.minecraft.world.item.Items.WATER_BUCKET) ? Fluids.WATER : Fluids.LAVA;
+        var fluid = bucketStack.is(Items.WATER_BUCKET) ? Fluids.WATER : Fluids.LAVA;
         ItemStack filledCell = FluidCellItem.fillCell(getItemHandler().getStackInSlot(cellSlot), fluid);
         getItemHandler().setStackInSlot(cellSlot, filledCell);
-        if (!depositBucket(bucketSlot, new net.minecraft.world.item.ItemStack(net.minecraft.world.item.Items.BUCKET))) {
-            if (level != null) {
-                Block.popResource(level, worldPosition, new net.minecraft.world.item.ItemStack(net.minecraft.world.item.Items.BUCKET));
-            }
-        }
+        getItemHandler().setStackInSlot(bucketSlot, new ItemStack(Items.BUCKET));
         return true;
     }
 
     private boolean finishCellEmpty() {
         ItemStack slot0 = getItemHandler().getStackInSlot(SLOT_TOOL);
         ItemStack slot1 = getItemHandler().getStackInSlot(SLOT_SUPPLY);
-        ItemStack[] pair = CannerOperationHelper.orientCellEmptyPublic(slot0, slot1);
-        if (pair == null) {
+        final int cellSlot;
+        final int bucketSlot;
+        if (slot0.is(ItemRegistry.FLUID_CELL.get()) && !FluidCellItem.isEmpty(slot0)
+                && slot1.is(Items.BUCKET)) {
+            cellSlot = SLOT_TOOL;
+            bucketSlot = SLOT_SUPPLY;
+        } else if (slot1.is(ItemRegistry.FLUID_CELL.get()) && !FluidCellItem.isEmpty(slot1)
+                && slot0.is(Items.BUCKET)) {
+            cellSlot = SLOT_SUPPLY;
+            bucketSlot = SLOT_TOOL;
+        } else {
             return false;
         }
-        boolean cellInSlot0 = pair[0] == slot0;
-        int cellSlot = cellInSlot0 ? SLOT_TOOL : SLOT_SUPPLY;
-        int bucketSlot = cellInSlot0 ? SLOT_SUPPLY : SLOT_TOOL;
         ItemStack cellStack = getItemHandler().getStackInSlot(cellSlot);
         var fluid = FluidCellItem.getFluid(cellStack);
         net.minecraft.world.item.Item bucketItem = fluid == Fluids.LAVA
-                ? net.minecraft.world.item.Items.LAVA_BUCKET
-                : net.minecraft.world.item.Items.WATER_BUCKET;
+                ? Items.LAVA_BUCKET
+                : Items.WATER_BUCKET;
         getItemHandler().setStackInSlot(cellSlot, FluidCellItem.emptyCell(ItemRegistry.FLUID_CELL.get()));
-        if (!depositBucket(bucketSlot, new net.minecraft.world.item.ItemStack(bucketItem))) {
-            if (level != null) {
-                Block.popResource(level, worldPosition, new net.minecraft.world.item.ItemStack(bucketItem));
-            }
-        }
+        getItemHandler().setStackInSlot(bucketSlot, new ItemStack(bucketItem));
         return true;
-    }
-
-    private boolean depositBucket(final int slot, final ItemStack bucket) {
-        ItemStack existing = getItemHandler().getStackInSlot(slot);
-        if (existing.isEmpty()) {
-            getItemHandler().setStackInSlot(slot, bucket);
-            return true;
-        }
-        if (ItemStack.isSameItemSameTags(existing, bucket) && existing.getCount() < existing.getMaxStackSize()) {
-            existing.grow(1);
-            getItemHandler().setStackInSlot(slot, existing);
-            return true;
-        }
-        return false;
     }
 
     private boolean tryInsertTinCan(final int slot, final ItemStack tinCan) {

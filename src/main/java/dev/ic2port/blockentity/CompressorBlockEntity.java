@@ -132,15 +132,16 @@ public class CompressorBlockEntity extends BaseMachineBlockEntity {
             return;
         }
 
-        if (!canOutput(recipe, output)) {
+        ItemStack outputNow = getItemHandler().getStackInSlot(SLOT_OUTPUT);
+        if (!canOutput(recipe, outputNow)) {
             progress = maxProgress;
             setChanged();
             return;
         }
 
-        shrinkProcessInput(SLOT_INPUT, input, 1);
+        shrinkProcessInput(SLOT_INPUT, getItemHandler().getStackInSlot(SLOT_INPUT), 1);
         ItemStack result = recipe.getOutput().copy();
-        mergeProcessOutput(SLOT_OUTPUT, output, result);
+        mergeProcessOutput(SLOT_OUTPUT, outputNow, result);
 
         progress = 0;
         activeRecipeId = null;

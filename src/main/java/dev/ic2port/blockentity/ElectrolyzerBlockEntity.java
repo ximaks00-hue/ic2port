@@ -123,10 +123,12 @@ public class ElectrolyzerBlockEntity extends BaseMachineBlockEntity {
             return;
         }
 
-        shrinkProcessInput(SLOT_INPUT, input, 1);
-        depositOutput(SLOT_OUTPUT_A, recipe.getOutput().copy());
+        shrinkProcessInput(SLOT_INPUT, getItemHandler().getStackInSlot(SLOT_INPUT), 1);
+        ItemStack outputANow = getItemHandler().getStackInSlot(SLOT_OUTPUT_A);
+        mergeProcessOutput(SLOT_OUTPUT_A, outputANow, recipe.getOutput().copy());
         if (!recipe.getSecondaryOutput().isEmpty()) {
-            depositOutput(SLOT_OUTPUT_B, recipe.getSecondaryOutput().copy());
+            ItemStack outputBNow = getItemHandler().getStackInSlot(SLOT_OUTPUT_B);
+            mergeProcessOutput(SLOT_OUTPUT_B, outputBNow, recipe.getSecondaryOutput().copy());
         }
         progress = 0;
         activeRecipeId = null;
@@ -143,10 +145,6 @@ public class ElectrolyzerBlockEntity extends BaseMachineBlockEntity {
         if (existing.isEmpty()) return true;
         return ItemStack.isSameItemSameTags(existing, result)
                 && existing.getCount() + result.getCount() <= existing.getMaxStackSize();
-    }
-
-    private void depositOutput(final int slot, final ItemStack result) {
-        mergeProcessOutput(slot, getItemHandler().getStackInSlot(slot), result);
     }
 
     private Optional<ElectrolyzerRecipe> resolveActiveRecipe(final ItemStack input) {

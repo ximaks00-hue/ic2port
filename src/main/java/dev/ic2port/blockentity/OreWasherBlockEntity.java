@@ -122,8 +122,12 @@ public class OreWasherBlockEntity extends BaseMachineBlockEntity {
                 recipe.getProcessingTime() > 0 ? recipe.getProcessingTime() : DEFAULT_PROCESSING_TIME);
         progress = MachineRecipeHelper.clampProgress(progress, maxProgress);
 
-        if (!canOutput(recipe)) return;
-        if (waterTank.getFluidAmount() < WATER_MB_PER_WASH) return;
+        if (!canOutput(recipe)) {
+            return;
+        }
+        if (waterTank.getFluidAmount() < WATER_MB_PER_WASH) {
+            return;
+        }
         if (!consumeEnergy(getRecipeEnergyPerTick(recipe, ENERGY_PER_TICK))) return;
 
         progress++;
@@ -138,11 +142,11 @@ public class OreWasherBlockEntity extends BaseMachineBlockEntity {
             return;
         }
 
-        shrinkProcessInput(SLOT_INPUT, input, 1);
+        shrinkProcessInput(SLOT_INPUT, getItemHandler().getStackInSlot(SLOT_INPUT), 1);
         waterTank.drain(WATER_MB_PER_WASH, IFluidHandler.FluidAction.EXECUTE);
         ItemStack result = recipe.getOutput().copy();
-        ItemStack existing = getItemHandler().getStackInSlot(SLOT_OUTPUT);
-        mergeProcessOutput(SLOT_OUTPUT, existing, result);
+        ItemStack outputNow = getItemHandler().getStackInSlot(SLOT_OUTPUT);
+        mergeProcessOutput(SLOT_OUTPUT, outputNow, result);
         progress = 0;
         activeRecipeId = null;
         setChanged();

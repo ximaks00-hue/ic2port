@@ -127,16 +127,17 @@ public class RecyclerBlockEntity extends BaseMachineBlockEntity {
             return;
         }
 
+        maxProgress = getScaledProcessTime(DEFAULT_PROCESSING_TIME);
+
         if (!output.isEmpty() && !output.is(ItemRegistry.SCRAP.get())) {
             setChanged();
             return;
         }
 
         if (!output.isEmpty() && !canOutputScrap(output)) {
+            setChanged();
             return;
         }
-
-        maxProgress = getScaledProcessTime(DEFAULT_PROCESSING_TIME);
 
         if (!consumeEnergy(getScaledEnergyPerTick(ENERGY_PER_TICK))) {
             return;

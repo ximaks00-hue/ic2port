@@ -7,6 +7,8 @@ import dev.ic2port.setup.BlockEntityRegistry;
 import dev.ic2port.setup.ModCapabilities;
 import dev.ic2port.util.EnergyOverloadHelper;
 import dev.ic2port.util.FullInventoryAccess;
+import dev.ic2port.util.OutputBufferHelper;
+import dev.ic2port.util.ProcessOnlyItemHandler;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -51,7 +53,9 @@ public class MinerBlockEntity extends BlockEntity implements IEnergyAcceptor, Fu
             return false;
         }
     };
-    private final LazyOptional<IItemHandler> outputOptional = LazyOptional.of(() -> outputHandler);
+    private final ProcessOnlyItemHandler automationOutputHandler = new ProcessOnlyItemHandler(
+            outputHandler, OUTPUT_SLOTS, slot -> true);
+    private final LazyOptional<IItemHandler> outputOptional = LazyOptional.of(() -> automationOutputHandler);
     private final LazyOptional<IEnergyNode> energyOptional = LazyOptional.of(() -> this);
 
     private double storedEnergy;
@@ -107,9 +111,9 @@ public class MinerBlockEntity extends BlockEntity implements IEnergyAcceptor, Fu
                 return;
             }
             for (ItemStack drop : drops) {
-                ItemStack remaining = drop.copy();
-                for (int i = 0; i < OUTPUT_SLOTS && !remaining.isEmpty(); i++) {
-                    remaining = outputHandler.insertItem(i, remaining, false);
+                ItemStack remaining = OutputBufferHelper.insert(outputHandler, drop);
+                if (!remaining.isEmpty()) {
+                    return;
                 }
             }
         } else {
@@ -133,23 +137,7 @@ public class MinerBlockEntity extends BlockEntity implements IEnergyAcceptor, Fu
     }
 
     private boolean canFitAllDrops(final List<ItemStack> drops) {
-        if (drops.isEmpty()) {
-            return true;
-        }
-        ItemStackHandler simulation = new ItemStackHandler(OUTPUT_SLOTS);
-        for (int i = 0; i < OUTPUT_SLOTS; i++) {
-            simulation.setStackInSlot(i, outputHandler.getStackInSlot(i).copy());
-        }
-        for (ItemStack drop : drops) {
-            ItemStack remaining = drop.copy();
-            for (int i = 0; i < OUTPUT_SLOTS && !remaining.isEmpty(); i++) {
-                remaining = simulation.insertItem(i, remaining, true);
-            }
-            if (!remaining.isEmpty()) {
-                return false;
-            }
-        }
-        return true;
+        return OutputBufferHelper.canFitAll(outputHandler, drops);
     }
 
     @Override

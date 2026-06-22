@@ -52,7 +52,7 @@ public class TerraformerBlockEntity extends BlockEntity implements IEnergyAccept
         }
     };
     private final ProcessOnlyItemHandler automationItemHandler = new ProcessOnlyItemHandler(
-            itemHandler, SLOT_COUNT, slot -> false);
+            itemHandler, SLOT_COUNT, slot -> true);
     private final LazyOptional<IItemHandler> itemOptional = LazyOptional.of(() -> automationItemHandler);
     private final LazyOptional<IEnergyNode> energyOptional = LazyOptional.of(() -> this);
 

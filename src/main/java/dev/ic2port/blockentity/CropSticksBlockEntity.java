@@ -219,6 +219,24 @@ public class CropSticksBlockEntity extends BlockEntity implements ICropTile {
         return new ArrayList<>(collectHarvestDrops(true));
     }
 
+    /** Conservative single-seed reserve for automated harvest buffer checks. */
+    public ItemStack peekAutoHarvestSeedReserve() {
+        if (crop == null || !crop.canBeHarvested(this) || level == null) {
+            return ItemStack.EMPTY;
+        }
+        float seedChance = crop.getSeedDropChance(this) * 0.5F;
+        if (seedChance <= 0.0F) {
+            return ItemStack.EMPTY;
+        }
+        ItemStack seeds = crop.getSeeds(this);
+        if (seeds.isEmpty()) {
+            return ItemStack.EMPTY;
+        }
+        ItemStack reserve = seeds.copy();
+        reserve.setCount(1);
+        return reserve;
+    }
+
     /** Applies harvest state and returns drops, including a possible seed roll. */
     public List<ItemStack> commitAutoHarvest() {
         if (crop == null || !crop.canBeHarvested(this)) {

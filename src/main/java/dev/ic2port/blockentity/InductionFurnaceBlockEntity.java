@@ -214,7 +214,8 @@ public class InductionFurnaceBlockEntity extends BaseMachineBlockEntity {
             }
         }
 
-        if (!canOutput(recipe, output)) {
+        ItemStack outputNow = getItemHandler().getStackInSlot(outputSlot);
+        if (!canOutput(recipe, outputNow)) {
             if (laneA) {
                 progressA = maxProgressA;
             } else {
@@ -224,9 +225,9 @@ public class InductionFurnaceBlockEntity extends BaseMachineBlockEntity {
             return;
         }
 
-        shrinkProcessInput(inputSlot, input, 1);
+        shrinkProcessInput(inputSlot, getItemHandler().getStackInSlot(inputSlot), 1);
         ItemStack result = recipe.getOutput().copy();
-        mergeProcessOutput(outputSlot, output, result);
+        mergeProcessOutput(outputSlot, outputNow, result);
 
         if (laneA) {
             progressA = 0;

@@ -180,7 +180,6 @@ public class ThermalCentrifugeBlockEntity extends BaseMachineBlockEntity {
         }
 
         if (!canFitOutputs(recipe)) {
-            decayRotorHeat(HEAT_LOSS_IDLE);
             setChanged();
             return;
         }
@@ -224,7 +223,7 @@ public class ThermalCentrifugeBlockEntity extends BaseMachineBlockEntity {
             return;
         }
 
-        shrinkProcessInput(SLOT_INPUT, input, recipe.getInputCount());
+        shrinkProcessInput(SLOT_INPUT, getItemHandler().getStackInSlot(SLOT_INPUT), recipe.getInputCount());
         depositOutputs(recipe);
         applyRotorWear(1);
         progress = 0;

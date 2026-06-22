@@ -128,9 +128,15 @@ public class PatternReplicatorBlockEntity extends BlockEntity implements IEnergy
 
         ItemStack expectedOutput = progress > 0 && !lockedPattern.isEmpty() ? lockedPattern : pattern;
         if (!output.isEmpty()) {
-            if (!ItemStack.isSameItemSameTags(output, expectedOutput)
-                    || output.getCount() + 1 > output.getMaxStackSize()) {
+            if (!ItemStack.isSameItemSameTags(output, expectedOutput)) {
                 cancelReplication();
+                return;
+            }
+            if (output.getCount() + 1 > output.getMaxStackSize()) {
+                if (progress > 0) {
+                    progress = REPLICATION_TICKS - 1;
+                }
+                setChanged();
                 return;
             }
         }

@@ -18,6 +18,8 @@ import dev.ic2port.setup.ModCapabilities;
 import dev.ic2port.util.ContainerDataHelper;
 import dev.ic2port.util.EnergyOverloadHelper;
 import dev.ic2port.util.FullInventoryAccess;
+import dev.ic2port.util.OutputBufferHelper;
+import dev.ic2port.util.ProcessOnlyItemHandler;
 
 import net.minecraft.core.BlockPos;
 
@@ -61,6 +63,7 @@ import org.jetbrains.annotations.Nullable;
 
 
 
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -101,7 +104,9 @@ public class CropHarvesterBlockEntity extends BlockEntity implements IEnergyAcce
         }
     };
 
-    private final LazyOptional<IItemHandler> outputOptional = LazyOptional.of(() -> outputHandler);
+    private final ProcessOnlyItemHandler automationOutputHandler = new ProcessOnlyItemHandler(
+            outputHandler, OUTPUT_SLOTS, slot -> true);
+    private final LazyOptional<IItemHandler> outputOptional = LazyOptional.of(() -> automationOutputHandler);
 
     private final LazyOptional<IEnergyNode> energyOptional = LazyOptional.of(() -> this);
 
@@ -241,7 +246,11 @@ public class CropHarvesterBlockEntity extends BlockEntity implements IEnergyAcce
 
             }
 
-            List<ItemStack> preview = crop.peekAutoHarvestDrops();
+            List<ItemStack> preview = new ArrayList<>(crop.peekAutoHarvestDrops());
+            ItemStack seedReserve = crop.peekAutoHarvestSeedReserve();
+            if (!seedReserve.isEmpty()) {
+                preview.add(seedReserve);
+            }
 
             if (preview.isEmpty()) {
 
@@ -315,51 +324,17 @@ public class CropHarvesterBlockEntity extends BlockEntity implements IEnergyAcce
     }
 
     private boolean canFitAllDrops(final List<ItemStack> drops) {
-        if (drops.isEmpty()) {
-            return true;
-        }
-        ItemStackHandler simulation = new ItemStackHandler(outputHandler.getSlots());
-        for (int slot = 0; slot < outputHandler.getSlots(); slot++) {
-            simulation.setStackInSlot(slot, outputHandler.getStackInSlot(slot).copy());
-        }
-        for (ItemStack drop : drops) {
-            ItemStack remaining = drop.copy();
-            for (int slot = 0; slot < simulation.getSlots() && !remaining.isEmpty(); slot++) {
-                remaining = simulation.insertItem(slot, remaining, true);
-            }
-            if (!remaining.isEmpty()) {
-                return false;
-            }
-        }
-        return true;
+        return OutputBufferHelper.canFitAll(outputHandler, drops);
     }
 
     private void insertOutput(ItemStack stack) {
-
         if (stack.isEmpty()) {
-
             return;
-
         }
-
-        for (int slot = 0; slot < outputHandler.getSlots(); slot++) {
-
-            stack = outputHandler.insertItem(slot, stack, false);
-
-            if (stack.isEmpty()) {
-
-                return;
-
-            }
-
+        ItemStack remaining = OutputBufferHelper.insert(outputHandler, stack);
+        if (!remaining.isEmpty() && level != null) {
+            net.minecraft.world.level.block.Block.popResource(level, worldPosition, remaining);
         }
-
-        if (level != null) {
-
-            net.minecraft.world.level.block.Block.popResource(level, worldPosition, stack);
-
-        }
-
     }
 
 
