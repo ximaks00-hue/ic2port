@@ -214,6 +214,16 @@ public class InductionFurnaceBlockEntity extends BaseMachineBlockEntity {
             }
         }
 
+        if (!canOutput(recipe, output)) {
+            if (laneA) {
+                progressA = maxProgressA;
+            } else {
+                progressB = maxProgressB;
+            }
+            setChanged();
+            return;
+        }
+
         shrinkProcessInput(inputSlot, input, 1);
         ItemStack result = recipe.getOutput().copy();
         mergeProcessOutput(outputSlot, output, result);

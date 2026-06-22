@@ -135,6 +135,12 @@ public class MetalFormerBlockEntity extends BaseMachineBlockEntity {
             return;
         }
 
+        if (!canOutput(recipe, output)) {
+            progress = maxProgress;
+            setChanged();
+            return;
+        }
+
         shrinkProcessInput(SLOT_INPUT, input, 1);
         ItemStack result = recipe.getOutput().copy();
         mergeProcessOutput(SLOT_OUTPUT, output, result);

@@ -75,15 +75,17 @@ public class PumpBlockEntity extends BlockEntity implements IEnergyAcceptor {
 
         tryExportFluid();
 
-        if (storedEnergy < EU_PER_BUCKET) {
+        tickCount++;
+        if (tickCount < PUMP_INTERVAL_TICKS) {
             return;
         }
-
-        tickCount++;
-        if (tickCount < PUMP_INTERVAL_TICKS) return;
         tickCount = 0;
 
         if (pendingSourcePos != null && tryContinuePendingDrain()) {
+            return;
+        }
+
+        if (storedEnergy <= 0.0D) {
             return;
         }
 
@@ -99,6 +101,10 @@ public class PumpBlockEntity extends BlockEntity implements IEnergyAcceptor {
             if (blockState.getFluidState().isSource()) {
                 net.minecraft.world.level.material.Fluid fluid = blockState.getFluidState().getType();
                 int toPump = Math.min(MB_PER_SOURCE, space);
+                double energyCost = EU_PER_BUCKET * ((double) toPump / MB_PER_SOURCE);
+                if (storedEnergy < energyCost) {
+                    break;
+                }
                 FluidStack toFill = new FluidStack(fluid, toPump);
                 int filled = tank.fill(toFill, IFluidHandler.FluidAction.EXECUTE);
                 if (filled <= 0) {
@@ -123,7 +129,7 @@ public class PumpBlockEntity extends BlockEntity implements IEnergyAcceptor {
     }
 
     private boolean tryContinuePendingDrain() {
-        if (level == null || pendingSourcePos == null || storedEnergy < EU_PER_BUCKET) {
+        if (level == null || pendingSourcePos == null) {
             return false;
         }
 
@@ -138,6 +144,11 @@ public class PumpBlockEntity extends BlockEntity implements IEnergyAcceptor {
         int remaining = MB_PER_SOURCE - pendingSourceDrain;
         int toPump = Math.min(remaining, space);
         if (toPump <= 0) {
+            return false;
+        }
+
+        double energyCost = EU_PER_BUCKET * ((double) toPump / MB_PER_SOURCE);
+        if (storedEnergy < energyCost) {
             return false;
         }
 

@@ -137,6 +137,11 @@ public class BrewingBarrelBlockEntity extends BlockEntity implements MenuProvide
             brewProgress++;
             temperature = 22 + (int) (8 * Math.sin(brewProgress / 80.0D));
             if (brewProgress >= brewDurationMax) {
+                if (!canOutputForActiveBrew()) {
+                    brewProgress = brewDurationMax - 1;
+                    setChanged();
+                    return;
+                }
                 finishBrew();
             }
         } else {

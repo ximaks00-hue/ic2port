@@ -14,6 +14,7 @@ import dev.ic2port.util.FullInventoryAccess;
 import dev.ic2port.util.FusionFuelHelper;
 import dev.ic2port.util.FusionMeltableHelper;
 import dev.ic2port.util.FusionReactorHelper;
+import dev.ic2port.util.InsertOnlyFluidHandler;
 import dev.ic2port.util.ProcessOnlyItemHandler;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -87,7 +88,8 @@ public class FusionReactorBlockEntity extends BlockEntity implements IEnergyAcce
         }
     };
 
-    private final LazyOptional<IFluidHandler> fluidOptional = LazyOptional.of(() -> lavaTank);
+    private final LazyOptional<IFluidHandler> fluidOptional =
+            LazyOptional.of(() -> new InsertOnlyFluidHandler(lavaTank));
     private final LazyOptional<IEnergyAcceptor> energyOptional = LazyOptional.of(() -> this);
 
     private final ContainerData data = new ContainerData() {
@@ -186,7 +188,6 @@ public class FusionReactorBlockEntity extends BlockEntity implements IEnergyAcce
             setChanged();
             return;
         }
-        productionCooldown = FusionFuelHelper.PRODUCTION_INTERVAL_TICKS;
 
         int baseProduced = (int) Math.round(
                 FusionFuelHelper.countProductionRate(itemHandler, FUEL_SLOT_START, FUEL_SLOT_END)
@@ -211,6 +212,8 @@ public class FusionReactorBlockEntity extends BlockEntity implements IEnergyAcce
             setChanged();
             return;
         }
+
+        productionCooldown = FusionFuelHelper.PRODUCTION_INTERVAL_TICKS;
 
         lavaTank.fill(new FluidStack(Fluids.LAVA, totalFill), IFluidHandler.FluidAction.EXECUTE);
 

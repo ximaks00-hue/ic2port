@@ -103,15 +103,17 @@ public class MinerBlockEntity extends BlockEntity implements IEnergyAcceptor, Fu
         if (level instanceof ServerLevel serverLevel) {
             List<ItemStack> drops = Block.getDrops(
                     targetState, serverLevel, targetPos, level.getBlockEntity(targetPos));
+            if (!canFitAllDrops(drops)) {
+                return;
+            }
             for (ItemStack drop : drops) {
                 ItemStack remaining = drop.copy();
                 for (int i = 0; i < OUTPUT_SLOTS && !remaining.isEmpty(); i++) {
                     remaining = outputHandler.insertItem(i, remaining, false);
                 }
-                if (!remaining.isEmpty()) {
-                    Block.popResource(level, worldPosition, remaining);
-                }
             }
+        } else {
+            return;
         }
 
         level.setBlock(targetPos, Blocks.AIR.defaultBlockState(), Block.UPDATE_ALL);
@@ -128,6 +130,26 @@ public class MinerBlockEntity extends BlockEntity implements IEnergyAcceptor, Fu
             }
         }
         return false;
+    }
+
+    private boolean canFitAllDrops(final List<ItemStack> drops) {
+        if (drops.isEmpty()) {
+            return true;
+        }
+        ItemStackHandler simulation = new ItemStackHandler(OUTPUT_SLOTS);
+        for (int i = 0; i < OUTPUT_SLOTS; i++) {
+            simulation.setStackInSlot(i, outputHandler.getStackInSlot(i).copy());
+        }
+        for (ItemStack drop : drops) {
+            ItemStack remaining = drop.copy();
+            for (int i = 0; i < OUTPUT_SLOTS && !remaining.isEmpty(); i++) {
+                remaining = simulation.insertItem(i, remaining, true);
+            }
+            if (!remaining.isEmpty()) {
+                return false;
+            }
+        }
+        return true;
     }
 
     @Override

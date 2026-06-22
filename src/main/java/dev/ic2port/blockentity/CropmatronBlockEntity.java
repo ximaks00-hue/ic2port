@@ -113,7 +113,7 @@ public class CropmatronBlockEntity extends BlockEntity implements IEnergyAccepto
     };
 
     private final ProcessOnlyItemHandler automationInputHandler = new ProcessOnlyItemHandler(
-            inputHandler, 1, slot -> false);
+            inputHandler, 1, slot -> true);
 
     private final LazyOptional<IItemHandler> inputOptional = LazyOptional.of(() -> automationInputHandler);
 

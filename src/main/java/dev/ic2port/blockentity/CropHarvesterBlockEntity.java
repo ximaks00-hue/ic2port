@@ -241,13 +241,21 @@ public class CropHarvesterBlockEntity extends BlockEntity implements IEnergyAcce
 
             }
 
-            List<ItemStack> drops = crop.collectAutoHarvest();
+            List<ItemStack> preview = crop.peekAutoHarvestDrops();
 
-            if (drops.isEmpty()) {
+            if (preview.isEmpty()) {
 
                 continue;
 
             }
+
+            if (!canFitAllDrops(preview)) {
+
+                continue;
+
+            }
+
+            List<ItemStack> drops = crop.commitAutoHarvest();
 
             harvested = true;
 
@@ -304,6 +312,26 @@ public class CropHarvesterBlockEntity extends BlockEntity implements IEnergyAcce
             }
         }
         return false;
+    }
+
+    private boolean canFitAllDrops(final List<ItemStack> drops) {
+        if (drops.isEmpty()) {
+            return true;
+        }
+        ItemStackHandler simulation = new ItemStackHandler(outputHandler.getSlots());
+        for (int slot = 0; slot < outputHandler.getSlots(); slot++) {
+            simulation.setStackInSlot(slot, outputHandler.getStackInSlot(slot).copy());
+        }
+        for (ItemStack drop : drops) {
+            ItemStack remaining = drop.copy();
+            for (int slot = 0; slot < simulation.getSlots() && !remaining.isEmpty(); slot++) {
+                remaining = simulation.insertItem(slot, remaining, true);
+            }
+            if (!remaining.isEmpty()) {
+                return false;
+            }
+        }
+        return true;
     }
 
     private void insertOutput(ItemStack stack) {

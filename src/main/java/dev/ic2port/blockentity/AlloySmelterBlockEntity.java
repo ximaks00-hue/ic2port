@@ -139,6 +139,12 @@ public class AlloySmelterBlockEntity extends BaseMachineBlockEntity implements C
             return;
         }
 
+        if (!canOutput(recipe)) {
+            progress = maxProgress;
+            setChanged();
+            return;
+        }
+
         shrinkProcessInput(SLOT_INPUT_A, inputA, 1);
         shrinkProcessInput(SLOT_INPUT_B, inputB, 1);
         ItemStack result = recipe.getOutput().copy();

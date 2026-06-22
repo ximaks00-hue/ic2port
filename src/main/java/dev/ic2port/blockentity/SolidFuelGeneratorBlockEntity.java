@@ -165,8 +165,13 @@ public class SolidFuelGeneratorBlockEntity extends BlockEntity implements IEnerg
             return;
         }
 
+        ItemStack container = fuelStack.getItem().getCraftingRemainingItem(fuelStack);
         fuelStack.shrink(1);
-        itemHandler.setStackInSlot(SLOT_FUEL, fuelStack);
+        if (fuelStack.isEmpty() && !container.isEmpty()) {
+            itemHandler.setStackInSlot(SLOT_FUEL, container);
+        } else {
+            itemHandler.setStackInSlot(SLOT_FUEL, fuelStack);
+        }
         totalBurnTime = fuelBurnTime;
         burnTime = fuelBurnTime;
         setChanged();

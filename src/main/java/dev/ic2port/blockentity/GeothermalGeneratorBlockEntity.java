@@ -167,7 +167,7 @@ public class GeothermalGeneratorBlockEntity extends BlockEntity implements IEner
         }
 
         double space = ENERGY_CAPACITY - storedEnergy;
-        if (space < GENERATION_PER_TICK) {
+        if (space <= 0.0D) {
             return;
         }
 
@@ -176,7 +176,7 @@ public class GeothermalGeneratorBlockEntity extends BlockEntity implements IEner
             return;
         }
 
-        storedEnergy += GENERATION_PER_TICK;
+        storedEnergy += Math.min(GENERATION_PER_TICK, space);
         setChanged();
     }
 

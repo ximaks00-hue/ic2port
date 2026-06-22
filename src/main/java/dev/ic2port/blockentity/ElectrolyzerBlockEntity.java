@@ -117,6 +117,12 @@ public class ElectrolyzerBlockEntity extends BaseMachineBlockEntity {
             return;
         }
 
+        if (!canOutput(recipe)) {
+            progress = maxProgress;
+            setChanged();
+            return;
+        }
+
         shrinkProcessInput(SLOT_INPUT, input, 1);
         depositOutput(SLOT_OUTPUT_A, recipe.getOutput().copy());
         if (!recipe.getSecondaryOutput().isEmpty()) {

@@ -138,6 +138,7 @@ public class MassFabricatorBlockEntity extends BaseMachineBlockEntity {
         }
         fabricationProgress += draw * (boosted ? SCRAP_SPEED_MULTIPLIER : 1.0D);
 
+        output = getItemHandler().getStackInSlot(SLOT_OUTPUT);
         while (fabricationProgress >= EU_PER_UU_MATTER && canAddUuMatter(output)) {
             fabricationProgress -= EU_PER_UU_MATTER;
 

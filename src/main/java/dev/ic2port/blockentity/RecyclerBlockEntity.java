@@ -128,14 +128,11 @@ public class RecyclerBlockEntity extends BaseMachineBlockEntity {
         }
 
         if (!output.isEmpty() && !output.is(ItemRegistry.SCRAP.get())) {
-            progress = 0;
             setChanged();
             return;
         }
 
         if (!output.isEmpty() && !canOutputScrap(output)) {
-            progress = 0;
-            setChanged();
             return;
         }
 
@@ -151,11 +148,24 @@ public class RecyclerBlockEntity extends BaseMachineBlockEntity {
             return;
         }
 
-        shrinkProcessInput(SLOT_INPUT, input, 1);
+        ItemStack outputNow = getItemHandler().getStackInSlot(SLOT_OUTPUT);
+        if (!outputNow.isEmpty() && !outputNow.is(ItemRegistry.SCRAP.get())) {
+            progress = maxProgress;
+            setChanged();
+            return;
+        }
+        if (!canOutputScrap(outputNow)) {
+            progress = maxProgress;
+            setChanged();
+            return;
+        }
+
+        shrinkProcessInput(SLOT_INPUT, getItemHandler().getStackInSlot(SLOT_INPUT), 1);
         if (level.random.nextFloat() < SCRAP_CHANCE) {
             ItemStack scrap = new ItemStack(ItemRegistry.SCRAP.get());
-            if (canOutputScrap(output)) {
-                mergeProcessOutput(SLOT_OUTPUT, output, scrap);
+            ItemStack currentOutput = getItemHandler().getStackInSlot(SLOT_OUTPUT);
+            if (canOutputScrap(currentOutput)) {
+                mergeProcessOutput(SLOT_OUTPUT, currentOutput, scrap);
             } else if (level != null) {
                 Block.popResource(level, worldPosition, scrap);
             }

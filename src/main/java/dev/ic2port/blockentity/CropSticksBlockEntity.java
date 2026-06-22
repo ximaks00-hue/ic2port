@@ -208,15 +208,31 @@ public class CropSticksBlockEntity extends BlockEntity implements ICropTile {
      * @return harvested stacks for automated collectors (reduced yield)
      */
     public List<ItemStack> collectAutoHarvest() {
+        return commitAutoHarvest();
+    }
+
+    /** Preview crop drops without mutating crop state (seeds not included). */
+    public List<ItemStack> peekAutoHarvestDrops() {
+        if (crop == null || !crop.canBeHarvested(this)) {
+            return List.of();
+        }
+        return new ArrayList<>(collectHarvestDrops(true));
+    }
+
+    /** Applies harvest state and returns drops, including a possible seed roll. */
+    public List<ItemStack> commitAutoHarvest() {
         if (crop == null || !crop.canBeHarvested(this)) {
             return List.of();
         }
         List<ItemStack> drops = collectHarvestDrops(true);
+        if (drops.isEmpty()) {
+            return List.of();
+        }
         ItemStack seeds = rollSeedDrop(true);
+        applyAfterHarvestState();
         if (!seeds.isEmpty()) {
             drops.add(seeds);
         }
-        applyAfterHarvestState();
         return drops;
     }
 

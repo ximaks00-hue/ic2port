@@ -147,15 +147,33 @@ public class PatternReplicatorBlockEntity extends BlockEntity implements IEnergy
         setChanged();
 
         if (progress >= REPLICATION_TICKS) {
-            uuSlot.shrink(UU_PER_CRAFT);
-            itemHandler.setStackInSlot(SLOT_UU_MATTER, uuSlot);
-            ItemStack result = lockedPattern.isEmpty() ? pattern.copy() : lockedPattern.copy();
+            ItemStack outputNow = itemHandler.getStackInSlot(SLOT_OUTPUT);
+            ItemStack uuNow = itemHandler.getStackInSlot(SLOT_UU_MATTER);
+            ItemStack patternNow = itemHandler.getStackInSlot(SLOT_PATTERN);
+            ItemStack expected = !lockedPattern.isEmpty() ? lockedPattern : patternNow;
+
+            if (patternNow.isEmpty() || uuNow.getCount() < UU_PER_CRAFT) {
+                cancelReplication();
+                return;
+            }
+            if (!outputNow.isEmpty()) {
+                if (!ItemStack.isSameItemSameTags(outputNow, expected)
+                        || outputNow.getCount() + 1 > outputNow.getMaxStackSize()) {
+                    progress = REPLICATION_TICKS - 1;
+                    setChanged();
+                    return;
+                }
+            }
+
+            uuNow.shrink(UU_PER_CRAFT);
+            itemHandler.setStackInSlot(SLOT_UU_MATTER, uuNow);
+            ItemStack result = lockedPattern.isEmpty() ? patternNow.copy() : lockedPattern.copy();
             result.setCount(1);
-            if (output.isEmpty()) {
+            if (outputNow.isEmpty()) {
                 itemHandler.setStackInSlot(SLOT_OUTPUT, result);
             } else {
-                output.grow(1);
-                itemHandler.setStackInSlot(SLOT_OUTPUT, output);
+                outputNow.grow(1);
+                itemHandler.setStackInSlot(SLOT_OUTPUT, outputNow);
             }
             progress = 0;
             lockedPattern = ItemStack.EMPTY;

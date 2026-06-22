@@ -100,7 +100,7 @@ public class NuclearReactorBlockEntity extends BlockEntity
         }
     };
     private final ProcessOnlyItemHandler automationItemHandler = new ProcessOnlyItemHandler(
-            itemHandler, SLOT_COUNT, slot -> false);
+            itemHandler, SLOT_COUNT, slot -> !isActive() && isColumnEnabled(slotToX(slot)));
     private final LazyOptional<IItemHandler> itemHandlerOptional = LazyOptional.of(() -> automationItemHandler);
     private final LazyOptional<IEnergyNode> energyOptional = LazyOptional.of(() -> this);
 

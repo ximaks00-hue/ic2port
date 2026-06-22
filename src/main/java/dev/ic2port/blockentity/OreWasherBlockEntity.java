@@ -132,6 +132,12 @@ public class OreWasherBlockEntity extends BaseMachineBlockEntity {
             return;
         }
 
+        if (!canOutput(recipe) || waterTank.getFluidAmount() < WATER_MB_PER_WASH) {
+            progress = maxProgress;
+            setChanged();
+            return;
+        }
+
         shrinkProcessInput(SLOT_INPUT, input, 1);
         waterTank.drain(WATER_MB_PER_WASH, IFluidHandler.FluidAction.EXECUTE);
         ItemStack result = recipe.getOutput().copy();
