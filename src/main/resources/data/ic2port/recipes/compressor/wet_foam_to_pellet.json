@@ -1,0 +1,12 @@
+{
+  "type": "ic2port:compressor",
+  "input": {
+    "item": "ic2port:wet_construction_foam"
+  },
+  "output": {
+    "item": "ic2port:foam_pellet",
+    "count": 1
+  },
+  "energy": 200.0,
+  "time": 100
+}

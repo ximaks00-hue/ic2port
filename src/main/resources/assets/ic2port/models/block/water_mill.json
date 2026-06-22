@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/cube_bottom_top",
+  "textures": {
+    "top": "ic2port:block/water_mill_top",
+    "bottom": "ic2port:block/basic_machine_casing",
+    "side": "ic2port:block/water_mill_side"
+  }
+}

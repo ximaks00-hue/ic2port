@@ -1,0 +1,17 @@
+{
+  "values": [
+    "minecraft:cobblestone",
+    "minecraft:stone",
+    "minecraft:smooth_stone",
+    "minecraft:deepslate",
+    "minecraft:cobbled_deepslate",
+    "minecraft:blackstone",
+    "minecraft:basalt",
+    "minecraft:netherrack",
+    "minecraft:obsidian",
+    "ic2port:reinforced_stone",
+    "ic2port:reinforced_bricks",
+    "ic2port:reinforced_cobblestone",
+    "ic2port:reinforced_cracked_stone"
+  ]
+}

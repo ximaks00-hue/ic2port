@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " C ",
+    " T ",
+    " B "
+  ],
+  "key": {
+    "C": {
+      "item": "ic2port:copper_cable"
+    },
+    "T": {
+      "item": "ic2port:tree_tap"
+    },
+    "B": {
+      "item": "ic2port:re_battery"
+    }
+  },
+  "result": {
+    "item": "ic2port:electric_tree_tap"
+  }
+}

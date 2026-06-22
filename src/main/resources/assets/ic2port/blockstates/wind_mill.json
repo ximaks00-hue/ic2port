@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "ic2port:block/wind_mill",
+      "y": 180
+    },
+    "facing=south": {
+      "model": "ic2port:block/wind_mill"
+    },
+    "facing=west": {
+      "model": "ic2port:block/wind_mill",
+      "y": 90
+    },
+    "facing=east": {
+      "model": "ic2port:block/wind_mill",
+      "y": 270
+    }
+  }
+}

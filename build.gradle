@@ -51,16 +51,73 @@ minecraft {
     }
 }
 
-sourceSets.main.resources { srcDir 'src/generated/resources' }
+sourceSets.main.resources {
+    srcDirs = ['src/generated/resources', 'src/main/resources']
+}
 
 repositories {
+    maven {
+        name = 'ic2'
+        url = ic2_maven_url
+        allowInsecureProtocol = true
+    }
+    maven {
+        name = 'JEI'
+        url = 'https://maven.blamejared.com'
+    }
 }
+
+def ic2ApiJar = file("reference/ic2/jars/industrialcraft-2-${ic2_reference_version}-api.jar")
+def ic2DevJar = file("reference/ic2/jars/industrialcraft-2-${ic2_reference_version}-dev.jar")
 
 dependencies {
     minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
+
+    // IC2 public API — reference only (interfaces in ic2.api.*). Never use implementation/runtimeOnly.
+    if (ic2ApiJar.exists()) {
+        compileOnly files(ic2ApiJar)
+    } else {
+        compileOnly "net.industrial-craft:industrialcraft-2:${ic2_reference_version}:api"
+    }
+
+    // JEI — optional at runtime; bundled for dev client playtesting
+    compileOnly fg.deobf("mezz.jei:jei-${minecraft_version}-common-api:15.2.0.27")
+    compileOnly fg.deobf("mezz.jei:jei-${minecraft_version}-forge-api:15.2.0.27")
+    runtimeOnly fg.deobf("mezz.jei:jei-${minecraft_version}-forge:15.2.0.27")
+}
+
+tasks.register('downloadIc2ReferenceJars') {
+    group = 'ic2port'
+    description = 'Downloads IC2 API and dev JARs into reference/ic2/jars/ for local IDE inspection.'
+
+    onlyIf { !ic2ApiJar.exists() || !ic2DevJar.exists() }
+
+    doLast {
+        def base = "${ic2_maven_url}net/industrial-craft/industrialcraft-2/${ic2_reference_version}"
+        def jarsDir = file('reference/ic2/jars')
+        jarsDir.mkdirs()
+
+        ['api', 'dev'].each { classifier ->
+            def dest = new File(jarsDir, "industrialcraft-2-${ic2_reference_version}-${classifier}.jar")
+            if (!dest.exists()) {
+                logger.lifecycle("Downloading ${dest.name} ...")
+                dest.withOutputStream { out ->
+                    new URI("${base}/industrialcraft-2-${ic2_reference_version}-${classifier}.jar").toURL().withInputStream { inp ->
+                        out << inp
+                    }
+                }
+            }
+        }
+    }
+}
+
+tasks.named('compileJava').configure {
+    dependsOn downloadIc2ReferenceJars
 }
 
 tasks.named('processResources', ProcessResources).configure {
+    duplicatesStrategy = DuplicatesStrategy.INCLUDE
+
     var replaceProperties = [
             minecraft_version      : minecraft_version,
             minecraft_version_range: minecraft_version_range,

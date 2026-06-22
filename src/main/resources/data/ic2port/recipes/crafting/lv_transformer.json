@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "RCR",
+    "CMC",
+    "RCR"
+  ],
+  "key": {
+    "R": {
+      "item": "minecraft:redstone"
+    },
+    "C": {
+      "item": "ic2port:copper_cable"
+    },
+    "M": {
+      "item": "ic2port:basic_machine_casing"
+    }
+  },
+  "result": {
+    "item": "ic2port:lv_transformer"
+  }
+}

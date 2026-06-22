@@ -1,0 +1,13 @@
+{
+  "values": [
+    "ic2port:geothermal_generator",
+    "ic2port:mfe",
+    "ic2port:mv_transformer",
+    "ic2port:induction_furnace",
+    "ic2port:metal_former",
+    "ic2port:charge_pad",
+    "ic2port:thermal_centrifuge",
+    "ic2port:gold_cable",
+    "ic2port:advanced_machine_casing"
+  ]
+}

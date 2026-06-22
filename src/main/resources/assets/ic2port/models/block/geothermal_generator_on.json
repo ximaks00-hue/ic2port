@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/orientable",
+  "textures": {
+    "top": "ic2port:block/geothermal_generator_top_on",
+    "front": "ic2port:block/geothermal_generator_side_on",
+    "side": "ic2port:block/basic_machine_casing"
+  }
+}

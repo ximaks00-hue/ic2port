@@ -1,0 +1,19 @@
+{
+  "type": "ic2port:thermal_centrifuge",
+  "input": {
+    "item": "ic2port:depleted_fuel_rod",
+    "count": 1
+  },
+  "outputs": [
+    {
+      "item": "ic2port:depleted_uranium",
+      "count": 2
+    },
+    {
+      "item": "ic2port:iron_dust",
+      "count": 2
+    }
+  ],
+  "energy": 8000,
+  "time": 200
+}

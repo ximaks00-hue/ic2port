@@ -1,0 +1,28 @@
+{
+  "type": "minecraft:block",
+  "pools": [
+    {
+      "bonus_rolls": 0.0,
+      "conditions": [
+        {
+          "condition": "minecraft:survives_explosion"
+        }
+      ],
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "ic2port:construction_foam",
+          "functions": [
+            {
+              "function": "minecraft:copy_state",
+              "block": "ic2port:construction_foam",
+              "properties": ["color"]
+            }
+          ]
+        }
+      ],
+      "rolls": 1.0
+    }
+  ],
+  "random_sequence": "ic2port:blocks/construction_foam"
+}

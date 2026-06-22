@@ -1,0 +1,12 @@
+{
+  "type": "ic2port:compressor",
+  "input": {
+    "item": "minecraft:coal"
+  },
+  "output": {
+    "item": "ic2port:carbon_fiber",
+    "count": 1
+  },
+  "energy": 400.0,
+  "time": 200
+}

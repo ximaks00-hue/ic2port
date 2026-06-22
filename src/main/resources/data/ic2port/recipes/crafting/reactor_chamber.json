@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "AGA",
+    "GRG",
+    "AGA"
+  ],
+  "key": {
+    "A": {
+      "item": "ic2port:advanced_machine_casing"
+    },
+    "G": {
+      "tag": "forge:glass"
+    },
+    "R": {
+      "item": "ic2port:empty_fuel_rod"
+    }
+  },
+  "result": {
+    "item": "ic2port:reactor_chamber"
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "I I",
+    " T ",
+    "I I"
+  ],
+  "key": {
+    "I": {
+      "item": "minecraft:iron_ingot"
+    },
+    "T": {
+      "item": "ic2port:tin_ingot"
+    }
+  },
+  "result": {
+    "item": "ic2port:centrifuge_rotor"
+  }
+}

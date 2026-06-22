@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "WCW",
+    "RBR",
+    "WCW"
+  ],
+  "key": {
+    "W": {
+      "tag": "minecraft:planks"
+    },
+    "C": {
+      "item": "ic2port:copper_cable"
+    },
+    "R": {
+      "item": "minecraft:iron_ingot"
+    },
+    "B": {
+      "item": "ic2port:re_battery"
+    }
+  },
+  "result": {
+    "item": "ic2port:batbox"
+  }
+}

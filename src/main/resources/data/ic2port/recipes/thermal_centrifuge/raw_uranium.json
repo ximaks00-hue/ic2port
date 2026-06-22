@@ -1,0 +1,19 @@
+{
+  "type": "ic2port:thermal_centrifuge",
+  "input": {
+    "item": "ic2port:raw_uranium",
+    "count": 2
+  },
+  "outputs": [
+    {
+      "item": "ic2port:uranium_ingot",
+      "count": 1
+    },
+    {
+      "item": "ic2port:depleted_uranium",
+      "count": 1
+    }
+  ],
+  "energy": 24000,
+  "time": 500
+}

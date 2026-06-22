@@ -1,0 +1,11 @@
+{
+  "type": "ic2port:compressor",
+  "input": {
+    "item": "ic2port:uranium_ingot"
+  },
+  "output": {
+    "item": "ic2port:uranium_plate"
+  },
+  "energy": 600.0,
+  "time": 250
+}

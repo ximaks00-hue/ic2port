@@ -1,0 +1,12 @@
+{
+  "type": "ic2port:metal_former",
+  "input": {
+    "item": "ic2port:copper_plate"
+  },
+  "output": {
+    "item": "ic2port:copper_cable",
+    "count": 3
+  },
+  "energy": 350.0,
+  "time": 100
+}

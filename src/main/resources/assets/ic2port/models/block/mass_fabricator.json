@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/cube_bottom_top",
+  "textures": {
+    "bottom": "ic2port:block/mass_fabricator_bottom",
+    "side": "ic2port:block/mass_fabricator_side",
+    "top": "ic2port:block/mass_fabricator_top"
+  }
+}

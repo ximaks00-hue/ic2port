@@ -1,0 +1,21 @@
+{
+  "values": [
+    "ic2port:tin_ore",
+    "ic2port:deepslate_tin_ore",
+    "ic2port:uranium_ore",
+    "ic2port:deepslate_uranium_ore",
+    "ic2port:solar_panel",
+    "ic2port:wind_mill",
+    "ic2port:water_mill",
+    "ic2port:macerator",
+    "ic2port:recycler",
+    "ic2port:solid_fuel_generator",
+    "ic2port:extractor",
+    "ic2port:compressor",
+    "ic2port:electric_furnace",
+    "ic2port:batbox",
+    "ic2port:lv_transformer",
+    "ic2port:basic_machine_casing",
+    "ic2port:copper_cable"
+  ]
+}

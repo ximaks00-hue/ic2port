@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " V ",
+    "VOV",
+    " V "
+  ],
+  "key": {
+    "V": {
+      "item": "ic2port:advanced_heat_vent"
+    },
+    "O": {
+      "item": "ic2port:overclocker_upgrade"
+    }
+  },
+  "result": {
+    "item": "ic2port:overclocked_heat_vent"
+  }
+}

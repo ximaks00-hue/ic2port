@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " T ",
+    "CMC",
+    " C "
+  ],
+  "key": {
+    "T": {
+      "item": "ic2port:tin_plate"
+    },
+    "C": {
+      "item": "ic2port:copper_cable"
+    },
+    "M": {
+      "item": "minecraft:chest"
+    }
+  },
+  "result": {
+    "item": "ic2port:food_storage_module"
+  }
+}

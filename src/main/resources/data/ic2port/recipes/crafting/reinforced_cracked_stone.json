@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "CCC",
+    "CBC",
+    "CCC"
+  ],
+  "key": {
+    "C": {
+      "item": "ic2port:construction_foam"
+    },
+    "B": {
+      "item": "minecraft:cracked_stone_bricks"
+    }
+  },
+  "result": {
+    "item": "ic2port:reinforced_cracked_stone",
+    "count": 8
+  }
+}

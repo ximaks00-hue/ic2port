@@ -1,0 +1,14 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "CCC"
+  ],
+  "key": {
+    "C": {
+      "item": "ic2port:coolant_cell"
+    }
+  },
+  "result": {
+    "item": "ic2port:triple_coolant_cell"
+  }
+}

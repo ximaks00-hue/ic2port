@@ -1,0 +1,12 @@
+﻿{
+  "type": "ic2port:macerator",
+  "input": {
+    "item": "minecraft:raw_iron"
+  },
+  "output": {
+    "item": "ic2port:crushed_iron_ore",
+    "count": 2
+  },
+  "energy": 600.0,
+  "time": 300
+}

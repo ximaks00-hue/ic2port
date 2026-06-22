@@ -1,0 +1,15 @@
+{
+  "type": "ic2port:thermal_centrifuge",
+  "input": {
+    "item": "ic2port:scrap",
+    "count": 16
+  },
+  "outputs": [
+    {
+      "item": "ic2port:plutonium",
+      "count": 1
+    }
+  ],
+  "energy": 48000,
+  "time": 1200
+}

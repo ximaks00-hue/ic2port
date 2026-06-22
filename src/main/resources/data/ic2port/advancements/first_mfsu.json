@@ -1,0 +1,22 @@
+{
+  "display": {
+    "icon": {
+      "item": "ic2port:mfsu"
+    },
+    "title": {"translate": "advancements.ic2port.first_mfsu.title"},
+    "description": {"translate": "advancements.ic2port.first_mfsu.description"},
+    "frame": "goal",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "parent": "ic2port:first_mfe",
+  "criteria": {
+    "place_mfsu": {
+      "trigger": "minecraft:placed_block",
+      "conditions": {
+        "block": "ic2port:mfsu"
+      }
+    }
+  }
+}

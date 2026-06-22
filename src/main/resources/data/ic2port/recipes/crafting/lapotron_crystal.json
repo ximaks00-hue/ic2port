@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " L ",
+    "DED",
+    " L "
+  ],
+  "key": {
+    "L": {
+      "item": "minecraft:lapis_block"
+    },
+    "D": {
+      "item": "minecraft:diamond"
+    },
+    "E": {
+      "item": "ic2port:energy_crystal"
+    }
+  },
+  "result": {
+    "item": "ic2port:lapotron_crystal"
+  }
+}

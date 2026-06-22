@@ -16,12 +16,12 @@ public interface IEnergyNode {
     /**
      * @return maximum amount of EU this node can store or buffer
      */
-    int getCapacity();
+    double getCapacity();
 
     /**
      * @return current amount of EU stored in this node
      */
-    int getStoredEnergy();
+    double getStoredEnergy();
 
     /**
      * @return voltage tier of this node (1 = LV, 2 = MV, 3 = HV, 4 = EV)

@@ -1,0 +1,19 @@
+{
+  "type": "ic2port:thermal_centrifuge",
+  "input": {
+    "item": "ic2port:crushed_gold_ore",
+    "count": 1
+  },
+  "outputs": [
+    {
+      "item": "ic2port:gold_dust",
+      "count": 2
+    },
+    {
+      "item": "ic2port:copper_dust",
+      "count": 1
+    }
+  ],
+  "energy": 20000,
+  "time": 400
+}

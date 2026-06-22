@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "GCG",
+    "BLB",
+    "GCG"
+  ],
+  "key": {
+    "G": {
+      "item": "ic2port:gold_cable"
+    },
+    "C": {
+      "item": "ic2port:carbon_plate"
+    },
+    "B": {
+      "item": "ic2port:batbox"
+    },
+    "L": {
+      "item": "minecraft:lapis_block"
+    }
+  },
+  "result": {
+    "item": "ic2port:mv_transformer"
+  }
+}

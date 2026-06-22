@@ -1,0 +1,11 @@
+{
+  "type": "ic2port:compressor",
+  "input": {
+    "item": "minecraft:diamond"
+  },
+  "output": {
+    "item": "ic2port:energy_crystal"
+  },
+  "energy": 800.0,
+  "time": 300
+}

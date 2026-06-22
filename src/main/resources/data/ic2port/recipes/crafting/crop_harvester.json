@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "ICI",
+    "CMC",
+    "ICI"
+  ],
+  "key": {
+    "I": {
+      "item": "minecraft:iron_ingot"
+    },
+    "C": {
+      "item": "ic2port:copper_cable"
+    },
+    "M": {
+      "item": "ic2port:basic_machine_casing"
+    }
+  },
+  "result": {
+    "item": "ic2port:crop_harvester"
+  }
+}

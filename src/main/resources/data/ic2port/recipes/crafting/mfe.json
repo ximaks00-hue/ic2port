@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "GEG",
+    "BMB",
+    "GEG"
+  ],
+  "key": {
+    "G": {
+      "item": "ic2port:gold_cable"
+    },
+    "E": {
+      "item": "ic2port:energy_crystal"
+    },
+    "B": {
+      "item": "ic2port:batbox"
+    },
+    "M": {
+      "item": "ic2port:carbon_plate"
+    }
+  },
+  "result": {
+    "item": "ic2port:mfe"
+  }
+}

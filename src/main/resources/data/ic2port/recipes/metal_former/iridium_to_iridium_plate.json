@@ -1,0 +1,11 @@
+{
+  "type": "ic2port:metal_former",
+  "input": {
+    "item": "ic2port:iridium"
+  },
+  "output": {
+    "item": "ic2port:iridium_plate"
+  },
+  "energy": 800.0,
+  "time": 200
+}

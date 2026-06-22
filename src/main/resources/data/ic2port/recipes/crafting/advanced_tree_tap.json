@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " I ",
+    " T ",
+    " B "
+  ],
+  "key": {
+    "I": {
+      "item": "minecraft:iron_ingot"
+    },
+    "T": {
+      "item": "ic2port:tree_tap"
+    },
+    "B": {
+      "item": "ic2port:bronze_ingot"
+    }
+  },
+  "result": {
+    "item": "ic2port:advanced_tree_tap"
+  }
+}

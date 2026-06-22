@@ -1,0 +1,15 @@
+{
+  "type": "forge:add_features",
+  "biomes": [
+    "minecraft:forest",
+    "minecraft:birch_forest",
+    "minecraft:old_growth_birch_forest",
+    "minecraft:flower_forest",
+    "minecraft:jungle",
+    "minecraft:sparse_jungle",
+    "minecraft:swamp",
+    "minecraft:mangrove_swamp"
+  ],
+  "features": "ic2port:rubber_tree",
+  "step": "vegetation_decoration"
+}

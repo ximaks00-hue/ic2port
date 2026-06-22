@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "ACA",
+    "GMG",
+    "ACA"
+  ],
+  "key": {
+    "A": {
+      "item": "ic2port:advanced_machine_casing"
+    },
+    "C": {
+      "item": "ic2port:carbon_plate"
+    },
+    "G": {
+      "item": "ic2port:solid_fuel_generator"
+    },
+    "M": {
+      "item": "ic2port:mfe"
+    }
+  },
+  "result": {
+    "item": "ic2port:nuclear_reactor"
+  }
+}

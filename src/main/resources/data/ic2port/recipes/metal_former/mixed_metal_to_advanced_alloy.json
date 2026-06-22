@@ -1,0 +1,11 @@
+{
+  "type": "ic2port:metal_former",
+  "input": {
+    "item": "ic2port:mixed_metal_ingot"
+  },
+  "output": {
+    "item": "ic2port:advanced_alloy"
+  },
+  "energy": 300.0,
+  "time": 100
+}

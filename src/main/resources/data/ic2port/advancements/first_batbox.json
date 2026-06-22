@@ -1,0 +1,22 @@
+{
+  "display": {
+    "icon": {
+      "item": "ic2port:batbox"
+    },
+    "title": {"translate": "advancements.ic2port.first_batbox.title"},
+    "description": {"translate": "advancements.ic2port.first_batbox.description"},
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": false
+  },
+  "parent": "ic2port:first_re_battery",
+  "criteria": {
+    "place_batbox": {
+      "trigger": "minecraft:placed_block",
+      "conditions": {
+        "block": "ic2port:batbox"
+      }
+    }
+  }
+}

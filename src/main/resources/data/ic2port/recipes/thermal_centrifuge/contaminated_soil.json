@@ -1,0 +1,15 @@
+{
+  "type": "ic2port:thermal_centrifuge",
+  "input": {
+    "item": "ic2port:contaminated_soil",
+    "count": 4
+  },
+  "outputs": [
+    {
+      "item": "ic2port:scrap",
+      "count": 2
+    }
+  ],
+  "energy": 8000,
+  "time": 200
+}

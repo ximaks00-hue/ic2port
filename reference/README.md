@@ -12,7 +12,8 @@ The official IC2 Java Edition **source code is not open source**. The [Industria
 |------|-------------|
 | `ic2-classic/` | Clone of [TinyModularThings/IC2Classic](https://github.com/TinyModularThings/IC2Classic) (bugtracker + API notes) |
 | `ic2-official/` | Links and metadata for official IC2 builds |
-| `ic2/jars/` | Downloaded IC2 dev/API JARs from the official Maven (local only, gitignored) |
+| `ic2/jars/` | IC2 API/dev JARs — run `gradlew downloadIc2ReferenceJars` (gitignored) |
+| `docs/IC2_REFERENCE_SETUP.md` | Gradle + IntelliJ setup for API comparison |
 
 ## Official IC2 resources
 

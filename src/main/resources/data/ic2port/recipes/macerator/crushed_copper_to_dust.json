@@ -1,0 +1,12 @@
+﻿{
+  "type": "ic2port:macerator",
+  "input": {
+    "item": "ic2port:crushed_copper_ore"
+  },
+  "output": {
+    "item": "ic2port:copper_dust",
+    "count": 1
+  },
+  "energy": 600.0,
+  "time": 300
+}

@@ -1,0 +1,28 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "CPC",
+    "RMR",
+    "GGG"
+  ],
+  "key": {
+    "C": {
+      "item": "ic2port:carbon_plate"
+    },
+    "P": {
+      "item": "minecraft:heavy_weighted_pressure_plate"
+    },
+    "R": {
+      "item": "minecraft:redstone"
+    },
+    "M": {
+      "item": "ic2port:mfe"
+    },
+    "G": {
+      "item": "ic2port:gold_cable"
+    }
+  },
+  "result": {
+    "item": "ic2port:charge_pad"
+  }
+}

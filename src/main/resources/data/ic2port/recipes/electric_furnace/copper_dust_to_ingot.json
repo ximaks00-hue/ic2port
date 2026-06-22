@@ -1,0 +1,12 @@
+{
+  "type": "ic2port:electric_furnace",
+  "input": {
+    "item": "ic2port:copper_dust"
+  },
+  "output": {
+    "item": "minecraft:copper_ingot",
+    "count": 1
+  },
+  "energy": 390.0,
+  "time": 130
+}

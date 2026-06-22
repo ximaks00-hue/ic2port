@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "item": "minecraft:wheat_seeds"
+    },
+    {
+      "item": "ic2port:sticky_resin"
+    }
+  ],
+  "result": {
+    "item": "ic2port:crop_seed",
+    "nbt": {
+      "CropId": "ic2port:stickreed",
+      "Growth": 1,
+      "Gain": 1,
+      "Resistance": 1,
+      "Scan": 0
+    }
+  }
+}

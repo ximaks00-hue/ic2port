@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "ICI",
+    " B ",
+    "ICI"
+  ],
+  "key": {
+    "I": {
+      "item": "ic2port:iron_plate"
+    },
+    "C": {
+      "item": "ic2port:copper_cable"
+    },
+    "B": {
+      "item": "ic2port:re_battery"
+    }
+  },
+  "result": {
+    "item": "ic2port:energy_storage_upgrade"
+  }
+}

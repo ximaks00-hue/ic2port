@@ -1,0 +1,12 @@
+{
+  "type": "ic2port:extractor",
+  "input": {
+    "item": "ic2port:sticky_resin"
+  },
+  "output": {
+    "item": "ic2port:rubber",
+    "count": 3
+  },
+  "energy": 400.0,
+  "time": 200
+}

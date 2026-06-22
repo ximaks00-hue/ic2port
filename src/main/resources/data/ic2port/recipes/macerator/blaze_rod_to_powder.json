@@ -1,0 +1,12 @@
+{
+  "type": "ic2port:macerator",
+  "input": {
+    "item": "minecraft:blaze_rod"
+  },
+  "output": {
+    "item": "minecraft:blaze_powder",
+    "count": 5
+  },
+  "energy": 600.0,
+  "time": 300
+}

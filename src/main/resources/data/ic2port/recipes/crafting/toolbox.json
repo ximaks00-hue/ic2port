@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " W ",
+    "ICI",
+    " I "
+  ],
+  "key": {
+    "W": {
+      "item": "ic2port:wrench"
+    },
+    "I": {
+      "item": "ic2port:iron_plate"
+    },
+    "C": {
+      "item": "minecraft:chest"
+    }
+  },
+  "result": {
+    "item": "ic2port:toolbox"
+  }
+}

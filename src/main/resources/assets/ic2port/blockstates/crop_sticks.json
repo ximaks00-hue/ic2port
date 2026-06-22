@@ -1,0 +1,9 @@
+{
+  "variants": {
+    "stage=0": { "model": "ic2port:block/crop_sticks_stage0" },
+    "stage=1": { "model": "ic2port:block/crop_sticks_stage1" },
+    "stage=2": { "model": "ic2port:block/crop_sticks_stage2" },
+    "stage=3": { "model": "ic2port:block/crop_sticks_stage3" },
+    "stage=4": { "model": "ic2port:block/crop_sticks_stage4" }
+  }
+}

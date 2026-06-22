@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " P ",
+    "PCP",
+    " P "
+  ],
+  "key": {
+    "P": {
+      "item": "ic2port:iron_plate"
+    },
+    "C": {
+      "item": "ic2port:copper_plate"
+    }
+  },
+  "result": {
+    "item": "ic2port:heat_vent"
+  }
+}

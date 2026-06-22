@@ -1,0 +1,9 @@
+{
+  "type": "minecraft:blasting",
+  "ingredient": {
+    "item": "ic2port:raw_uranium"
+  },
+  "result": "ic2port:uranium_ingot",
+  "experience": 1.0,
+  "cookingtime": 100
+}

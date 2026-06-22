@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "R R",
+    "RRR",
+    "ORO"
+  ],
+  "key": {
+    "O": {
+      "item": "minecraft:orange_dye"
+    },
+    "R": {
+      "item": "ic2port:rubber"
+    }
+  },
+  "result": {
+    "item": "ic2port:hazmat_chestplate"
+  }
+}

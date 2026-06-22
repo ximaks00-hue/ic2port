@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "item": "ic2port:iron_plate"
+    },
+    {
+      "item": "ic2port:bronze_plate"
+    },
+    {
+      "item": "ic2port:tin_plate"
+    }
+  ],
+  "result": {
+    "item": "ic2port:mixed_metal_ingot",
+    "count": 1
+  }
+}

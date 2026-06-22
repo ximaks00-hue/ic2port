@@ -1,0 +1,28 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "TCT",
+    "IMI",
+    "BBB"
+  ],
+  "key": {
+    "T": {
+      "item": "ic2port:tin_ingot"
+    },
+    "C": {
+      "item": "ic2port:copper_cable"
+    },
+    "I": {
+      "item": "ic2port:iron_plate"
+    },
+    "M": {
+      "item": "ic2port:compressor"
+    },
+    "B": {
+      "item": "ic2port:basic_machine_casing"
+    }
+  },
+  "result": {
+    "item": "ic2port:canner"
+  }
+}

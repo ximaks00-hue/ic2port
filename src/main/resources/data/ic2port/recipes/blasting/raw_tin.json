@@ -1,0 +1,9 @@
+{
+  "type": "minecraft:blasting",
+  "ingredient": {
+    "item": "ic2port:raw_tin"
+  },
+  "result": "ic2port:tin_ingot",
+  "experience": 0.7,
+  "cookingtime": 100
+}

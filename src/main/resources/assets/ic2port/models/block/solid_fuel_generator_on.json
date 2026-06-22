@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/orientable",
+  "textures": {
+    "top": "ic2port:block/basic_machine_casing",
+    "front": "ic2port:block/solid_fuel_generator_front_on",
+    "side": "ic2port:block/basic_machine_casing"
+  }
+}

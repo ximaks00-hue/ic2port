@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "item": "ic2port:uu_matter"
+    },
+    {
+      "item": "ic2port:uu_matter"
+    },
+    {
+      "item": "ic2port:uu_matter"
+    },
+    {
+      "item": "ic2port:uu_matter"
+    }
+  ],
+  "result": {
+    "item": "ic2port:uranium_ingot",
+    "count": 1
+  }
+}

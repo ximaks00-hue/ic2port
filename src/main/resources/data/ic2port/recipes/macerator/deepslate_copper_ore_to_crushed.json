@@ -1,0 +1,12 @@
+﻿{
+  "type": "ic2port:macerator",
+  "input": {
+    "item": "minecraft:deepslate_copper_ore"
+  },
+  "output": {
+    "item": "ic2port:crushed_copper_ore",
+    "count": 2
+  },
+  "energy": 600.0,
+  "time": 300
+}

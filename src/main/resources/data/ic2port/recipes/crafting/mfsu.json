@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "ACA",
+    "CMC",
+    "ACA"
+  ],
+  "key": {
+    "A": {
+      "item": "ic2port:advanced_alloy"
+    },
+    "C": {
+      "item": "ic2port:carbon_plate"
+    },
+    "M": {
+      "item": "ic2port:lapotron_crystal"
+    }
+  },
+  "result": {
+    "item": "ic2port:mfsu"
+  }
+}

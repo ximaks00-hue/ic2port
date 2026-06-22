@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "DDD",
+    "ABA"
+  ],
+  "key": {
+    "D": {
+      "item": "minecraft:diamond"
+    },
+    "A": {
+      "item": "ic2port:advanced_alloy"
+    },
+    "B": {
+      "item": "ic2port:re_battery"
+    }
+  },
+  "result": {
+    "item": "ic2port:diamond_drill"
+  }
+}

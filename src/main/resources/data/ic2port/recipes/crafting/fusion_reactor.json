@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "RGR",
+    "GMG",
+    "RGR"
+  ],
+  "key": {
+    "R": {
+      "tag": "ic2port:reinforced_stones"
+    },
+    "G": {
+      "tag": "ic2port:reinforced_glasses"
+    },
+    "M": {
+      "item": "ic2port:mass_fabricator"
+    }
+  },
+  "result": {
+    "item": "ic2port:fusion_reactor"
+  }
+}

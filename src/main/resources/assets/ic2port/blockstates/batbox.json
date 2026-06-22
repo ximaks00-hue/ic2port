@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "facing=down": { "model": "ic2port:block/batbox", "x": 90 },
+    "facing=up": { "model": "ic2port:block/batbox", "x": 270 },
+    "facing=north": { "model": "ic2port:block/batbox", "y": 180 },
+    "facing=south": { "model": "ic2port:block/batbox" },
+    "facing=west": { "model": "ic2port:block/batbox", "y": 90 },
+    "facing=east": { "model": "ic2port:block/batbox", "y": 270 }
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "type": "ic2port:macerator",
+  "input": {
+    "item": "minecraft:cobblestone"
+  },
+  "output": {
+    "item": "ic2port:scrap",
+    "count": 1
+  },
+  "energy": 35.0,
+  "time": 100
+}

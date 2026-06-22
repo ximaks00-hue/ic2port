@@ -1,0 +1,51 @@
+{
+
+  "type": "minecraft:crafting_shaped",
+
+  "pattern": [
+
+    " P ",
+
+    "ISI",
+
+    " B "
+
+  ],
+
+  "key": {
+
+    "P": {
+
+      "item": "ic2port:foam_pellet"
+
+    },
+
+    "I": {
+
+      "item": "ic2port:iron_plate"
+
+    },
+
+    "S": {
+
+      "item": "ic2port:foam_sprayer"
+
+    },
+
+    "B": {
+
+      "item": "ic2port:re_battery"
+
+    }
+
+  },
+
+  "result": {
+
+    "item": "ic2port:electric_foam_sprayer"
+
+  }
+
+}
+
+

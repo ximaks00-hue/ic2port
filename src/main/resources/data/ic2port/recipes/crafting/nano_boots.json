@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "C C",
+    "E E"
+  ],
+  "key": {
+    "E": {
+      "item": "ic2port:energy_crystal"
+    },
+    "C": {
+      "item": "ic2port:carbon_plate"
+    }
+  },
+  "result": {
+    "item": "ic2port:nano_boots"
+  }
+}

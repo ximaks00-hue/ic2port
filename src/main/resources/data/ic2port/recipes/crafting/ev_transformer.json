@@ -1,0 +1,30 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "ARA",
+    "GMG",
+    "ARA"
+  ],
+  "key": {
+    "A": {
+      "item": "ic2port:advanced_alloy"
+    },
+    "R": {
+      "item": "minecraft:repeater"
+    },
+    "G": [
+      {
+        "item": "ic2port:glass_fiber_cable"
+      },
+      {
+        "item": "ic2port:hv_cable"
+      }
+    ],
+    "M": {
+      "item": "ic2port:mv_transformer"
+    }
+  },
+  "result": {
+    "item": "ic2port:ev_transformer"
+  }
+}

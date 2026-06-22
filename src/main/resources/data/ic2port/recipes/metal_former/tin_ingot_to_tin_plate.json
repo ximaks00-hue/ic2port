@@ -1,0 +1,11 @@
+{
+  "type": "ic2port:metal_former",
+  "input": {
+    "item": "ic2port:tin_ingot"
+  },
+  "output": {
+    "item": "ic2port:tin_plate"
+  },
+  "energy": 300.0,
+  "time": 100
+}

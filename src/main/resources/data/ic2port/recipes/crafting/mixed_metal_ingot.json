@@ -1,0 +1,23 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "III",
+    "BBB",
+    "TTT"
+  ],
+  "key": {
+    "I": {
+      "item": "ic2port:iron_plate"
+    },
+    "B": {
+      "item": "ic2port:bronze_plate"
+    },
+    "T": {
+      "item": "ic2port:tin_plate"
+    }
+  },
+  "result": {
+    "item": "ic2port:mixed_metal_ingot",
+    "count": 2
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " C ",
+    "CJC",
+    " B "
+  ],
+  "key": {
+    "C": {
+      "item": "ic2port:copper_cable"
+    },
+    "J": {
+      "item": "ic2port:electric_jetpack"
+    },
+    "B": {
+      "item": "ic2port:basic_machine_casing"
+    }
+  },
+  "result": {
+    "item": "ic2port:jetpack_module"
+  }
+}

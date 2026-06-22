@@ -1,0 +1,12 @@
+{
+  "type": "ic2port:electric_furnace",
+  "input": {
+    "item": "minecraft:raw_iron"
+  },
+  "output": {
+    "item": "minecraft:iron_ingot",
+    "count": 1
+  },
+  "energy": 360.0,
+  "time": 120
+}

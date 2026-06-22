@@ -1,0 +1,11 @@
+{
+  "type": "ic2port:metal_former",
+  "input": {
+    "item": "minecraft:diamond"
+  },
+  "output": {
+    "item": "ic2port:energy_crystal"
+  },
+  "energy": 600.0,
+  "time": 150
+}

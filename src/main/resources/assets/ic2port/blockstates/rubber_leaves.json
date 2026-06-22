@@ -1,0 +1,9 @@
+{
+  "multipart": [
+    {
+      "apply": {
+        "model": "ic2port:block/rubber_leaves"
+      }
+    }
+  ]
+}

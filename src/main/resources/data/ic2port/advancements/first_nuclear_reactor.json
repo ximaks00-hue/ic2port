@@ -1,0 +1,22 @@
+{
+  "display": {
+    "icon": {
+      "item": "ic2port:nuclear_reactor"
+    },
+    "title": {"translate": "advancements.ic2port.first_nuclear_reactor.title"},
+    "description": {"translate": "advancements.ic2port.first_nuclear_reactor.description"},
+    "frame": "challenge",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "parent": "ic2port:first_mfsu",
+  "criteria": {
+    "place_reactor": {
+      "trigger": "minecraft:placed_block",
+      "conditions": {
+        "block": "ic2port:nuclear_reactor"
+      }
+    }
+  }
+}

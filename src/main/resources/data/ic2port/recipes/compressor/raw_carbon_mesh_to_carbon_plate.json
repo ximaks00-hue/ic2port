@@ -1,0 +1,11 @@
+{
+  "type": "ic2port:compressor",
+  "input": {
+    "item": "ic2port:raw_carbon_mesh"
+  },
+  "output": {
+    "item": "ic2port:carbon_plate"
+  },
+  "energy": 400.0,
+  "time": 200
+}

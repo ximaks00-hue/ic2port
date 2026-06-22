@@ -1,0 +1,11 @@
+{
+  "type": "ic2port:metal_former",
+  "input": {
+    "item": "minecraft:copper_ingot"
+  },
+  "output": {
+    "item": "ic2port:copper_plate"
+  },
+  "energy": 300.0,
+  "time": 100
+}

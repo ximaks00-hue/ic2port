@@ -1,0 +1,12 @@
+{
+  "type": "ic2port:electric_furnace",
+  "input": {
+    "item": "ic2port:crushed_iron_ore"
+  },
+  "output": {
+    "item": "minecraft:iron_ingot",
+    "count": 1
+  },
+  "energy": 390.0,
+  "time": 130
+}

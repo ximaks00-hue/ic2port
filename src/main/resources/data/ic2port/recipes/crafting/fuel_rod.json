@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " U ",
+    "EIE",
+    " U "
+  ],
+  "key": {
+    "U": {
+      "item": "ic2port:uranium_ingot"
+    },
+    "E": {
+      "item": "ic2port:empty_fuel_rod"
+    },
+    "I": {
+      "item": "ic2port:iron_plate"
+    }
+  },
+  "result": {
+    "item": "ic2port:fuel_rod"
+  }
+}

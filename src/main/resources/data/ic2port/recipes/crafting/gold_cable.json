@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "RRR",
+    "GGG",
+    "RRR"
+  ],
+  "key": {
+    "R": {
+      "item": "ic2port:rubber"
+    },
+    "G": {
+      "item": "minecraft:gold_ingot"
+    }
+  },
+  "result": {
+    "item": "ic2port:gold_cable",
+    "count": 4
+  }
+}

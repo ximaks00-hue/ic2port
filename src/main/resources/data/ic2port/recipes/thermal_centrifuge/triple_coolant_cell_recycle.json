@@ -1,0 +1,19 @@
+{
+  "type": "ic2port:thermal_centrifuge",
+  "input": {
+    "item": "ic2port:triple_coolant_cell",
+    "count": 1
+  },
+  "outputs": [
+    {
+      "item": "ic2port:coolant_cell",
+      "count": 1
+    },
+    {
+      "item": "ic2port:tin_dust",
+      "count": 2
+    }
+  ],
+  "energy": 10000,
+  "time": 250
+}

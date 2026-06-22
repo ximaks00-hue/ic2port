@@ -1,0 +1,52 @@
+{
+  "variants": {
+    "axis=x,depleted=false,resin=false": {
+      "model": "ic2port:block/rubber_wood",
+      "x": 90,
+      "y": 90
+    },
+    "axis=x,depleted=false,resin=true": {
+      "model": "ic2port:block/rubber_wood_resin",
+      "x": 90,
+      "y": 90
+    },
+    "axis=x,depleted=true,resin=false": {
+      "model": "ic2port:block/rubber_wood",
+      "x": 90,
+      "y": 90
+    },
+    "axis=x,depleted=true,resin=true": {
+      "model": "ic2port:block/rubber_wood",
+      "x": 90,
+      "y": 90
+    },
+    "axis=y,depleted=false,resin=false": {
+      "model": "ic2port:block/rubber_wood"
+    },
+    "axis=y,depleted=false,resin=true": {
+      "model": "ic2port:block/rubber_wood_resin"
+    },
+    "axis=y,depleted=true,resin=false": {
+      "model": "ic2port:block/rubber_wood"
+    },
+    "axis=y,depleted=true,resin=true": {
+      "model": "ic2port:block/rubber_wood"
+    },
+    "axis=z,depleted=false,resin=false": {
+      "model": "ic2port:block/rubber_wood",
+      "x": 90
+    },
+    "axis=z,depleted=false,resin=true": {
+      "model": "ic2port:block/rubber_wood_resin",
+      "x": 90
+    },
+    "axis=z,depleted=true,resin=false": {
+      "model": "ic2port:block/rubber_wood",
+      "x": 90
+    },
+    "axis=z,depleted=true,resin=true": {
+      "model": "ic2port:block/rubber_wood",
+      "x": 90
+    }
+  }
+}

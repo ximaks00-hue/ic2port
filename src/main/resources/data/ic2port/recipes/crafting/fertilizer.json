@@ -1,0 +1,15 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "item": "minecraft:bone_meal"
+    },
+    {
+      "item": "ic2port:scrap"
+    }
+  ],
+  "result": {
+    "item": "ic2port:fertilizer",
+    "count": 2
+  }
+}

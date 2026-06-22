@@ -1,0 +1,22 @@
+{
+  "display": {
+    "icon": {
+      "item": "ic2port:mfe"
+    },
+    "title": {"translate": "advancements.ic2port.first_mfe.title"},
+    "description": {"translate": "advancements.ic2port.first_mfe.description"},
+    "frame": "goal",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "parent": "ic2port:first_macerator",
+  "criteria": {
+    "place_mfe": {
+      "trigger": "minecraft:placed_block",
+      "conditions": {
+        "block": "ic2port:mfe"
+      }
+    }
+  }
+}

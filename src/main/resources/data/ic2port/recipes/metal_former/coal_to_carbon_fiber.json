@@ -1,0 +1,11 @@
+{
+  "type": "ic2port:metal_former",
+  "input": {
+    "item": "minecraft:coal"
+  },
+  "output": {
+    "item": "ic2port:carbon_fiber"
+  },
+  "energy": 300.0,
+  "time": 80
+}

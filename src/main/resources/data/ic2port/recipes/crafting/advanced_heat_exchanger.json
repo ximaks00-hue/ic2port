@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " E ",
+    "EAE",
+    " E "
+  ],
+  "key": {
+    "E": {
+      "item": "ic2port:heat_exchanger"
+    },
+    "A": {
+      "item": "ic2port:advanced_alloy"
+    }
+  },
+  "result": {
+    "item": "ic2port:advanced_heat_exchanger"
+  }
+}

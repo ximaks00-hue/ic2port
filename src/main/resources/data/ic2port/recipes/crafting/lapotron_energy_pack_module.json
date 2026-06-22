@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " G ",
+    "GLG",
+    " G "
+  ],
+  "key": {
+    "G": {
+      "item": "ic2port:gold_cable"
+    },
+    "L": {
+      "item": "ic2port:lappack"
+    }
+  },
+  "result": {
+    "item": "ic2port:lapotron_energy_pack_module"
+  }
+}

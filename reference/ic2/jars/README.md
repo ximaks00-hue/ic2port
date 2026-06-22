@@ -1,21 +1,23 @@
 # IC2 JAR artifacts (local reference)
 
-Downloaded from http://maven.ic2.player.to/
+Not committed to git (see root `.gitignore`). Download with:
+
+```bash
+.\gradlew.bat downloadIc2ReferenceJars
+```
 
 | File | Version | Purpose |
 |------|---------|---------|
-| `industrialcraft-2-2.8.222-ex112-api.jar` | IC2 1.12.2 | Public API interfaces (`ic2.api.*`) |
-| `industrialcraft-2-2.8.222-ex112-dev.jar` | IC2 1.12.2 | Deobfuscated dev jar for IDE inspection |
+| `industrialcraft-2-2.8.222-ex112-api.jar` | IC2 1.12.2 | `compileOnly` in Gradle — public API (`ic2.api.*`) |
+| `industrialcraft-2-2.8.222-ex112-dev.jar` | IC2 1.12.2 | Manual IntelliJ library — decompiled implementation lookup |
 
-## Inspecting the API
+Setup guide: [`reference/docs/IC2_REFERENCE_SETUP.md`](../../docs/IC2_REFERENCE_SETUP.md)
 
-Open the `-api.jar` in your IDE or extract with:
+## Quick API package list
 
 ```bash
 jar tf industrialcraft-2-2.8.222-ex112-api.jar | findstr ic2/api/energy
 ```
-
-Key packages:
 
 - `ic2.api.energy.tile.IEnergySink` — energy consumer
 - `ic2.api.energy.tile.IEnergySource` — energy producer

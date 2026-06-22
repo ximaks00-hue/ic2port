@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " C ",
+    "CBC",
+    " C "
+  ],
+  "key": {
+    "C": {
+      "item": "ic2port:copper_cable"
+    },
+    "B": {
+      "item": "ic2port:batpack"
+    }
+  },
+  "result": {
+    "item": "ic2port:portable_energy_pack_module"
+  }
+}

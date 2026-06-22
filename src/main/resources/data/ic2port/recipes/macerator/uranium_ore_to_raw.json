@@ -1,0 +1,12 @@
+{
+  "type": "ic2port:macerator",
+  "input": {
+    "item": "ic2port:uranium_ore"
+  },
+  "output": {
+    "item": "ic2port:raw_uranium",
+    "count": 2
+  },
+  "energy": 800.0,
+  "time": 400
+}

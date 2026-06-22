@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "CPC",
+    "ABA",
+    " P "
+  ],
+  "key": {
+    "C": {
+      "item": "ic2port:energy_crystal"
+    },
+    "P": {
+      "item": "ic2port:carbon_plate"
+    },
+    "A": {
+      "item": "ic2port:advanced_alloy"
+    },
+    "B": {
+      "item": "ic2port:batpack"
+    }
+  },
+  "result": {
+    "item": "ic2port:lappack"
+  }
+}

@@ -1,0 +1,28 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " F ",
+    "GHG",
+    "CMC"
+  ],
+  "key": {
+    "F": {
+      "item": "ic2port:fertilizer"
+    },
+    "G": {
+      "item": "ic2port:gold_cable"
+    },
+    "H": {
+      "item": "ic2port:crop_harvester"
+    },
+    "C": {
+      "item": "ic2port:copper_cable"
+    },
+    "M": {
+      "item": "ic2port:advanced_machine_casing"
+    }
+  },
+  "result": {
+    "item": "ic2port:cropmatron"
+  }
+}

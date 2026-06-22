@@ -1,0 +1,19 @@
+{
+  "type": "ic2port:thermal_centrifuge",
+  "input": {
+    "item": "ic2port:coolant_cell",
+    "count": 1
+  },
+  "outputs": [
+    {
+      "item": "ic2port:tin_dust",
+      "count": 2
+    },
+    {
+      "item": "minecraft:snowball",
+      "count": 1
+    }
+  ],
+  "energy": 8000,
+  "time": 200
+}

@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " R ",
+    "CFC",
+    " B "
+  ],
+  "key": {
+    "R": {
+      "item": "ic2port:re_battery"
+    },
+    "C": {
+      "item": "ic2port:basic_machine_casing"
+    },
+    "F": {
+      "item": "minecraft:furnace"
+    },
+    "B": {
+      "item": "ic2port:batbox"
+    }
+  },
+  "result": {
+    "item": "ic2port:electric_furnace"
+  }
+}

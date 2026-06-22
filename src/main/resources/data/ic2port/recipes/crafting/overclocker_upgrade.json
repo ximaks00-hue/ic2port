@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "TTT",
+    "CRC",
+    "   "
+  ],
+  "key": {
+    "T": {
+      "item": "ic2port:tin_plate"
+    },
+    "C": {
+      "item": "ic2port:copper_cable"
+    },
+    "R": {
+      "item": "minecraft:redstone"
+    }
+  },
+  "result": {
+    "item": "ic2port:overclocker_upgrade"
+  }
+}

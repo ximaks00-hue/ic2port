@@ -1,0 +1,12 @@
+{
+  "type": "ic2port:macerator",
+  "input": {
+    "item": "minecraft:glowstone"
+  },
+  "output": {
+    "item": "minecraft:glowstone_dust",
+    "count": 4
+  },
+  "energy": 600.0,
+  "time": 300
+}

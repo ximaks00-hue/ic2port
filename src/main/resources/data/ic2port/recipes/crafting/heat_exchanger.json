@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " C ",
+    "CIC",
+    " C "
+  ],
+  "key": {
+    "C": {
+      "item": "ic2port:copper_plate"
+    },
+    "I": {
+      "item": "ic2port:iron_plate"
+    }
+  },
+  "result": {
+    "item": "ic2port:heat_exchanger"
+  }
+}

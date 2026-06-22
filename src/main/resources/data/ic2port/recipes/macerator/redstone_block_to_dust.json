@@ -1,0 +1,12 @@
+{
+  "type": "ic2port:macerator",
+  "input": {
+    "item": "minecraft:redstone_block"
+  },
+  "output": {
+    "item": "minecraft:redstone",
+    "count": 9
+  },
+  "energy": 600.0,
+  "time": 300
+}

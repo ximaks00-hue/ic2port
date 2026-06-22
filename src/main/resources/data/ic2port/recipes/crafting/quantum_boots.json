@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "L L",
+    "I I",
+    "I I"
+  ],
+  "key": {
+    "I": {
+      "item": "ic2port:iridium_plate"
+    },
+    "L": {
+      "item": "ic2port:lapotron_crystal"
+    }
+  },
+  "result": {
+    "item": "ic2port:quantum_boots"
+  }
+}

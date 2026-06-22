@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "U",
+    "E",
+    "P"
+  ],
+  "key": {
+    "U": {
+      "item": "ic2port:uranium_ingot"
+    },
+    "E": {
+      "item": "ic2port:empty_fuel_rod"
+    },
+    "P": {
+      "item": "ic2port:plutonium"
+    }
+  },
+  "result": {
+    "item": "ic2port:mox_fuel_rod"
+  }
+}

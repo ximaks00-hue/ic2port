@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "RRR",
+    "PPP",
+    "RRR"
+  ],
+  "key": {
+    "R": {
+      "item": "ic2port:rubber"
+    },
+    "P": [
+      {
+        "item": "ic2port:iron_plate"
+      },
+      {
+        "item": "minecraft:iron_ingot"
+      }
+    ]
+  },
+  "result": {
+    "item": "ic2port:hv_cable",
+    "count": 4
+  }
+}

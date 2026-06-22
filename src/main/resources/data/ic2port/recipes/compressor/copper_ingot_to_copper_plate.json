@@ -1,0 +1,11 @@
+{
+  "type": "ic2port:compressor",
+  "input": {
+    "item": "minecraft:copper_ingot"
+  },
+  "output": {
+    "item": "ic2port:copper_plate"
+  },
+  "energy": 500.0,
+  "time": 250
+}

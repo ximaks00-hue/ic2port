@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "AAA",
+    "ABA",
+    " B "
+  ],
+  "key": {
+    "A": {
+      "item": "ic2port:advanced_alloy"
+    },
+    "B": {
+      "item": "ic2port:batbox"
+    }
+  },
+  "result": {
+    "item": "ic2port:batpack"
+  }
+}

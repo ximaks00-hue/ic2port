@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " M ",
+    "CEC",
+    " A "
+  ],
+  "key": {
+    "M": {
+      "item": "ic2port:mfe"
+    },
+    "C": {
+      "item": "ic2port:carbon_plate"
+    },
+    "E": {
+      "item": "ic2port:extractor"
+    },
+    "A": {
+      "item": "ic2port:advanced_alloy"
+    }
+  },
+  "result": {
+    "item": "ic2port:thermal_centrifuge"
+  }
+}

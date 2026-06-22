@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "ACA",
+    "CBC",
+    "ACA"
+  ],
+  "key": {
+    "A": {
+      "item": "ic2port:advanced_alloy"
+    },
+    "C": {
+      "item": "ic2port:carbon_plate"
+    },
+    "B": {
+      "item": "ic2port:basic_machine_casing"
+    }
+  },
+  "result": {
+    "item": "ic2port:advanced_machine_casing"
+  }
+}

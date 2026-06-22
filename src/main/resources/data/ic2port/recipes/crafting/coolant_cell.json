@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "T",
+    "L",
+    "T"
+  ],
+  "key": {
+    "T": {
+      "item": "ic2port:tin_plate"
+    },
+    "L": {
+      "item": "minecraft:lapis_lazuli"
+    }
+  },
+  "result": {
+    "item": "ic2port:coolant_cell"
+  }
+}

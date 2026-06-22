@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "CPC",
+    "EME",
+    "CPC"
+  ],
+  "key": {
+    "C": {
+      "item": "ic2port:carbon_plate"
+    },
+    "P": {
+      "item": "ic2port:advanced_alloy"
+    },
+    "E": {
+      "item": "ic2port:mfe"
+    },
+    "M": {
+      "item": "ic2port:compressor"
+    }
+  },
+  "result": {
+    "item": "ic2port:metal_former"
+  }
+}

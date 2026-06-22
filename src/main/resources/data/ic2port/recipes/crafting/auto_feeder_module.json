@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " T ",
+    "CFC",
+    " B "
+  ],
+  "key": {
+    "T": {
+      "item": "ic2port:tin_plate"
+    },
+    "C": {
+      "item": "ic2port:copper_cable"
+    },
+    "F": {
+      "item": "ic2port:filled_tin_can"
+    },
+    "B": {
+      "item": "ic2port:basic_machine_casing"
+    }
+  },
+  "result": {
+    "item": "ic2port:auto_feeder_module"
+  }
+}

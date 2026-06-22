@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "UUU",
+    "UDU",
+    "UUU"
+  ],
+  "key": {
+    "U": {
+      "item": "ic2port:uu_matter"
+    },
+    "D": {
+      "item": "minecraft:diamond"
+    }
+  },
+  "result": {
+    "item": "ic2port:iridium"
+  }
+}

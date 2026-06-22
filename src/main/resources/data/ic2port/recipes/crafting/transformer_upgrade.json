@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " G ",
+    "RTR",
+    " G "
+  ],
+  "key": {
+    "G": {
+      "item": "ic2port:gold_cable"
+    },
+    "R": {
+      "item": "minecraft:redstone"
+    },
+    "T": {
+      "item": "ic2port:lv_transformer"
+    }
+  },
+  "result": {
+    "item": "ic2port:transformer_upgrade"
+  }
+}

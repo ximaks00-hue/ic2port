@@ -1,0 +1,12 @@
+{
+  "type": "ic2port:compressor",
+  "input": {
+    "item": "ic2port:bronze_ingot"
+  },
+  "output": {
+    "item": "ic2port:bronze_plate",
+    "count": 1
+  },
+  "energy": 500.0,
+  "time": 250
+}

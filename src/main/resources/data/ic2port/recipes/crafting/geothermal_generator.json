@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "GGG",
+    "ISI",
+    "III"
+  ],
+  "key": {
+    "G": {
+      "item": "minecraft:glass"
+    },
+    "I": {
+      "item": "ic2port:iron_plate"
+    },
+    "S": {
+      "item": "ic2port:solid_fuel_generator"
+    }
+  },
+  "result": {
+    "item": "ic2port:geothermal_generator"
+  }
+}

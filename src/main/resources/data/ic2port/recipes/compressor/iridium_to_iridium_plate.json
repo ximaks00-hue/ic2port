@@ -1,0 +1,11 @@
+{
+  "type": "ic2port:compressor",
+  "input": {
+    "item": "ic2port:iridium"
+  },
+  "output": {
+    "item": "ic2port:iridium_plate"
+  },
+  "energy": 1200.0,
+  "time": 400
+}

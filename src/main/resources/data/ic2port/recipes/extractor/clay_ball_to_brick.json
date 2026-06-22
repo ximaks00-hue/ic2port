@@ -1,0 +1,12 @@
+{
+  "type": "ic2port:extractor",
+  "input": {
+    "item": "minecraft:clay_ball"
+  },
+  "output": {
+    "item": "minecraft:brick",
+    "count": 1
+  },
+  "energy": 400.0,
+  "time": 200
+}

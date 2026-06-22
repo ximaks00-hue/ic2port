@@ -1,0 +1,22 @@
+{
+  "display": {
+    "icon": {
+      "item": "ic2port:fusion_reactor"
+    },
+    "title": {"translate": "advancements.ic2port.first_fusion_reactor.title"},
+    "description": {"translate": "advancements.ic2port.first_fusion_reactor.description"},
+    "frame": "challenge",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "parent": "ic2port:first_nuclear_reactor",
+  "criteria": {
+    "place_fusion": {
+      "trigger": "minecraft:placed_block",
+      "conditions": {
+        "block": "ic2port:fusion_reactor"
+      }
+    }
+  }
+}

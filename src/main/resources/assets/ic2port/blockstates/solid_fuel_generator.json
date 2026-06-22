@@ -1,0 +1,12 @@
+{
+  "variants": {
+    "facing=north,lit=false": { "model": "ic2port:block/solid_fuel_generator", "y": 180 },
+    "facing=south,lit=false": { "model": "ic2port:block/solid_fuel_generator" },
+    "facing=west,lit=false": { "model": "ic2port:block/solid_fuel_generator", "y": 90 },
+    "facing=east,lit=false": { "model": "ic2port:block/solid_fuel_generator", "y": 270 },
+    "facing=north,lit=true": { "model": "ic2port:block/solid_fuel_generator_on", "y": 180 },
+    "facing=south,lit=true": { "model": "ic2port:block/solid_fuel_generator_on" },
+    "facing=west,lit=true": { "model": "ic2port:block/solid_fuel_generator_on", "y": 90 },
+    "facing=east,lit=true": { "model": "ic2port:block/solid_fuel_generator_on", "y": 270 }
+  }
+}

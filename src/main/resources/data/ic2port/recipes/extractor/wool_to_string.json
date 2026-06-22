@@ -1,0 +1,12 @@
+{
+  "type": "ic2port:extractor",
+  "input": {
+    "tag": "minecraft:wools"
+  },
+  "output": {
+    "item": "minecraft:string",
+    "count": 4
+  },
+  "energy": 400.0,
+  "time": 200
+}

@@ -1,0 +1,7 @@
+{
+  "variants": {
+    "": {
+      "model": "ic2port:block/uranium_ore"
+    }
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "type": "ic2port:thermal_centrifuge",
+  "input": {
+    "item": "ic2port:heat_exchanger",
+    "count": 1
+  },
+  "outputs": [
+    {
+      "item": "ic2port:iron_dust",
+      "count": 2
+    },
+    {
+      "item": "ic2port:copper_dust",
+      "count": 2
+    }
+  ],
+  "energy": 12000,
+  "time": 300
+}

@@ -1,0 +1,19 @@
+{
+  "type": "ic2port:thermal_centrifuge",
+  "input": {
+    "item": "ic2port:advanced_heat_exchanger",
+    "count": 1
+  },
+  "outputs": [
+    {
+      "item": "ic2port:heat_exchanger",
+      "count": 1
+    },
+    {
+      "item": "ic2port:advanced_alloy",
+      "count": 1
+    }
+  ],
+  "energy": 16000,
+  "time": 400
+}

@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "IAI",
+    "I I",
+    "L L"
+  ],
+  "key": {
+    "I": {
+      "item": "ic2port:iridium_plate"
+    },
+    "A": {
+      "item": "ic2port:advanced_alloy"
+    },
+    "L": {
+      "item": "ic2port:lapotron_crystal"
+    }
+  },
+  "result": {
+    "item": "ic2port:quantum_leggings"
+  }
+}

@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "AAA",
+    "PBP",
+    "G G"
+  ],
+  "key": {
+    "A": {
+      "item": "ic2port:advanced_alloy"
+    },
+    "P": {
+      "item": "ic2port:iron_plate"
+    },
+    "B": {
+      "item": "ic2port:re_battery"
+    },
+    "G": {
+      "item": "minecraft:glowstone_dust"
+    }
+  },
+  "result": {
+    "item": "ic2port:electric_jetpack"
+  }
+}

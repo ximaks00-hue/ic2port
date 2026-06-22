@@ -5,9 +5,17 @@ import net.minecraft.data.PackOutput;
 import net.minecraftforge.common.data.LanguageProvider;
 
 /**
- * Generates language files for the specified locale.
+ * Optional language datagen provider (not registered by default).
  * <p>
- * Supported locales: {@code en_us}, {@code ru_ru}.
+ * Full translations live in {@code src/main/resources/assets/ic2port/lang/}
+ * ({@code en_us.json}, {@code ru_ru.json}). Registering this provider in
+ * {@link ModDataGenerators} would write stub locale files into
+ * {@code src/generated/resources/}, which Gradle merges after main resources and
+ * would replace most in-game strings with only the creative-tab label.
+ * <p>
+ * To migrate to datagen-driven lang later, move all keys into
+ * {@link #addEnglishTranslations()} / {@link #addRussianTranslations()} and
+ * re-enable registration in {@link ModDataGenerators}.
  */
 public class ModLanguageProvider extends LanguageProvider {
 

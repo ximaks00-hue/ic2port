@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " G ",
+    "CEC",
+    " B "
+  ],
+  "key": {
+    "G": {
+      "item": "minecraft:glass"
+    },
+    "C": {
+      "item": "ic2port:copper_cable"
+    },
+    "E": {
+      "item": "ic2port:energy_crystal"
+    },
+    "B": {
+      "item": "ic2port:basic_machine_casing"
+    }
+  },
+  "result": {
+    "item": "ic2port:energy_shield_module"
+  }
+}

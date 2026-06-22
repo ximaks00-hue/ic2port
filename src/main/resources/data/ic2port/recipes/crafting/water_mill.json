@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "WIW",
+    "WCW",
+    "WIW"
+  ],
+  "key": {
+    "W": {
+      "tag": "minecraft:planks"
+    },
+    "I": {
+      "item": "ic2port:iron_plate"
+    },
+    "C": {
+      "item": "ic2port:copper_cable"
+    }
+  },
+  "result": {
+    "item": "ic2port:water_mill"
+  }
+}

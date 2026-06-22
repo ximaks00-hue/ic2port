@@ -1,0 +1,11 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "item": "ic2port:uu_matter"
+    }
+  ],
+  "result": {
+    "item": "ic2port:tin_ingot"
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "I I",
+    " C ",
+    "I I"
+  ],
+  "key": {
+    "I": {
+      "item": "ic2port:iron_plate"
+    },
+    "C": {
+      "item": "ic2port:copper_cable"
+    }
+  },
+  "result": {
+    "item": "ic2port:wind_mill"
+  }
+}

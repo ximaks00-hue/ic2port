@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " A ",
+    "DED",
+    " C "
+  ],
+  "key": {
+    "A": {
+      "item": "ic2port:advanced_alloy"
+    },
+    "D": {
+      "item": "ic2port:diamond_drill"
+    },
+    "E": {
+      "item": "ic2port:energy_crystal"
+    },
+    "C": {
+      "item": "ic2port:carbon_plate"
+    }
+  },
+  "result": {
+    "item": "ic2port:advanced_drill"
+  }
+}

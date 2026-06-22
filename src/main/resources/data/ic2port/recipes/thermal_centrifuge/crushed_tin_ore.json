@@ -1,0 +1,15 @@
+{
+  "type": "ic2port:thermal_centrifuge",
+  "input": {
+    "item": "ic2port:crushed_tin_ore",
+    "count": 1
+  },
+  "outputs": [
+    {
+      "item": "ic2port:tin_dust",
+      "count": 2
+    }
+  ],
+  "energy": 16000,
+  "time": 400
+}

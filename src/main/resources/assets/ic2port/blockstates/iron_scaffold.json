@@ -1,0 +1,20 @@
+{
+  "variants": {
+    "bottom=true,distance=0": { "model": "ic2port:block/iron_scaffold" },
+    "bottom=true,distance=1": { "model": "ic2port:block/iron_scaffold" },
+    "bottom=true,distance=2": { "model": "ic2port:block/iron_scaffold" },
+    "bottom=true,distance=3": { "model": "ic2port:block/iron_scaffold" },
+    "bottom=true,distance=4": { "model": "ic2port:block/iron_scaffold" },
+    "bottom=true,distance=5": { "model": "ic2port:block/iron_scaffold" },
+    "bottom=true,distance=6": { "model": "ic2port:block/iron_scaffold" },
+    "bottom=true,distance=7": { "model": "ic2port:block/iron_scaffold" },
+    "bottom=false,distance=0": { "model": "ic2port:block/iron_scaffold" },
+    "bottom=false,distance=1": { "model": "ic2port:block/iron_scaffold_unstable" },
+    "bottom=false,distance=2": { "model": "ic2port:block/iron_scaffold_unstable" },
+    "bottom=false,distance=3": { "model": "ic2port:block/iron_scaffold_unstable" },
+    "bottom=false,distance=4": { "model": "ic2port:block/iron_scaffold_unstable" },
+    "bottom=false,distance=5": { "model": "ic2port:block/iron_scaffold_unstable" },
+    "bottom=false,distance=6": { "model": "ic2port:block/iron_scaffold_unstable" },
+    "bottom=false,distance=7": { "model": "ic2port:block/iron_scaffold_unstable" }
+  }
+}

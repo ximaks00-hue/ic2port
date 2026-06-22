@@ -1,0 +1,12 @@
+{
+  "values": [
+    "ic2port:ev_transformer",
+    "ic2port:mfsu",
+    "ic2port:mass_fabricator",
+    "ic2port:nuclear_reactor",
+    "ic2port:reactor_chamber",
+    "ic2port:hv_cable",
+    "ic2port:glass_fiber_cable",
+    "ic2port:hv_creative_generator"
+  ]
+}
