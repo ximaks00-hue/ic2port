@@ -8,10 +8,8 @@ import dev.ic2port.api.reactor.IReactor;
 import dev.ic2port.api.reactor.IReactorComponent;
 import dev.ic2port.api.reactor.IReactorMonitor;
 import dev.ic2port.block.NuclearReactorBlock;
-import dev.ic2port.item.CoolantCellItem;
+import dev.ic2port.api.reactor.IReactorHeatStorage;
 import dev.ic2port.api.reactor.IReactorFuel;
-import dev.ic2port.item.HeatExchangerItem;
-import dev.ic2port.item.HeatVentItem;
 import dev.ic2port.menu.NuclearReactorMenu;
 import dev.ic2port.setup.BlockEntityRegistry;
 import dev.ic2port.setup.BlockRegistry;
@@ -260,9 +258,29 @@ public class NuclearReactorBlockEntity extends BlockEntity
 
     private void processReactorTick() {
         processComponentPhase(IReactorFuel.class);
-        processComponentPhase(HeatExchangerItem.class);
-        processComponentPhase(CoolantCellItem.class);
-        processComponentPhase(HeatVentItem.class);
+        processComponentPhase(IReactorHeatStorage.class);
+        processMiscComponents();
+    }
+
+    /** Components that are not fuel rods or heat-storage parts (e.g. neutron reflectors). */
+    private void processMiscComponents() {
+        for (int y = 0; y < GRID_HEIGHT; y++) {
+            for (int x = 0; x < GRID_WIDTH; x++) {
+                if (!isColumnEnabled(x)) {
+                    continue;
+                }
+                ItemStack stack = getStack(x, y);
+                if (stack.isEmpty()) {
+                    continue;
+                }
+                if (stack.getItem() instanceof IReactorFuel || stack.getItem() instanceof IReactorHeatStorage) {
+                    continue;
+                }
+                if (stack.getItem() instanceof IReactorComponent component) {
+                    component.processTick(this, stack, x, y);
+                }
+            }
+        }
     }
 
     private void processComponentPhase(final Class<? extends IReactorComponent> componentType) {

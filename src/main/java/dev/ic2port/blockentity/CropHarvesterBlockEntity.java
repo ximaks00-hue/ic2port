@@ -199,6 +199,12 @@ public class CropHarvesterBlockEntity extends BlockEntity implements IEnergyAcce
 
         }
 
+        if (!hasOutputSpace()) {
+
+            return;
+
+        }
+
 
 
         boolean harvested = false;
@@ -272,6 +278,16 @@ public class CropHarvesterBlockEntity extends BlockEntity implements IEnergyAcce
     }
 
 
+
+    private boolean hasOutputSpace() {
+        for (int slot = 0; slot < outputHandler.getSlots(); slot++) {
+            ItemStack stack = outputHandler.getStackInSlot(slot);
+            if (stack.isEmpty() || stack.getCount() < stack.getMaxStackSize()) {
+                return true;
+            }
+        }
+        return false;
+    }
 
     private void insertOutput(ItemStack stack) {
 

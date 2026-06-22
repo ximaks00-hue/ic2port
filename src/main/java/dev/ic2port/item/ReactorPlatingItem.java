@@ -29,6 +29,9 @@ public class ReactorPlatingItem extends Item implements IReactorHeatStorage {
 
     @Override
     public void processTick(final IReactor reactor, final ItemStack stack, final int x, final int y) {
+        if (!reactor.isColumnEnabled(x)) {
+            return;
+        }
         double heat = ReactorComponentHeat.getHeat(stack);
         if (heat >= MAX_COMPONENT_HEAT) {
             reactor.setStack(x, y, ItemStack.EMPTY);

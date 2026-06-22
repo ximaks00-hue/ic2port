@@ -30,6 +30,9 @@ public class ReactorCondensatorItem extends Item implements IReactorHeatStorage 
 
     @Override
     public void processTick(final IReactor reactor, final ItemStack stack, final int x, final int y) {
+        if (!reactor.isColumnEnabled(x)) {
+            return;
+        }
         double selfHeat = ReactorComponentHeat.getHeat(stack);
         if (selfHeat >= maxComponentHeat) {
             reactor.setStack(x, y, ItemStack.EMPTY);
