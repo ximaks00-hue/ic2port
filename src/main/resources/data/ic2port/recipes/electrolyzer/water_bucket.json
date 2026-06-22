@@ -1,0 +1,8 @@
+{
+  "type": "ic2port:electrolyzer",
+  "input": {"item": "minecraft:water_bucket"},
+  "output": {"item": "minecraft:bucket"},
+  "secondary": {"item": "minecraft:glass_bottle", "count": 2},
+  "energy": 1000,
+  "time": 500
+}

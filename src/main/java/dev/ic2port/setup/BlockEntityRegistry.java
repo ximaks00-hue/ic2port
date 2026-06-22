@@ -3,6 +3,8 @@ package dev.ic2port.setup;
 import dev.ic2port.Reference;
 import dev.ic2port.blockentity.BatBoxBlockEntity;
 import dev.ic2port.blockentity.ConstructionFoamBlockEntity;
+import dev.ic2port.blockentity.BlastInductionFurnaceBlockEntity;
+import dev.ic2port.blockentity.CentrifugalExtractorBlockEntity;
 import dev.ic2port.blockentity.CopperCableBlockEntity;
 import dev.ic2port.blockentity.CreativeGeneratorBlockEntity;
 import dev.ic2port.blockentity.CropHarvesterBlockEntity;
@@ -10,6 +12,9 @@ import dev.ic2port.blockentity.CropAnalyzerBlockEntity;
 import dev.ic2port.blockentity.CropmatronBlockEntity;
 import dev.ic2port.blockentity.CropSticksBlockEntity;
 import dev.ic2port.blockentity.AdvancedSolarPanelBlockEntity;
+import dev.ic2port.blockentity.DetectorCableBlockEntity;
+import dev.ic2port.blockentity.HvSolarPanelBlockEntity;
+import dev.ic2port.blockentity.SplitterCableBlockEntity;
 import dev.ic2port.blockentity.AlloySmelterBlockEntity;
 import dev.ic2port.blockentity.ElectrolyzerBlockEntity;
 import dev.ic2port.blockentity.PatternReplicatorBlockEntity;
@@ -108,6 +113,11 @@ public final class BlockEntityRegistry {
                     .of(ExtractorBlockEntity::new, BlockRegistry.EXTRACTOR.get())
                     .build(null));
 
+    public static final RegistryObject<BlockEntityType<CentrifugalExtractorBlockEntity>> CENTRIFUGAL_EXTRACTOR_BE =
+            BLOCK_ENTITIES.register("centrifugal_extractor", () -> BlockEntityType.Builder
+                    .of(CentrifugalExtractorBlockEntity::new, BlockRegistry.CENTRIFUGAL_EXTRACTOR.get())
+                    .build(null));
+
     public static final RegistryObject<BlockEntityType<CompressorBlockEntity>> COMPRESSOR_BE =
             BLOCK_ENTITIES.register("compressor", () -> BlockEntityType.Builder
                     .of(CompressorBlockEntity::new, BlockRegistry.COMPRESSOR.get())
@@ -131,6 +141,11 @@ public final class BlockEntityRegistry {
     public static final RegistryObject<BlockEntityType<InductionFurnaceBlockEntity>> INDUCTION_FURNACE_BE =
             BLOCK_ENTITIES.register("induction_furnace", () -> BlockEntityType.Builder
                     .of(InductionFurnaceBlockEntity::new, BlockRegistry.INDUCTION_FURNACE.get())
+                    .build(null));
+
+    public static final RegistryObject<BlockEntityType<BlastInductionFurnaceBlockEntity>> BLAST_INDUCTION_FURNACE_BE =
+            BLOCK_ENTITIES.register("blast_induction_furnace", () -> BlockEntityType.Builder
+                    .of(BlastInductionFurnaceBlockEntity::new, BlockRegistry.BLAST_INDUCTION_FURNACE.get())
                     .build(null));
 
     public static final RegistryObject<BlockEntityType<MetalFormerBlockEntity>> METAL_FORMER_BE =
@@ -191,6 +206,21 @@ public final class BlockEntityRegistry {
     public static final RegistryObject<BlockEntityType<MFSUBlockEntity>> MFSU_BE =
             BLOCK_ENTITIES.register("mfsu", () -> BlockEntityType.Builder
                     .of(MFSUBlockEntity::new, BlockRegistry.MFSU.get())
+                    .build(null));
+
+    public static final RegistryObject<BlockEntityType<HvSolarPanelBlockEntity>> HV_SOLAR_PANEL_BE =
+            BLOCK_ENTITIES.register("hv_solar_panel", () -> BlockEntityType.Builder
+                    .of(HvSolarPanelBlockEntity::new, BlockRegistry.HV_SOLAR_PANEL.get())
+                    .build(null));
+
+    public static final RegistryObject<BlockEntityType<DetectorCableBlockEntity>> DETECTOR_CABLE_BE =
+            BLOCK_ENTITIES.register("detector_cable", () -> BlockEntityType.Builder
+                    .of(DetectorCableBlockEntity::new, BlockRegistry.DETECTOR_CABLE.get())
+                    .build(null));
+
+    public static final RegistryObject<BlockEntityType<SplitterCableBlockEntity>> SPLITTER_CABLE_BE =
+            BLOCK_ENTITIES.register("splitter_cable", () -> BlockEntityType.Builder
+                    .of(SplitterCableBlockEntity::new, BlockRegistry.SPLITTER_CABLE.get())
                     .build(null));
 
     public static final RegistryObject<BlockEntityType<AdvancedSolarPanelBlockEntity>> ADVANCED_SOLAR_PANEL_BE =

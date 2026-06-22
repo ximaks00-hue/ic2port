@@ -15,10 +15,12 @@ import dev.ic2port.menu.NuclearReactorMenu;
 import dev.ic2port.setup.BlockEntityRegistry;
 import dev.ic2port.setup.BlockRegistry;
 import dev.ic2port.setup.ModCapabilities;
+import dev.ic2port.setup.ModConfig;
 import dev.ic2port.util.EnergyTransferHelper;
 import dev.ic2port.util.ReactorGridHelper;
 import dev.ic2port.util.ReactorItemFilters;
 import dev.ic2port.util.ReactorMeltdownHelper;
+import dev.ic2port.util.ReactorTickProfiler;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -48,7 +50,6 @@ public class NuclearReactorBlockEntity extends BlockEntity
     public static final int GRID_HEIGHT = 6;
     public static final int SLOT_COUNT = GRID_WIDTH * GRID_HEIGHT;
 
-    public static final double MAX_HEAT = 10_000.0D;
     public static final double ENERGY_CAPACITY = 100_000.0D;
     public static final double MAX_OUTPUT_PER_TICK = EnergyTier.HV_MAX_PACKET;
     public static final int TIER = EnergyTier.HV;
@@ -204,11 +205,11 @@ public class NuclearReactorBlockEntity extends BlockEntity
         refreshChamberCount();
 
         if (isActive()) {
-            processReactorTick();
-            ReactorMeltdownHelper.applyOverheatEffects(level, worldPosition, heat, MAX_HEAT);
+            ReactorTickProfiler.profile("fission", this::processReactorTick);
+            ReactorMeltdownHelper.applyOverheatEffects(level, worldPosition, heat, getMaxHeat());
         }
 
-        if (heat > MAX_HEAT) {
+        if (heat > getMaxHeat()) {
             storedEnergy = Math.min(ENERGY_CAPACITY, storedEnergy + pendingEnergy);
             pendingEnergy = 0.0D;
             meltdown();
@@ -388,7 +389,7 @@ public class NuclearReactorBlockEntity extends BlockEntity
                 }
             }
         }
-        return MAX_HEAT + bonus;
+        return ModConfig.REACTOR_MAX_HEAT.get() + bonus;
     }
 
     @Override
@@ -483,7 +484,7 @@ public class NuclearReactorBlockEntity extends BlockEntity
     public void load(final CompoundTag tag) {
         super.load(tag);
         itemHandler.deserializeNBT(tag.getCompound("Inventory"));
-        heat = Math.min(tag.getDouble("Heat"), MAX_HEAT);
+        heat = Math.min(tag.getDouble("Heat"), getMaxHeat());
         storedEnergy = Math.min(tag.getDouble("StoredEnergy"), ENERGY_CAPACITY);
         pendingEnergy = Math.min(tag.getDouble("PendingEnergy"), Math.max(0.0D, ENERGY_CAPACITY - storedEnergy));
         chamberCount = tag.getInt("ChamberCount");

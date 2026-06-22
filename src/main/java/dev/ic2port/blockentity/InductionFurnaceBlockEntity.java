@@ -77,12 +77,35 @@ public class InductionFurnaceBlockEntity extends BaseMachineBlockEntity {
     };
 
     public InductionFurnaceBlockEntity(final BlockPos pos, final BlockState state) {
-        super(BlockEntityRegistry.INDUCTION_FURNACE_BE.get(), pos, state, SLOT_COUNT, ENERGY_CAPACITY);
+        this(BlockEntityRegistry.INDUCTION_FURNACE_BE.get(), pos, state);
+    }
+
+    protected InductionFurnaceBlockEntity(
+            final net.minecraft.world.level.block.entity.BlockEntityType<?> type,
+            final BlockPos pos,
+            final BlockState state) {
+        super(type, pos, state, SLOT_COUNT, getEnergyCapacityFor(type));
+    }
+
+    protected static double getEnergyCapacityFor(final net.minecraft.world.level.block.entity.BlockEntityType<?> type) {
+        return type == BlockEntityRegistry.BLAST_INDUCTION_FURNACE_BE.get() ? 24_000.0D : ENERGY_CAPACITY;
     }
 
     @Override
     public int getTier() {
         return TIER;
+    }
+
+    protected int getSpeedDivisor() {
+        return SPEED_DIVISOR;
+    }
+
+    protected double getFallbackEnergyPerTick() {
+        return ENERGY_PER_TICK;
+    }
+
+    protected int getFallbackProcessingTime() {
+        return DEFAULT_PROCESSING_TIME;
     }
 
     @Override
@@ -130,11 +153,11 @@ public class InductionFurnaceBlockEntity extends BaseMachineBlockEntity {
         if (recipeOptional.isEmpty()) {
             if (laneA) {
                 progressA = 0;
-                maxProgressA = DEFAULT_PROCESSING_TIME;
+                maxProgressA = getFallbackProcessingTime();
                 activeRecipeIdA = null;
             } else {
                 progressB = 0;
-                maxProgressB = DEFAULT_PROCESSING_TIME;
+                maxProgressB = getFallbackProcessingTime();
                 activeRecipeIdB = null;
             }
             setChanged();
@@ -151,7 +174,10 @@ public class InductionFurnaceBlockEntity extends BaseMachineBlockEntity {
                 progressB = 0;
             }
         }
-        int baseTime = Math.max(1, (recipe.getProcessingTime() > 0 ? recipe.getProcessingTime() : DEFAULT_PROCESSING_TIME * SPEED_DIVISOR) / SPEED_DIVISOR);
+        int baseTime = Math.max(
+                1,
+                (recipe.getProcessingTime() > 0 ? recipe.getProcessingTime() : getFallbackProcessingTime() * getSpeedDivisor())
+                        / getSpeedDivisor());
         int scaledMax = getScaledProcessTime(baseTime);
         if (laneA) {
             maxProgressA = scaledMax;
@@ -167,7 +193,7 @@ public class InductionFurnaceBlockEntity extends BaseMachineBlockEntity {
 
         final double energyPerTick = recipe.getProcessingTime() > 0 && recipe.getEnergyCost() > 0.0D
                 ? getScaledEnergyPerTick(recipe.getEnergyCost() / (double) baseTime)
-                : getScaledEnergyPerTick(ENERGY_PER_TICK);
+                : getScaledEnergyPerTick(getFallbackEnergyPerTick());
         if (!consumeEnergy(energyPerTick)) {
             return;
         }
@@ -250,9 +276,9 @@ public class InductionFurnaceBlockEntity extends BaseMachineBlockEntity {
     public void load(final CompoundTag tag) {
         super.load(tag);
         progressA = tag.getInt("ProgressA");
-        maxProgressA = tag.contains("MaxProgressA") ? tag.getInt("MaxProgressA") : DEFAULT_PROCESSING_TIME;
+        maxProgressA = tag.contains("MaxProgressA") ? tag.getInt("MaxProgressA") : getFallbackProcessingTime();
         progressB = tag.getInt("ProgressB");
-        maxProgressB = tag.contains("MaxProgressB") ? tag.getInt("MaxProgressB") : DEFAULT_PROCESSING_TIME;
+        maxProgressB = tag.contains("MaxProgressB") ? tag.getInt("MaxProgressB") : getFallbackProcessingTime();
         activeRecipeIdA = tag.contains("ActiveRecipeA")
                 ? ResourceLocation.tryParse(tag.getString("ActiveRecipeA"))
                 : null;

@@ -6,6 +6,7 @@ import dev.ic2port.menu.FusionReactorMenu;
 import dev.ic2port.setup.BlockEntityRegistry;
 import dev.ic2port.setup.ItemRegistry;
 import dev.ic2port.setup.ModCapabilities;
+import dev.ic2port.setup.ModConfig;
 import dev.ic2port.util.FusionFuelHelper;
 import dev.ic2port.util.FusionMeltableHelper;
 import dev.ic2port.util.FusionReactorHelper;
@@ -156,9 +157,10 @@ public class FusionReactorBlockEntity extends BlockEntity implements IEnergyAcce
         }
 
         if (heat < HEAT_TARGET) {
-            if (storedEnergy >= HEAT_EU_PER_TICK) {
-                storedEnergy -= HEAT_EU_PER_TICK;
-                heat += HEAT_EU_PER_TICK;
+            final double heatEuPerTick = ModConfig.FUSION_HEAT_EU_PER_TICK.get();
+            if (storedEnergy >= heatEuPerTick) {
+                storedEnergy -= heatEuPerTick;
+                heat += heatEuPerTick;
             }
             notifyComparatorOutput();
             setChanged();
@@ -172,7 +174,9 @@ public class FusionReactorBlockEntity extends BlockEntity implements IEnergyAcce
         }
         productionCooldown = FusionFuelHelper.PRODUCTION_INTERVAL_TICKS;
 
-        int produced = FusionFuelHelper.countProductionRate(itemHandler, FUEL_SLOT_START, FUEL_SLOT_END);
+        int produced = (int) Math.round(
+                FusionFuelHelper.countProductionRate(itemHandler, FUEL_SLOT_START, FUEL_SLOT_END)
+                        * ModConfig.FUSION_LAVA_MULTIPLIER.get());
         if (produced <= 0 || lavaTank.getFluidAmount() >= LAVA_CAPACITY_MB) {
             setChanged();
             return;

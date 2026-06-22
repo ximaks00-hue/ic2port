@@ -3,6 +3,7 @@ package dev.ic2port.util;
 import dev.ic2port.api.reactor.IReactorFuel;
 import dev.ic2port.blockentity.NuclearReactorBlockEntity;
 import dev.ic2port.setup.BlockRegistry;
+import dev.ic2port.setup.ModConfig;
 import dev.ic2port.setup.ModEffects;
 import dev.ic2port.item.HazmatArmorItem;
 import dev.ic2port.item.NanoSuitItem;
@@ -21,15 +22,24 @@ import net.minecraft.world.level.block.state.BlockState;
  */
 public final class ReactorMeltdownHelper {
 
-    private static final double HEAT_WARNING_RATIO = 0.5D;
-    private static final double HEAT_RADIATION_RATIO = 0.75D;
     private static final int IGNITE_RADIUS = 3;
-    private static final int RADIATION_RADIUS = 10;
     private static final int RADIATION_AMPLIFIER = 4;
     private static final int RADIATION_DURATION_TICKS = 100;
 
     private ReactorMeltdownHelper() {
         throw new UnsupportedOperationException("Utility class");
+    }
+
+    private static double heatWarningRatio() {
+        return ModConfig.REACTOR_HEAT_WARNING_RATIO.get();
+    }
+
+    private static double heatRadiationRatio() {
+        return ModConfig.REACTOR_HEAT_RADIATION_RATIO.get();
+    }
+
+    private static int radiationRadius() {
+        return ModConfig.REACTOR_RADIATION_RADIUS.get();
     }
 
     public static void applyOverheatEffects(
@@ -42,11 +52,11 @@ public final class ReactorMeltdownHelper {
         }
 
         double ratio = heat / maxHeat;
-        if (ratio > HEAT_WARNING_RATIO) {
+        if (ratio > heatWarningRatio()) {
             igniteNearbyBlocks(level, reactorPos, IGNITE_RADIUS);
         }
-        if (ratio > HEAT_RADIATION_RATIO) {
-            irradiateNearbyPlayers(level, reactorPos, RADIATION_RADIUS);
+        if (ratio > heatRadiationRatio()) {
+            irradiateNearbyPlayers(level, reactorPos, radiationRadius());
         }
     }
 

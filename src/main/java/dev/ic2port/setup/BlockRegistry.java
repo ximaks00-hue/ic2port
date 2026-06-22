@@ -5,6 +5,8 @@ package dev.ic2port.setup;
 
 import dev.ic2port.Reference;
 import dev.ic2port.block.BatBoxBlock;
+import dev.ic2port.block.BlastInductionFurnaceBlock;
+import dev.ic2port.block.CentrifugalExtractorBlock;
 import dev.ic2port.block.CopperCableBlock;
 import dev.ic2port.block.CannerBlock;
 import dev.ic2port.block.CompressorBlock;
@@ -22,6 +24,9 @@ import dev.ic2port.block.IronScaffoldBlock;
 import dev.ic2port.block.WoodenScaffoldBlock;
 import dev.ic2port.block.LVTransformerBlock;
 import dev.ic2port.block.AdvancedSolarPanelBlock;
+import dev.ic2port.block.DetectorCableBlock;
+import dev.ic2port.block.HvSolarPanelBlock;
+import dev.ic2port.block.SplitterCableBlock;
 import dev.ic2port.block.AlloySmelterBlock;
 import dev.ic2port.block.ElectrolyzerBlock;
 import dev.ic2port.block.PatternReplicatorBlock;
@@ -118,6 +123,15 @@ public final class BlockRegistry {
     public static final RegistryObject<Block> ADVANCED_SOLAR_PANEL = BLOCKS.register("advanced_solar_panel",
             () -> new AdvancedSolarPanelBlock(machineProperties(MapColor.METAL)));
 
+    public static final RegistryObject<Block> HV_SOLAR_PANEL = BLOCKS.register("hv_solar_panel",
+            () -> new HvSolarPanelBlock(machineProperties(MapColor.METAL)));
+
+    public static final RegistryObject<Block> DETECTOR_CABLE = BLOCKS.register("detector_cable",
+            () -> new DetectorCableBlock(machineProperties(MapColor.METAL).noOcclusion()));
+
+    public static final RegistryObject<Block> SPLITTER_CABLE = BLOCKS.register("splitter_cable",
+            () -> new SplitterCableBlock(machineProperties(MapColor.METAL).noOcclusion()));
+
     public static final RegistryObject<Block> TELEPORTER = BLOCKS.register("teleporter",
             () -> new TeleporterBlock(machineProperties(MapColor.COLOR_PURPLE)));
 
@@ -184,6 +198,9 @@ public final class BlockRegistry {
     public static final RegistryObject<Block> EXTRACTOR = BLOCKS.register("extractor",
             () -> new ExtractorBlock(machineProperties(MapColor.COLOR_GREEN)));
 
+    public static final RegistryObject<Block> CENTRIFUGAL_EXTRACTOR = BLOCKS.register("centrifugal_extractor",
+            () -> new CentrifugalExtractorBlock(machineProperties(MapColor.COLOR_LIGHT_BLUE)));
+
     public static final RegistryObject<Block> COMPRESSOR = BLOCKS.register("compressor",
             () -> new CompressorBlock(machineProperties(MapColor.COLOR_LIGHT_GRAY)));
 
@@ -198,6 +215,9 @@ public final class BlockRegistry {
 
     public static final RegistryObject<Block> INDUCTION_FURNACE = BLOCKS.register("induction_furnace",
             () -> new InductionFurnaceBlock(machineProperties(MapColor.TERRACOTTA_ORANGE)));
+
+    public static final RegistryObject<Block> BLAST_INDUCTION_FURNACE = BLOCKS.register("blast_induction_furnace",
+            () -> new BlastInductionFurnaceBlock(machineProperties(MapColor.TERRACOTTA_RED)));
 
     public static final RegistryObject<Block> METAL_FORMER = BLOCKS.register("metal_former",
             () -> new MetalFormerBlock(machineProperties(MapColor.COLOR_GRAY)));

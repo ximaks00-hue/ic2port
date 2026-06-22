@@ -1,0 +1,8 @@
+{
+  "type": "ic2port:alloy_smelter",
+  "input_a": {"item": "minecraft:copper_ingot"},
+  "input_b": {"item": "ic2port:tin_ingot"},
+  "output": {"item": "ic2port:bronze_ingot", "count": 2},
+  "energy": 800,
+  "time": 400
+}

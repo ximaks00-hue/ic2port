@@ -27,7 +27,9 @@ import dev.ic2port.item.ObscuratorItem;
 import dev.ic2port.item.TinCanItem;
 import dev.ic2port.item.WhiskyItem;
 import dev.ic2port.item.WeedExItem;
+import dev.ic2port.item.MiningLaserItem;
 import dev.ic2port.item.OdScannerItem;
+import dev.ic2port.item.OvScannerItem;
 import dev.ic2port.item.NanoSuitItem;
 import dev.ic2port.item.DiamondDrillItem;
 import dev.ic2port.item.ElectricJetpackItem;
@@ -55,6 +57,8 @@ import dev.ic2port.item.NeutronReflectorItem;
 import dev.ic2port.item.QuadFuelRodItem;
 import dev.ic2port.item.ReactorCondensatorItem;
 import dev.ic2port.item.ReactorPlatingItem;
+import dev.ic2port.item.BronzeArmorItem;
+import dev.ic2port.item.CompositeArmorItem;
 import dev.ic2port.item.HazmatArmorItem;
 import dev.ic2port.item.RadioactiveItem;
 import dev.ic2port.item.OverclockerUpgradeItem;
@@ -122,6 +126,15 @@ public final class ItemRegistry {
 
     public static final RegistryObject<Item> ADVANCED_SOLAR_PANEL = ITEMS.register("advanced_solar_panel",
             () -> new BlockItem(BlockRegistry.ADVANCED_SOLAR_PANEL.get(), new Item.Properties()));
+
+    public static final RegistryObject<Item> HV_SOLAR_PANEL = ITEMS.register("hv_solar_panel",
+            () -> new BlockItem(BlockRegistry.HV_SOLAR_PANEL.get(), new Item.Properties()));
+
+    public static final RegistryObject<Item> DETECTOR_CABLE = ITEMS.register("detector_cable",
+            () -> new BlockItem(BlockRegistry.DETECTOR_CABLE.get(), new Item.Properties()));
+
+    public static final RegistryObject<Item> SPLITTER_CABLE = ITEMS.register("splitter_cable",
+            () -> new BlockItem(BlockRegistry.SPLITTER_CABLE.get(), new Item.Properties()));
 
     public static final RegistryObject<Item> TELEPORTER = ITEMS.register("teleporter",
             () -> new BlockItem(BlockRegistry.TELEPORTER.get(), new Item.Properties()));
@@ -239,6 +252,24 @@ public final class ItemRegistry {
 
     public static final RegistryObject<Item> HAZMAT_BOOTS = ITEMS.register("hazmat_boots",
             () -> new HazmatArmorItem(ArmorItem.Type.BOOTS, new Item.Properties()));
+
+    public static final RegistryObject<Item> BRONZE_HELMET = ITEMS.register("bronze_helmet",
+            () -> new BronzeArmorItem(ArmorItem.Type.HELMET, new Item.Properties()));
+    public static final RegistryObject<Item> BRONZE_CHESTPLATE = ITEMS.register("bronze_chestplate",
+            () -> new BronzeArmorItem(ArmorItem.Type.CHESTPLATE, new Item.Properties()));
+    public static final RegistryObject<Item> BRONZE_LEGGINGS = ITEMS.register("bronze_leggings",
+            () -> new BronzeArmorItem(ArmorItem.Type.LEGGINGS, new Item.Properties()));
+    public static final RegistryObject<Item> BRONZE_BOOTS = ITEMS.register("bronze_boots",
+            () -> new BronzeArmorItem(ArmorItem.Type.BOOTS, new Item.Properties()));
+
+    public static final RegistryObject<Item> COMPOSITE_HELMET = ITEMS.register("composite_helmet",
+            () -> new CompositeArmorItem(ArmorItem.Type.HELMET, new Item.Properties()));
+    public static final RegistryObject<Item> COMPOSITE_CHESTPLATE = ITEMS.register("composite_chestplate",
+            () -> new CompositeArmorItem(ArmorItem.Type.CHESTPLATE, new Item.Properties()));
+    public static final RegistryObject<Item> COMPOSITE_LEGGINGS = ITEMS.register("composite_leggings",
+            () -> new CompositeArmorItem(ArmorItem.Type.LEGGINGS, new Item.Properties()));
+    public static final RegistryObject<Item> COMPOSITE_BOOTS = ITEMS.register("composite_boots",
+            () -> new CompositeArmorItem(ArmorItem.Type.BOOTS, new Item.Properties()));
 
     public static final RegistryObject<Item> NANO_HELMET = ITEMS.register("nano_helmet",
             () -> new NanoSuitItem(ArmorItem.Type.HELMET, new Item.Properties()));
@@ -359,6 +390,12 @@ public final class ItemRegistry {
 
     public static final RegistryObject<Item> OD_SCANNER = ITEMS.register("od_scanner",
             () -> new OdScannerItem(new Item.Properties()));
+
+    public static final RegistryObject<Item> OV_SCANNER = ITEMS.register("ov_scanner",
+            () -> new OvScannerItem(new Item.Properties()));
+
+    public static final RegistryObject<Item> MINING_LASER = ITEMS.register("mining_laser",
+            () -> new MiningLaserItem(new Item.Properties()));
 
     public static final RegistryObject<Item> THERMOMETER = ITEMS.register("thermometer",
             () -> new ThermometerItem(new Item.Properties()));
@@ -588,6 +625,9 @@ public final class ItemRegistry {
     public static final RegistryObject<Item> EXTRACTOR = ITEMS.register("extractor",
             () -> new BlockItem(BlockRegistry.EXTRACTOR.get(), new Item.Properties()));
 
+    public static final RegistryObject<Item> CENTRIFUGAL_EXTRACTOR = ITEMS.register("centrifugal_extractor",
+            () -> new BlockItem(BlockRegistry.CENTRIFUGAL_EXTRACTOR.get(), new Item.Properties()));
+
     public static final RegistryObject<Item> RUBBER_WOOD = ITEMS.register("rubber_wood",
             () -> new BlockItem(BlockRegistry.RUBBER_WOOD.get(), new Item.Properties()));
 
@@ -611,6 +651,9 @@ public final class ItemRegistry {
 
     public static final RegistryObject<Item> INDUCTION_FURNACE = ITEMS.register("induction_furnace",
             () -> new BlockItem(BlockRegistry.INDUCTION_FURNACE.get(), new Item.Properties()));
+
+    public static final RegistryObject<Item> BLAST_INDUCTION_FURNACE = ITEMS.register("blast_induction_furnace",
+            () -> new BlockItem(BlockRegistry.BLAST_INDUCTION_FURNACE.get(), new Item.Properties()));
 
     public static final RegistryObject<Item> METAL_FORMER = ITEMS.register("metal_former",
             () -> new BlockItem(BlockRegistry.METAL_FORMER.get(), new Item.Properties()));

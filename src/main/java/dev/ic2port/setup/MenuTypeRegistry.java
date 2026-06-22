@@ -16,6 +16,7 @@ import dev.ic2port.menu.FusionReactorMenu;
 import dev.ic2port.menu.VacuumCannerMenu;
 import dev.ic2port.menu.BatBoxMenu;
 import dev.ic2port.menu.CannerMenu;
+import dev.ic2port.menu.CentrifugalExtractorMenu;
 import dev.ic2port.menu.CompressorMenu;
 import dev.ic2port.menu.ElectricFurnaceMenu;
 import dev.ic2port.menu.ExtractorMenu;
@@ -52,6 +53,8 @@ public final class MenuTypeRegistry {
             MENUS.register("recycler", () -> IForgeMenuType.create(RecyclerMenu::new));
     public static final RegistryObject<MenuType<ExtractorMenu>> EXTRACTOR_MENU =
             MENUS.register("extractor", () -> IForgeMenuType.create(ExtractorMenu::new));
+    public static final RegistryObject<MenuType<CentrifugalExtractorMenu>> CENTRIFUGAL_EXTRACTOR_MENU =
+            MENUS.register("centrifugal_extractor", () -> IForgeMenuType.create(CentrifugalExtractorMenu::new));
     public static final RegistryObject<MenuType<CompressorMenu>> COMPRESSOR_MENU =
             MENUS.register("compressor", () -> IForgeMenuType.create(CompressorMenu::new));
     public static final RegistryObject<MenuType<CannerMenu>> CANNER_MENU =

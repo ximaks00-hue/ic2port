@@ -1,0 +1,7 @@
+{
+  "type": "ic2port:electrolyzer",
+  "input": {"item": "minecraft:clay"},
+  "output": {"item": "minecraft:clay_ball", "count": 4},
+  "energy": 500,
+  "time": 300
+}

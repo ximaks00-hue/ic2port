@@ -63,12 +63,35 @@ public class ExtractorBlockEntity extends BaseMachineBlockEntity {
     };
 
     public ExtractorBlockEntity(final BlockPos pos, final BlockState state) {
-        super(BlockEntityRegistry.EXTRACTOR_BE.get(), pos, state, SLOT_COUNT, ENERGY_CAPACITY);
+        this(BlockEntityRegistry.EXTRACTOR_BE.get(), pos, state);
+    }
+
+    protected ExtractorBlockEntity(
+            final net.minecraft.world.level.block.entity.BlockEntityType<?> type,
+            final BlockPos pos,
+            final BlockState state) {
+        super(type, pos, state, SLOT_COUNT, getEnergyCapacityFor(type));
+    }
+
+    protected static double getEnergyCapacityFor(final net.minecraft.world.level.block.entity.BlockEntityType<?> type) {
+        return type == BlockEntityRegistry.CENTRIFUGAL_EXTRACTOR_BE.get() ? 8_000.0D : ENERGY_CAPACITY;
     }
 
     @Override
     public int getTier() {
         return TIER;
+    }
+
+    protected int getProcessTimeDivisor() {
+        return 1;
+    }
+
+    protected double getFallbackEnergyPerTick() {
+        return ENERGY_PER_TICK;
+    }
+
+    protected int getFallbackProcessingTime() {
+        return DEFAULT_PROCESSING_TIME;
     }
 
     @Override
@@ -104,7 +127,7 @@ public class ExtractorBlockEntity extends BaseMachineBlockEntity {
         Optional<ExtractorRecipe> recipeOptional = resolveActiveRecipe(input);
         if (recipeOptional.isEmpty()) {
             progress = 0;
-            maxProgress = DEFAULT_PROCESSING_TIME;
+            maxProgress = getFallbackProcessingTime();
             activeRecipeId = null;
             setChanged();
             return;
@@ -114,10 +137,13 @@ public class ExtractorBlockEntity extends BaseMachineBlockEntity {
         if (MachineRecipeHelper.shouldResetProgress(previousRecipeId, activeRecipeId, progress)) {
             progress = 0;
         }
-        int baseProcessTime = recipe.getProcessingTime() > 0 ? recipe.getProcessingTime() : DEFAULT_PROCESSING_TIME;
+        int baseProcessTime = Math.max(
+                1,
+                (recipe.getProcessingTime() > 0 ? recipe.getProcessingTime() : getFallbackProcessingTime())
+                        / getProcessTimeDivisor());
         maxProgress = getScaledProcessTime(baseProcessTime);
         progress = MachineRecipeHelper.clampProgress(progress, maxProgress);
-        double energyPerTick = getRecipeEnergyPerTick(recipe, ENERGY_PER_TICK);
+        double energyPerTick = getRecipeEnergyPerTick(recipe, getFallbackEnergyPerTick());
 
         if (!canOutput(recipe, output)) {
             return;
@@ -181,7 +207,7 @@ public class ExtractorBlockEntity extends BaseMachineBlockEntity {
     public void load(final CompoundTag tag) {
         super.load(tag);
         progress = tag.getInt("Progress");
-        maxProgress = tag.contains("MaxProgress") ? tag.getInt("MaxProgress") : DEFAULT_PROCESSING_TIME;
+        maxProgress = tag.contains("MaxProgress") ? tag.getInt("MaxProgress") : getFallbackProcessingTime();
         activeRecipeId = tag.contains("ActiveRecipe")
                 ? ResourceLocation.tryParse(tag.getString("ActiveRecipe"))
                 : null;

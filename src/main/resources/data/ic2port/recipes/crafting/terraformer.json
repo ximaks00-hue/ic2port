@@ -1,0 +1,11 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": ["DPD", "CMC", "DPD"],
+  "key": {
+    "D": {"item": "minecraft:dirt"},
+    "P": {"item": "minecraft:paper"},
+    "C": {"item": "ic2port:gold_cable"},
+    "M": {"item": "ic2port:advanced_machine_casing"}
+  },
+  "result": {"item": "ic2port:terraformer"}
+}

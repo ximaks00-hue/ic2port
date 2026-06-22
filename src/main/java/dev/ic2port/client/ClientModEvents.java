@@ -16,6 +16,7 @@ import dev.ic2port.client.screen.CannerScreen;
 import dev.ic2port.client.screen.CropAnalyzerScreen;
 import dev.ic2port.client.screen.CropHarvesterScreen;
 import dev.ic2port.client.screen.CropmatronScreen;
+import dev.ic2port.client.screen.CentrifugalExtractorScreen;
 import dev.ic2port.client.screen.CompressorScreen;
 import dev.ic2port.client.screen.ElectricFurnaceScreen;
 import dev.ic2port.client.screen.ExtractorScreen;
@@ -62,6 +63,7 @@ public final class ClientModEvents {
             MenuScreens.register(MenuTypeRegistry.MACERATOR_MENU.get(), MaceratorScreen::new);
             MenuScreens.register(MenuTypeRegistry.RECYCLER_MENU.get(), RecyclerScreen::new);
             MenuScreens.register(MenuTypeRegistry.EXTRACTOR_MENU.get(), ExtractorScreen::new);
+            MenuScreens.register(MenuTypeRegistry.CENTRIFUGAL_EXTRACTOR_MENU.get(), CentrifugalExtractorScreen::new);
             MenuScreens.register(MenuTypeRegistry.COMPRESSOR_MENU.get(), CompressorScreen::new);
             MenuScreens.register(MenuTypeRegistry.CANNER_MENU.get(), CannerScreen::new);
             MenuScreens.register(MenuTypeRegistry.VACUUM_CANNER_MENU.get(), VacuumCannerScreen::new);

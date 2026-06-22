@@ -1,0 +1,7 @@
+{
+  "type": "ic2port:electrolyzer",
+  "input": {"item": "ic2port:scrap_box"},
+  "output": {"item": "ic2port:scrap", "count": 9},
+  "energy": 800,
+  "time": 400
+}

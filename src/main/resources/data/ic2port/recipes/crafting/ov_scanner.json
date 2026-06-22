@@ -1,0 +1,9 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [" L ", "LAL", " L "],
+  "key": {
+    "L": {"item": "ic2port:lapotron_crystal"},
+    "A": {"item": "ic2port:od_scanner"}
+  },
+  "result": {"item": "ic2port:ov_scanner"}
+}

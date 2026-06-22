@@ -1,0 +1,5 @@
+﻿{
+  "variants": {
+    "": { "model": "ic2port:block/blast_induction_furnace" }
+  }
+}

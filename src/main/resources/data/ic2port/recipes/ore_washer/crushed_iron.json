@@ -1,0 +1,7 @@
+{
+  "type": "ic2port:ore_washer",
+  "input": {"item": "ic2port:crushed_iron_ore"},
+  "output": {"item": "ic2port:iron_dust", "count": 2},
+  "energy": 600,
+  "time": 300
+}

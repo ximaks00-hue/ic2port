@@ -1,0 +1,6 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": ["I I", "I I"],
+  "key": { "I": { "item": "ic2port:bronze_ingot" } },
+  "result": { "item": "ic2port:bronze_boots" }
+}

@@ -1,0 +1,11 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": ["GGG", "ASA", "CCC"],
+  "key": {
+    "G": {"item": "minecraft:glass"},
+    "A": {"item": "ic2port:advanced_alloy"},
+    "S": {"item": "ic2port:advanced_solar_panel"},
+    "C": {"item": "ic2port:carbon_plate"}
+  },
+  "result": {"item": "ic2port:hv_solar_panel"}
+}

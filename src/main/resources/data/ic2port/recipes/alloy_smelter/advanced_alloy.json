@@ -1,0 +1,8 @@
+{
+  "type": "ic2port:alloy_smelter",
+  "input_a": {"item": "ic2port:mixed_metal_ingot"},
+  "input_b": {"item": "ic2port:bronze_ingot"},
+  "output": {"item": "ic2port:advanced_alloy", "count": 2},
+  "energy": 1200,
+  "time": 500
+}

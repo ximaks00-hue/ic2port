@@ -1,0 +1,8 @@
+{
+  "type": "ic2port:electrolyzer",
+  "input": {"item": "ic2port:copper_dust"},
+  "output": {"item": "minecraft:copper_ingot"},
+  "secondary": {"item": "ic2port:scrap"},
+  "energy": 600,
+  "time": 350
+}

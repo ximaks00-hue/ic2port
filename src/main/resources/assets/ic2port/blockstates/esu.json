@@ -1,0 +1,10 @@
+﻿{
+  "variants": {
+    "facing=down": { "model": "ic2port:block/esu", "x": 90 },
+    "facing=up": { "model": "ic2port:block/esu", "x": 270 },
+    "facing=north": { "model": "ic2port:block/esu", "y": 180 },
+    "facing=south": { "model": "ic2port:block/esu" },
+    "facing=west": { "model": "ic2port:block/esu", "y": 90 },
+    "facing=east": { "model": "ic2port:block/esu", "y": 270 }
+  }
+}

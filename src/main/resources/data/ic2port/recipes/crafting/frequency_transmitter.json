@@ -1,0 +1,9 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [" R ", "RCR", " R "],
+  "key": {
+    "R": {"item": "minecraft:redstone"},
+    "C": {"item": "ic2port:energy_crystal"}
+  },
+  "result": {"item": "ic2port:frequency_transmitter"}
+}

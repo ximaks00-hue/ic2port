@@ -1,0 +1,10 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": ["UMU", "CMC", "UMU"],
+  "key": {
+    "U": {"item": "ic2port:uu_matter"},
+    "M": {"item": "ic2port:mass_fabricator"},
+    "C": {"item": "ic2port:carbon_plate"}
+  },
+  "result": {"item": "ic2port:pattern_replicator"}
+}

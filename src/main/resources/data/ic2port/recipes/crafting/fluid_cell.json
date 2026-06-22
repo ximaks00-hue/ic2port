@@ -1,0 +1,8 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [" T ", "T T", " T "],
+  "key": {
+    "T": {"item": "ic2port:tin_plate"}
+  },
+  "result": {"item": "ic2port:fluid_cell", "count": 4}
+}

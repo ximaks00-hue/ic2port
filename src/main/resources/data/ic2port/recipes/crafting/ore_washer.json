@@ -1,0 +1,11 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": ["WBW", "CMC", "WBW"],
+  "key": {
+    "W": {"item": "ic2port:fluid_cell"},
+    "B": {"item": "minecraft:bucket"},
+    "C": {"item": "ic2port:gold_cable"},
+    "M": {"item": "ic2port:advanced_machine_casing"}
+  },
+  "result": {"item": "ic2port:ore_washer"}
+}

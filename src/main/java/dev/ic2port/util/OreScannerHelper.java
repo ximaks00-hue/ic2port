@@ -12,28 +12,48 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
- * Scans underground blocks for ore-like targets and builds a summary for the OD scanner.
+ * Scans underground blocks for ore-like targets and builds a summary for OD/OV scanners.
  */
 public final class OreScannerHelper {
 
     public static final int HORIZONTAL_RADIUS = 4;
     public static final int DEPTH = 32;
+    public static final int OV_HORIZONTAL_RADIUS = 8;
+    public static final int OV_DEPTH = 64;
+
+    public record ScanResult(Map<String, Integer> counts, int maxVeinSize, String dominantOreKey) {}
 
     private OreScannerHelper() {
         throw new UnsupportedOperationException("Utility class");
     }
 
     public static Map<String, Integer> scanColumn(final Level level, final BlockPos origin) {
+        return scanArea(level, origin, HORIZONTAL_RADIUS, DEPTH);
+    }
+
+    public static ScanResult scanDetailed(final Level level, final BlockPos origin) {
+        Map<String, Integer> counts = scanArea(level, origin, OV_HORIZONTAL_RADIUS, OV_DEPTH);
+        int maxVein = 0;
+        String dominant = null;
+        for (var entry : counts.entrySet()) {
+            if (entry.getValue() > maxVein) {
+                maxVein = entry.getValue();
+                dominant = entry.getKey();
+            }
+        }
+        return new ScanResult(counts, maxVein, dominant);
+    }
+
+    private static Map<String, Integer> scanArea(final Level level, final BlockPos origin,
+                                                  final int radius, final int depth) {
         Map<String, Integer> counts = new LinkedHashMap<>();
         BlockPos.MutableBlockPos cursor = new BlockPos.MutableBlockPos();
-        int minY = Math.max(level.getMinBuildHeight(), origin.getY() - DEPTH);
-        for (int x = origin.getX() - HORIZONTAL_RADIUS; x <= origin.getX() + HORIZONTAL_RADIUS; x++) {
-            for (int z = origin.getZ() - HORIZONTAL_RADIUS; z <= origin.getZ() + HORIZONTAL_RADIUS; z++) {
+        int minY = Math.max(level.getMinBuildHeight(), origin.getY() - depth);
+        for (int x = origin.getX() - radius; x <= origin.getX() + radius; x++) {
+            for (int z = origin.getZ() - radius; z <= origin.getZ() + radius; z++) {
                 for (int y = origin.getY() - 1; y >= minY; y--) {
                     cursor.set(x, y, z);
-                    if (!level.isLoaded(cursor)) {
-                        continue;
-                    }
+                    if (!level.isLoaded(cursor)) continue;
                     BlockState state = level.getBlockState(cursor);
                     String label = labelFor(state.getBlock());
                     if (label != null) {
@@ -52,9 +72,7 @@ public final class OreScannerHelper {
         MutableComponent message = Component.translatable("message.ic2port.od_scanner.header");
         boolean first = true;
         for (Map.Entry<String, Integer> entry : counts.entrySet()) {
-            if (!first) {
-                message.append(", ");
-            }
+            if (!first) message.append(", ");
             first = false;
             message.append(Component.translatable(entry.getKey()).append(": " + entry.getValue()));
         }

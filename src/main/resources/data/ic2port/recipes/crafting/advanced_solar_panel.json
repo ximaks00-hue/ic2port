@@ -1,0 +1,11 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": ["GGG", "RLR", "CCC"],
+  "key": {
+    "G": {"item": "minecraft:glass"},
+    "R": {"item": "minecraft:redstone"},
+    "L": {"item": "ic2port:lapotron_crystal"},
+    "C": {"item": "ic2port:carbon_plate"}
+  },
+  "result": {"item": "ic2port:advanced_solar_panel"}
+}

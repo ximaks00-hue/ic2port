@@ -1,0 +1,8 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {"item": "minecraft:paper"},
+    {"item": "minecraft:wheat_seeds"}
+  ],
+  "result": {"item": "ic2port:blueprint_cultivation"}
+}

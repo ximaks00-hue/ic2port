@@ -18,20 +18,20 @@ EU energy network, ore processing, nuclear power, crops, nano/quantum armor, and
 
 | Category | Highlights |
 |----------|------------|
-| **Energy** | EU tiers LV–EV · copper/gold/HV/glass-fiber cables · LV/MV/EV transformers · BatBox → MFE → MFSU → **ESU** |
-| **Generators** | Solid fuel · geothermal · solar (LV + advanced MV) · wind · water |
-| **Machines** | Macerator · extractor · compressor · recycler · electric/induction furnace · metal former · thermal centrifuge · mass fabricator · canner · vacuum canner · **electrolyzer** · **ore washer** · **alloy smelter** |
+| **Energy** | EU tiers LV–EV · copper/gold/HV/glass-fiber cables · **detector / splitter cables** · LV/MV/EV transformers · BatBox → MFE → MFSU → **ESU** |
+| **Generators** | Solid fuel · geothermal · solar (LV + advanced MV + **HV**) · wind · water |
+| **Machines** | Macerator · extractor · **centrifugal extractor** · compressor · recycler · electric/**induction blast** furnace · metal former · thermal centrifuge · mass fabricator · canner · vacuum canner · **electrolyzer** · **ore washer** · **alloy smelter** |
 | **Automation** | **Miner** (HV) · **Pump** (MV) · crop harvester · cropmatron |
 | **Nuclear** | Fission reactor + chambers · MOX · reflectors · plating · condensators · dual/quad fuel rods · meltdown |
 | **Fusion** | 5×5×5 shell reactor · lava production · valve export · comparator (heat/lava) · auto-export toggle |
 | **Crops** | 18+ species · cross-breeding · fertilizer · cropnalyzer (block + EU handheld) |
 | **Brewing** | Barrel: beer · rum · whisky · potions · tin cans |
-| **Armor** | Nano / quantum suits · 6 chestplate modules · module charge/discharge in storage blocks |
-| **Tools** | Drills · chainsaw · electric wrench · tree taps · OD scanner · EU reader · jetpack |
+| **Armor** | **Bronze / composite** · hazmat · nano / quantum suits · 6 chestplate modules · module charge/discharge in storage blocks |
+| **Tools** | Drills · chainsaw · electric wrench · tree taps · OD / **OV scanner** · **mining laser** · EU reader · jetpack |
 | **Endgame** | UU-matter · **teleporter** · **terraformer** · **pattern replicator** · iridium |
 | **World** | Tin & uranium ores · rubber trees · contaminated soil · construction foam |
 
-**Scale:** ~70 blocks · ~180 items · 240+ recipes · 8 advancements · EN + RU localization
+**Scale:** ~75 blocks · ~185 items · 270+ recipes · 8 advancements · EN + RU localization
 
 ---
 
@@ -71,11 +71,13 @@ See [`CREDITS.md`](CREDITS.md) for asset attribution.
 | Tier | Voltage | Storage | Key unlocks |
 |------|---------|---------|-------------|
 | **LV** | 32 EU/t | BatBox (40k) | Generator · macerator · extractor · compressor · recycler · electric furnace · RE-battery |
-| **MV** | 128 EU/t | MFE (600k) | Induction furnace · metal former · thermal centrifrifuge · charge pad · nano suit · **ore washer** · **alloy smelter** |
+| **MV** | 128 EU/t | MFE (600k) | Induction furnace · blast furnace · centrifugal extractor · metal former · thermal centrifuge · charge pad · nano suit · **ore washer** · **alloy smelter** |
 | **HV** | 512 EU/t | MFSU (10M) | Nuclear reactor · fusion reactor · mass fabricator · hazmat · **miner** · **teleporter** |
 | **EV** | 2048 EU/t | **ESU (10M)** | Quantum suit · UU-matter · **pattern replicator** · EV transformer |
 
-Typical ore path: **macerator** (×2 crushed) → **electric furnace** or **thermal centrifuge** (×2 dust) → plates via **compressor** / **metal former**.
+Typical ore path: **macerator** (×2 crushed) → **ore washer** or **electric furnace** / **blast induction furnace** → plates via **compressor** / **metal former**.
+
+Balance tables and config keys: [`docs/BALANCE.md`](docs/BALANCE.md).
 
 Armor charging: place electric armor in the **top charge slot** of BatBox / MFE / MFSU / ESU.  
 Module discharge: place nano/quantum chestplate in the **discharge slot** — modules (batpack, lappack, jetpack) drain into storage.
@@ -143,7 +145,7 @@ JEI (`R`) shows all custom machine recipes under **IC2 Port**.
 | Endgame | Teleporter link; terraformer blueprint; pattern replicator + UU |
 | Energy | Cables, transformers, ESU, armor/module charge & discharge |
 
-Known gaps: hazmat reuses nano textures; some assets are TR/MI placeholders. See [`CREDITS.md`](CREDITS.md).
+Known gaps: hazmat reuses nano textures; bronze/composite use vanilla armor icons; some assets are TR/MI placeholders. See [`CREDITS.md`](CREDITS.md).
 
 ---
 

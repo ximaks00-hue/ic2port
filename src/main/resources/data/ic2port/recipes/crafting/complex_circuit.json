@@ -1,0 +1,10 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": ["RCR", "CEC", "RCR"],
+  "key": {
+    "R": {"item": "minecraft:glowstone_dust"},
+    "C": {"item": "ic2port:hv_cable"},
+    "E": {"item": "ic2port:advanced_circuit"}
+  },
+  "result": {"item": "ic2port:complex_circuit", "count": 2}
+}
