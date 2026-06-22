@@ -306,7 +306,10 @@ public class FusionReactorBlockEntity extends BlockEntity implements IEnergyAcce
 
     @Override
     public double injectEnergy(final Direction directionFrom, final double amount, final int tier) {
-        if (level == null || level.isClientSide || amount <= 0.0D || tier < TIER) {
+        if (level == null || level.isClientSide || amount <= 0.0D) {
+            return amount;
+        }
+        if (tier > getTier()) {
             return amount;
         }
         double space = ENERGY_CAPACITY - storedEnergy;
@@ -366,7 +369,7 @@ public class FusionReactorBlockEntity extends BlockEntity implements IEnergyAcce
         if (tag.contains("LavaTank")) {
             lavaTank.readFromNBT(tag.getCompound("LavaTank"));
         }
-        storedEnergy = tag.getDouble("StoredEnergy");
+        storedEnergy = Math.min(tag.getDouble("StoredEnergy"), ENERGY_CAPACITY);
         heat = tag.getDouble("Heat");
         structureValid = tag.getBoolean("StructureValid");
         meltdownTriggered = tag.getBoolean("MeltdownTriggered");

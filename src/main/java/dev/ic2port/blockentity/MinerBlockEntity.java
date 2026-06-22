@@ -42,6 +42,11 @@ public class MinerBlockEntity extends BlockEntity implements IEnergyAcceptor {
         protected void onContentsChanged(final int slot) {
             setChanged();
         }
+
+        @Override
+        public boolean isItemValid(final int slot, final ItemStack stack) {
+            return false;
+        }
     };
     private final LazyOptional<IItemHandler> outputOptional = LazyOptional.of(() -> outputHandler);
     private final LazyOptional<IEnergyNode> energyOptional = LazyOptional.of(() -> this);
@@ -64,6 +69,7 @@ public class MinerBlockEntity extends BlockEntity implements IEnergyAcceptor {
     private void tickServer() {
         if (level == null || level.isClientSide || done) return;
         if (storedEnergy < EU_PER_BLOCK) return;
+        if (!hasOutputSpace()) return;
 
         tickCount++;
         if (tickCount < MINE_INTERVAL_TICKS) return;
@@ -110,9 +116,24 @@ public class MinerBlockEntity extends BlockEntity implements IEnergyAcceptor {
         setChanged();
     }
 
+    private boolean hasOutputSpace() {
+        for (int i = 0; i < OUTPUT_SLOTS; i++) {
+            ItemStack stack = outputHandler.getStackInSlot(i);
+            if (stack.isEmpty() || stack.getCount() < stack.getMaxStackSize()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     @Override
     public double injectEnergy(final Direction directionFrom, final double amount, final int tier) {
-        if (amount <= 0.0D) return amount;
+        if (level == null || level.isClientSide || amount <= 0.0D) {
+            return amount;
+        }
+        if (tier > getTier()) {
+            return amount;
+        }
         double space = ENERGY_CAPACITY - storedEnergy;
         double accepted = Math.min(amount, space);
         storedEnergy += accepted;

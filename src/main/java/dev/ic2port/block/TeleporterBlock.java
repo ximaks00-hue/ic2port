@@ -2,6 +2,7 @@ package dev.ic2port.block;
 
 import dev.ic2port.blockentity.TeleporterBlockEntity;
 import dev.ic2port.item.FrequencyTransmitterItem;
+import dev.ic2port.util.TeleportLink;
 import dev.ic2port.setup.BlockEntityRegistry;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
@@ -45,15 +46,16 @@ public class TeleporterBlock extends BaseEntityBlock {
         if (!(level.getBlockEntity(pos) instanceof TeleporterBlockEntity teleporter)) return InteractionResult.PASS;
 
         ItemStack held = player.getItemInHand(hand);
-        if (held.getItem() instanceof FrequencyTransmitterItem && FrequencyTransmitterItem.hasLinkedPos(held)) {
-            BlockPos dest = FrequencyTransmitterItem.getLinkedPos(held);
-            if (dest.equals(pos)) {
+        if (held.getItem() instanceof FrequencyTransmitterItem && FrequencyTransmitterItem.hasLinkedTarget(held)) {
+            TeleportLink link = FrequencyTransmitterItem.getLinkedTarget(held);
+            if (link.pos().equals(pos) && link.dimension().equals(level.dimension())) {
                 player.displayClientMessage(Component.translatable("block.ic2port.teleporter.same_block"), true);
                 return InteractionResult.CONSUME;
             }
-            boolean success = teleporter.teleportPlayer(player, dest);
-            if (!success) {
-                player.displayClientMessage(Component.translatable("block.ic2port.teleporter.no_energy"), true);
+            String failure = teleporter.tryTeleportPlayer(player, link);
+            if (failure != null) {
+                player.displayClientMessage(
+                        Component.translatable("block.ic2port.teleporter." + failure), true);
             }
             return InteractionResult.CONSUME;
         }

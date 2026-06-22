@@ -46,6 +46,9 @@ public class MiningLaserItem extends ElectricItem {
         BlockPos pos = hit.getBlockPos();
         BlockState state = level.getBlockState(pos);
         if (state.isAir() || state.getDestroySpeed(level, pos) < 0.0F) return InteractionResultHolder.fail(stack);
+        if (!state.canSurvive(level, pos) || !state.getBlock().canHarvestBlock(state, level, pos, player)) {
+            return InteractionResultHolder.fail(stack);
+        }
 
         if (level instanceof ServerLevel serverLevel) {
             serverLevel.destroyBlock(pos, true, player);

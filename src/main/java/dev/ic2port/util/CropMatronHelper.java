@@ -43,7 +43,7 @@ public final class CropMatronHelper {
             if (state.getValue(FarmBlock.MOISTURE) >= FarmBlock.MAX_MOISTURE) {
                 continue;
             }
-            level.setBlock(mutable, state.setValue(FarmBlock.MOISTURE, FarmBlock.MAX_MOISTURE), Block.UPDATE_CLIENTS);
+            level.setBlock(mutable, state.setValue(FarmBlock.MOISTURE, FarmBlock.MAX_MOISTURE), Block.UPDATE_ALL);
             count++;
         }
         return count;

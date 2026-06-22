@@ -1,8 +1,11 @@
 package dev.ic2port.item;
 
+import dev.ic2port.util.TeleportLink;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -14,12 +17,13 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 
 /**
- * Links two teleporters. Right-click a teleporter block to store its coordinates.
- * Shift+right-click the other teleporter to link them.
+ * Links two teleporters. Right-click a teleporter block to store its coordinates and dimension.
+ * Use the linked transmitter on another teleporter to teleport there.
  */
 public class FrequencyTransmitterItem extends Item {
 
     private static final String TAG_POS = "LinkedPos";
+    private static final String TAG_DIM = "LinkedDim";
 
     public FrequencyTransmitterItem(final Properties properties) {
         super(properties);
@@ -34,6 +38,7 @@ public class FrequencyTransmitterItem extends Item {
         if (!level.isClientSide && level.getBlockEntity(pos) instanceof dev.ic2port.blockentity.TeleporterBlockEntity) {
             CompoundTag tag = stack.getOrCreateTag();
             tag.putLong(TAG_POS, pos.asLong());
+            tag.putString(TAG_DIM, level.dimension().location().toString());
             context.getPlayer().displayClientMessage(
                     Component.translatable("item.ic2port.frequency_transmitter.linked",
                             pos.getX(), pos.getY(), pos.getZ()), true);
@@ -44,22 +49,46 @@ public class FrequencyTransmitterItem extends Item {
     @Override
     public void appendHoverText(final ItemStack stack, @Nullable final Level level,
                                  final List<Component> tooltip, final TooltipFlag flag) {
-        CompoundTag tag = stack.getTag();
-        if (tag != null && tag.contains(TAG_POS)) {
-            BlockPos pos = BlockPos.of(tag.getLong(TAG_POS));
+        if (hasLinkedTarget(stack)) {
+            TeleportLink link = getLinkedTarget(stack);
             tooltip.add(Component.translatable("item.ic2port.frequency_transmitter.target",
-                    pos.getX(), pos.getY(), pos.getZ()));
+                    link.pos().getX(), link.pos().getY(), link.pos().getZ()));
+            tooltip.add(Component.translatable("item.ic2port.frequency_transmitter.dimension",
+                    link.dimension().location()));
         } else {
             tooltip.add(Component.translatable("item.ic2port.frequency_transmitter.unlinked"));
         }
     }
 
-    public static boolean hasLinkedPos(final ItemStack stack) {
+    public static boolean hasLinkedTarget(final ItemStack stack) {
         CompoundTag tag = stack.getTag();
         return tag != null && tag.contains(TAG_POS);
     }
 
+    /** @deprecated use {@link #hasLinkedTarget(ItemStack)} */
+    @Deprecated
+    public static boolean hasLinkedPos(final ItemStack stack) {
+        return hasLinkedTarget(stack);
+    }
+
+    public static TeleportLink getLinkedTarget(final ItemStack stack) {
+        CompoundTag tag = stack.getOrCreateTag();
+        BlockPos pos = BlockPos.of(tag.getLong(TAG_POS));
+        ResourceKey<Level> dimension = resolveDimension(tag);
+        return new TeleportLink(dimension, pos);
+    }
+
+    /** @deprecated use {@link #getLinkedTarget(ItemStack)} */
+    @Deprecated
     public static BlockPos getLinkedPos(final ItemStack stack) {
-        return BlockPos.of(stack.getOrCreateTag().getLong(TAG_POS));
+        return getLinkedTarget(stack).pos();
+    }
+
+    private static ResourceKey<Level> resolveDimension(final CompoundTag tag) {
+        if (tag.contains(TAG_DIM)) {
+            ResourceLocation id = new ResourceLocation(tag.getString(TAG_DIM));
+            return ResourceKey.create(net.minecraft.core.registries.Registries.DIMENSION, id);
+        }
+        return Level.OVERWORLD;
     }
 }

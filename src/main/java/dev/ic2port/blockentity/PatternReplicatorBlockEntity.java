@@ -121,6 +121,12 @@ public class PatternReplicatorBlockEntity extends BlockEntity implements IEnergy
 
     @Override
     public double injectEnergy(final Direction directionFrom, final double amount, final int tier) {
+        if (level == null || level.isClientSide || amount <= 0.0D) {
+            return amount;
+        }
+        if (tier > getTier()) {
+            return amount;
+        }
         double space = ENERGY_CAPACITY - storedEnergy;
         double accepted = Math.min(amount, space);
         storedEnergy += accepted;

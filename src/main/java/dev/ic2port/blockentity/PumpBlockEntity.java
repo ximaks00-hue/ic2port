@@ -39,6 +39,14 @@ public class PumpBlockEntity extends BlockEntity implements IEnergyAcceptor {
         protected void onContentsChanged() {
             setChanged();
         }
+
+        @Override
+        public int fill(final FluidStack resource, final FluidAction action) {
+            if (!resource.isEmpty() && !getFluid().isEmpty() && !getFluid().isFluidEqual(resource)) {
+                return 0;
+            }
+            return super.fill(resource, action);
+        }
     };
     private final LazyOptional<IFluidHandler> tankOptional = LazyOptional.of(() -> tank);
     private final LazyOptional<IEnergyNode> energyOptional = LazyOptional.of(() -> this);
@@ -85,7 +93,12 @@ public class PumpBlockEntity extends BlockEntity implements IEnergyAcceptor {
 
     @Override
     public double injectEnergy(final Direction directionFrom, final double amount, final int tier) {
-        if (amount <= 0.0D) return amount;
+        if (level == null || level.isClientSide || amount <= 0.0D) {
+            return amount;
+        }
+        if (tier > getTier()) {
+            return amount;
+        }
         double space = ENERGY_CAPACITY - storedEnergy;
         double accepted = Math.min(amount, space);
         storedEnergy += accepted;
