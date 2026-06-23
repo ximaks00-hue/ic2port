@@ -1,0 +1,9 @@
+Status: NOT APPROVED (pending)
+Date: 2026-06-23
+
+No written redistribution approval is currently recorded for CrossVas F32 assets.
+Tier Yellow assets must not be bundled into the base IC2 Port release JAR.
+
+Action required:
+- Contact author via official channel.
+- Store explicit written permission text here when received.

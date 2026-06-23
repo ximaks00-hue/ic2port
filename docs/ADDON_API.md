@@ -51,6 +51,22 @@ public void onMachineRecipes(MachineRecipeRegistryEvent event) {
 }
 ```
 
+### Runtime bridge coverage (v1)
+
+Addon machine recipes are mapped at runtime for:
+
+- `macerator`
+- `compressor`
+- `extractor` and `centrifugal_extractor`
+- `electric_furnace` and `induction_furnace`
+- `electrolyzer`
+- `ore_washer`
+- `metal_former`
+- `alloy_smelter`
+- `thermal_centrifuge`
+
+If you target another machine id, treat it as unsupported in v1 until explicitly documented here.
+
 ## EU helpers
 
 ```java

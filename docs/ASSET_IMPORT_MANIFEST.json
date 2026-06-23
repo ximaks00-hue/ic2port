@@ -1,0 +1,852 @@
+{
+  "generated_at_utc": "2026-06-23T08:52:49Z",
+  "source_script": "scripts/import-textures.ps1",
+  "entries": [
+    {
+      "source": "techreborn",
+      "src": "block/ore/tin_ore.png",
+      "dest": "block/tin_ore.png",
+      "force": false
+    },
+    {
+      "source": "techreborn",
+      "src": "block/ore/deepslate/deepslate_tin_ore.png",
+      "dest": "block/deepslate_tin_ore.png",
+      "force": false
+    },
+    {
+      "source": "techreborn",
+      "src": "block/ore/uranium_ore.png",
+      "dest": "block/uranium_ore.png",
+      "force": false
+    },
+    {
+      "source": "techreborn",
+      "src": "block/ore/deepslate/deepslate_uranium_ore.png",
+      "dest": "block/deepslate_uranium_ore.png",
+      "force": false
+    },
+    {
+      "source": "techreborn",
+      "src": "block/ore/uranium_ore.png",
+      "dest": "block/contaminated_soil.png",
+      "force": false
+    },
+    {
+      "source": "techreborn",
+      "src": "block/misc/rubber_log.png",
+      "dest": "block/rubber_wood.png",
+      "force": false
+    },
+    {
+      "source": "techreborn",
+      "src": "block/misc/rubber_log_top.png",
+      "dest": "block/rubber_wood_top.png",
+      "force": false
+    },
+    {
+      "source": "techreborn",
+      "src": "block/misc/rubber_log_sap.png",
+      "dest": "block/rubber_wood_resin.png",
+      "force": false
+    },
+    {
+      "source": "techreborn",
+      "src": "block/misc/rubber_leaves.png",
+      "dest": "block/rubber_leaves.png",
+      "force": false
+    },
+    {
+      "source": "techreborn",
+      "src": "block/misc/rubber_sapling.png",
+      "dest": "block/rubber_sapling.png",
+      "force": false
+    },
+    {
+      "source": "techreborn",
+      "src": "block/machines/structure/basic_machine_casing.png",
+      "dest": "block/basic_machine_casing.png",
+      "force": false
+    },
+    {
+      "source": "techreborn",
+      "src": "block/machines/structure/advanced_machine_casing.png",
+      "dest": "block/advanced_machine_casing.png",
+      "force": false
+    },
+    {
+      "source": "techreborn",
+      "src": "block/cables/copper_cable.png",
+      "dest": "block/copper_cable.png",
+      "force": false
+    },
+    {
+      "source": "techreborn",
+      "src": "block/cables/insulated_gold_cable.png",
+      "dest": "block/gold_cable.png",
+      "force": false
+    },
+    {
+      "source": "techreborn",
+      "src": "block/cables/insulated_hv_cable.png",
+      "dest": "block/hv_cable.png",
+      "force": false
+    },
+    {
+      "source": "techreborn",
+      "src": "block/cables/glassfiber_cable.png",
+      "dest": "block/glass_fiber_cable.png",
+      "force": false
+    },
+    {
+      "source": "techreborn",
+      "src": "item/cables/copper_cable.png",
+      "dest": "item/copper_cable.png",
+      "force": false
+    },
+    {
+      "source": "techreborn",
+      "src": "item/cables/insulated_gold_cable.png",
+      "dest": "item/gold_cable.png",
+      "force": false
+    },
+    {
+      "source": "techreborn",
+      "src": "item/cables/insulated_hv_cable.png",
+      "dest": "item/hv_cable.png",
+      "force": false
+    },
+    {
+      "source": "techreborn",
+      "src": "item/cables/glassfiber_cable.png",
+      "dest": "item/glass_fiber_cable.png",
+      "force": false
+    },
+    {
+      "source": "techreborn",
+      "src": "block/machines/energy/low_voltage_su_front.png",
+      "dest": "block/batbox_front.png",
+      "force": false
+    },
+    {
+      "source": "techreborn",
+      "src": "block/machines/energy/low_voltage_su_side.png",
+      "dest": "block/batbox_side.png",
+      "force": false
+    },
+    {
+      "source": "techreborn",
+      "src": "block/machines/energy/medium_voltage_su_front.png",
+      "dest": "block/mfe_front.png",
+      "force": false
+    },
+    {
+      "source": "techreborn",
+      "src": "block/machines/energy/medium_voltage_su_side.png",
+      "dest": "block/mfe_side.png",
+      "force": false
+    },
+    {
+      "source": "techreborn",
+      "src": "block/machines/energy/high_voltage_su_front.png",
+      "dest": "block/mfsu_front.png",
+      "force": false
+    },
+    {
+      "source": "techreborn",
+      "src": "block/machines/energy/high_voltage_su_side.png",
+      "dest": "block/mfsu_side.png",
+      "force": false
+    },
+    {
+      "source": "techreborn",
+      "src": "block/machines/energy/lv_transformer_front.png",
+      "dest": "block/lv_transformer_front.png",
+      "force": false
+    },
+    {
+      "source": "techreborn",
+      "src": "block/machines/energy/lv_transformer_side.png",
+      "dest": "block/lv_transformer_side.png",
+      "force": false
+    },
+    {
+      "source": "techreborn",
+      "src": "block/machines/energy/mv_transformer_front.png",
+      "dest": "block/mv_transformer_front.png",
+      "force": false
+    },
+    {
+      "source": "techreborn",
+      "src": "block/machines/energy/mv_transformer_side.png",
+      "dest": "block/mv_transformer_side.png",
+      "force": false
+    },
+    {
+      "source": "techreborn",
+      "src": "block/machines/energy/ev_transformer_front.png",
+      "dest": "block/ev_transformer_front.png",
+      "force": false
+    },
+    {
+      "source": "techreborn",
+      "src": "block/machines/energy/ev_transformer_side.png",
+      "dest": "block/ev_transformer_side.png",
+      "force": false
+    },
+    {
+      "source": "techreborn",
+      "src": "block/machines/tier1_machines/grinder_front_off.png",
+      "dest": "block/macerator_front.png",
+      "force": false
+    },
+    {
+      "source": "techreborn",
+      "src": "block/machines/tier1_machines/grinder_top_off.png",
+      "dest": "block/macerator_top.png",
+      "force": false
+    },
+    {
+      "source": "techreborn",
+      "src": "block/machines/tier1_machines/compressor_front_off.png",
+      "dest": "block/compressor_front.png",
+      "force": false
+    },
+    {
+      "source": "techreborn",
+      "src": "block/machines/tier1_machines/extractor_front_off.png",
+      "dest": "block/extractor_front.png",
+      "force": false
+    },
+    {
+      "source": "techreborn",
+      "src": "block/machines/tier1_machines/electric_furnace_front_off.png",
+      "dest": "block/electric_furnace_front.png",
+      "force": false
+    },
+    {
+      "source": "techreborn",
+      "src": "block/machines/tier1_machines/alloy_smelter_front_off.png",
+      "dest": "block/induction_furnace_front.png",
+      "force": false
+    },
+    {
+      "source": "techreborn",
+      "src": "block/machines/tier1_machines/former_front_off.png",
+      "dest": "block/metal_former_front.png",
+      "force": false
+    },
+    {
+      "source": "techreborn",
+      "src": "block/machines/tier1_machines/recycler_front_off.png",
+      "dest": "block/recycler_front.png",
+      "force": false
+    },
+    {
+      "source": "techreborn",
+      "src": "block/machines/tier2_machines/industrial_centrifuge_front_off.png",
+      "dest": "block/thermal_centrifuge_front.png",
+      "force": false
+    },
+    {
+      "source": "techreborn",
+      "src": "block/machines/tier2_machines/industrial_centrifuge_top_off.png",
+      "dest": "block/thermal_centrifuge_top.png",
+      "force": false
+    },
+    {
+      "source": "techreborn",
+      "src": "block/machines/tier3_machines/matter_fabricator_side_off.png",
+      "dest": "block/mass_fabricator_side.png",
+      "force": false
+    },
+    {
+      "source": "techreborn",
+      "src": "block/machines/tier3_machines/matter_fabricator_top_off.png",
+      "dest": "block/mass_fabricator_top.png",
+      "force": false
+    },
+    {
+      "source": "techreborn",
+      "src": "block/machines/tier3_machines/matter_fabricator_bottom.png",
+      "dest": "block/mass_fabricator_bottom.png",
+      "force": false
+    },
+    {
+      "source": "techreborn",
+      "src": "block/machines/tier0_machines/iron_furnace_front_off.png",
+      "dest": "block/solid_fuel_generator_front.png",
+      "force": false
+    },
+    {
+      "source": "techreborn",
+      "src": "block/machines/tier0_machines/iron_furnace_front_on.png",
+      "dest": "block/solid_fuel_generator_front_on.png",
+      "force": false
+    },
+    {
+      "source": "techreborn",
+      "src": "block/machines/generators/thermal_generator_side_off.png",
+      "dest": "block/geothermal_generator_side.png",
+      "force": false
+    },
+    {
+      "source": "techreborn",
+      "src": "block/machines/generators/thermal_generator_side_on.png",
+      "dest": "block/geothermal_generator_side_on.png",
+      "force": false
+    },
+    {
+      "source": "techreborn",
+      "src": "block/machines/generators/thermal_generator_top_off.png",
+      "dest": "block/geothermal_generator_top.png",
+      "force": false
+    },
+    {
+      "source": "techreborn",
+      "src": "block/machines/generators/thermal_generator_top_on.png",
+      "dest": "block/geothermal_generator_top_on.png",
+      "force": false
+    },
+    {
+      "source": "techreborn",
+      "src": "block/machines/generators/solar_panel_top.png",
+      "dest": "block/solar_panel_top.png",
+      "force": false
+    },
+    {
+      "source": "techreborn",
+      "src": "block/machines/generators/solar_panel_side_off.png",
+      "dest": "block/solar_panel_side.png",
+      "force": false
+    },
+    {
+      "source": "techreborn",
+      "src": "block/machines/generators/wind_mill_front.png",
+      "dest": "block/wind_mill_front.png",
+      "force": false
+    },
+    {
+      "source": "techreborn",
+      "src": "block/machines/generators/wind_mill_top.png",
+      "dest": "block/wind_mill_top.png",
+      "force": false
+    },
+    {
+      "source": "techreborn",
+      "src": "block/machines/generators/wind_mill_bottom.png",
+      "dest": "block/wind_mill_bottom.png",
+      "force": false
+    },
+    {
+      "source": "techreborn",
+      "src": "block/machines/generators/water_mill_top_off.png",
+      "dest": "block/water_mill_top.png",
+      "force": false
+    },
+    {
+      "source": "techreborn",
+      "src": "block/machines/generators/water_mill_side_off.png",
+      "dest": "block/water_mill_side.png",
+      "force": false
+    },
+    {
+      "source": "techreborn",
+      "src": "block/machines/generators/creative_solar_panel_top.png",
+      "dest": "block/creative_generator.png",
+      "force": false
+    },
+    {
+      "source": "techreborn",
+      "src": "block/machines/generators/plasma_generator_top_off.png",
+      "dest": "block/hv_creative_generator_top.png",
+      "force": false
+    },
+    {
+      "source": "techreborn",
+      "src": "block/machines/generators/plasma_generator_side_off.png",
+      "dest": "block/hv_creative_generator_side.png",
+      "force": false
+    },
+    {
+      "source": "techreborn",
+      "src": "block/machines/generators/nuclear/nuclear_reactor_front_off.png",
+      "dest": "block/nuclear_reactor_front.png",
+      "force": false
+    },
+    {
+      "source": "techreborn",
+      "src": "block/machines/generators/nuclear/nuclear_reactor_side.png",
+      "dest": "block/nuclear_reactor_side.png",
+      "force": false
+    },
+    {
+      "source": "techreborn",
+      "src": "block/machines/generators/nuclear/nuclear_reactor_top.png",
+      "dest": "block/nuclear_reactor_top.png",
+      "force": false
+    },
+    {
+      "source": "techreborn",
+      "src": "block/machines/generators/nuclear/reactor_chamber.png",
+      "dest": "block/reactor_chamber.png",
+      "force": false
+    },
+    {
+      "source": "techreborn",
+      "src": "item/rawmetal/raw_tin.png",
+      "dest": "item/raw_tin.png",
+      "force": false
+    },
+    {
+      "source": "techreborn",
+      "src": "item/rawmetal/raw_uranium.png",
+      "dest": "item/raw_uranium.png",
+      "force": false
+    },
+    {
+      "source": "techreborn",
+      "src": "item/ingot/tin_ingot.png",
+      "dest": "item/tin_ingot.png",
+      "force": false
+    },
+    {
+      "source": "techreborn",
+      "src": "item/ingot/bronze_ingot.png",
+      "dest": "item/bronze_ingot.png",
+      "force": false
+    },
+    {
+      "source": "modern_industrialization",
+      "src": "src/generated/resources/assets/modern_industrialization/textures/item/uranium_ingot.png",
+      "dest": "item/uranium_ingot.png",
+      "force": false
+    },
+    {
+      "source": "techreborn",
+      "src": "item/dust/iron_dust.png",
+      "dest": "item/iron_dust.png",
+      "force": false
+    },
+    {
+      "source": "techreborn",
+      "src": "item/dust/gold_dust.png",
+      "dest": "item/gold_dust.png",
+      "force": false
+    },
+    {
+      "source": "techreborn",
+      "src": "item/dust/copper_dust.png",
+      "dest": "item/copper_dust.png",
+      "force": false
+    },
+    {
+      "source": "techreborn",
+      "src": "item/dust/tin_dust.png",
+      "dest": "item/tin_dust.png",
+      "force": false
+    },
+    {
+      "source": "techreborn",
+      "src": "item/plate/iron_plate.png",
+      "dest": "item/iron_plate.png",
+      "force": false
+    },
+    {
+      "source": "techreborn",
+      "src": "item/plate/copper_plate.png",
+      "dest": "item/copper_plate.png",
+      "force": false
+    },
+    {
+      "source": "techreborn",
+      "src": "item/plate/tin_plate.png",
+      "dest": "item/tin_plate.png",
+      "force": false
+    },
+    {
+      "source": "techreborn",
+      "src": "item/plate/bronze_plate.png",
+      "dest": "item/bronze_plate.png",
+      "force": false
+    },
+    {
+      "source": "modern_industrialization",
+      "src": "src/generated/resources/assets/modern_industrialization/textures/item/mixed_plate_nuclear.png",
+      "dest": "item/uranium_plate.png",
+      "force": false
+    },
+    {
+      "source": "techreborn",
+      "src": "item/ingot/mixed_metal_ingot.png",
+      "dest": "item/mixed_metal_ingot.png",
+      "force": false
+    },
+    {
+      "source": "techreborn",
+      "src": "item/ingot/advanced_alloy_ingot.png",
+      "dest": "item/advanced_alloy.png",
+      "force": false
+    },
+    {
+      "source": "techreborn",
+      "src": "item/part/carbon_fiber.png",
+      "dest": "item/carbon_fiber.png",
+      "force": false
+    },
+    {
+      "source": "techreborn",
+      "src": "item/part/carbon_mesh.png",
+      "dest": "item/raw_carbon_mesh.png",
+      "force": false
+    },
+    {
+      "source": "techreborn",
+      "src": "item/plate/carbon_plate.png",
+      "dest": "item/carbon_plate.png",
+      "force": false
+    },
+    {
+      "source": "techreborn",
+      "src": "item/ingot/iridium_ingot.png",
+      "dest": "item/iridium.png",
+      "force": false
+    },
+    {
+      "source": "techreborn",
+      "src": "item/plate/iridium_plate.png",
+      "dest": "item/iridium_plate.png",
+      "force": false
+    },
+    {
+      "source": "modern_industrialization",
+      "src": "src/generated/resources/assets/modern_industrialization/textures/item/plutonium_ingot.png",
+      "dest": "item/plutonium.png",
+      "force": false
+    },
+    {
+      "source": "modern_industrialization",
+      "src": "src/generated/resources/assets/modern_industrialization/textures/item/plutonium_nugget.png",
+      "dest": "item/depleted_uranium.png",
+      "force": false
+    },
+    {
+      "source": "techreborn",
+      "src": "item/part/sap.png",
+      "dest": "item/sticky_resin.png",
+      "force": false
+    },
+    {
+      "source": "techreborn",
+      "src": "item/tool/thermometer.png",
+      "dest": "item/thermometer.png",
+      "force": false
+    },
+    {
+      "source": "techreborn",
+      "src": "item/part/rubber.png",
+      "dest": "item/rubber.png",
+      "force": false
+    },
+    {
+      "source": "modern_industrialization",
+      "src": "src/main/resources/assets/modern_industrialization/textures/materialsets/common/crushed_dust.png",
+      "dest": "item/crushed_iron_ore.png",
+      "force": false
+    },
+    {
+      "source": "modern_industrialization",
+      "src": "src/main/resources/assets/modern_industrialization/textures/materialsets/common/crushed_dust.png",
+      "dest": "item/crushed_gold_ore.png",
+      "force": false
+    },
+    {
+      "source": "modern_industrialization",
+      "src": "src/main/resources/assets/modern_industrialization/textures/materialsets/common/crushed_dust.png",
+      "dest": "item/crushed_copper_ore.png",
+      "force": false
+    },
+    {
+      "source": "modern_industrialization",
+      "src": "src/main/resources/assets/modern_industrialization/textures/materialsets/common/crushed_dust.png",
+      "dest": "item/crushed_tin_ore.png",
+      "force": false
+    },
+    {
+      "source": "techreborn",
+      "src": "item/battery/red_cell_battery.png",
+      "dest": "item/re_battery.png",
+      "force": false
+    },
+    {
+      "source": "techreborn",
+      "src": "item/battery/energy_crystal.png",
+      "dest": "item/energy_crystal.png",
+      "force": false
+    },
+    {
+      "source": "techreborn",
+      "src": "item/battery/lapotron_crystal.png",
+      "dest": "item/lapotron_crystal.png",
+      "force": false
+    },
+    {
+      "source": "techreborn",
+      "src": "item/part/scrap.png",
+      "dest": "item/scrap.png",
+      "force": false
+    },
+    {
+      "source": "techreborn",
+      "src": "item/part/scrapbox.png",
+      "dest": "item/scrap_box.png",
+      "force": false
+    },
+    {
+      "source": "techreborn",
+      "src": "item/part/uu_matter.png",
+      "dest": "item/uu_matter.png",
+      "force": false
+    },
+    {
+      "source": "techreborn",
+      "src": "item/tool/wrench.png",
+      "dest": "item/wrench.png",
+      "force": false
+    },
+    {
+      "source": "techreborn",
+      "src": "item/tool/od_scanner.png",
+      "dest": "item/od_scanner.png",
+      "force": false
+    },
+    {
+      "source": "techreborn",
+      "src": "item/part/rotor_carbon.png",
+      "dest": "item/centrifuge_rotor.png",
+      "force": false
+    },
+    {
+      "source": "techreborn",
+      "src": "item/tool/basic_drill.png",
+      "dest": "item/diamond_drill.png",
+      "force": false
+    },
+    {
+      "source": "techreborn",
+      "src": "item/tool/advanced_drill.png",
+      "dest": "item/advanced_drill.png",
+      "force": false
+    },
+    {
+      "source": "techreborn",
+      "src": "item/upgrade/overclocker_upgrade.png",
+      "dest": "item/overclocker_upgrade.png",
+      "force": false
+    },
+    {
+      "source": "techreborn",
+      "src": "item/upgrade/transformer_upgrade.png",
+      "dest": "item/transformer_upgrade.png",
+      "force": false
+    },
+    {
+      "source": "techreborn",
+      "src": "item/upgrade/energy_storage_upgrade.png",
+      "dest": "item/energy_storage_upgrade.png",
+      "force": false
+    },
+    {
+      "source": "modern_industrialization",
+      "src": "src/main/resources/assets/modern_industrialization/textures/item/portable_storage_unit.png",
+      "dest": "item/toolbox.png",
+      "force": false
+    },
+    {
+      "source": "modern_industrialization",
+      "src": "src/main/resources/assets/modern_industrialization/textures/item/diesel_jetpack.png",
+      "dest": "item/electric_jetpack.png",
+      "force": false
+    },
+    {
+      "source": "techreborn",
+      "src": "item/armor/lithium_batpack.png",
+      "dest": "item/batpack.png",
+      "force": false
+    },
+    {
+      "source": "techreborn",
+      "src": "item/armor/lapotronic_orbpack.png",
+      "dest": "item/lappack.png",
+      "force": false
+    },
+    {
+      "source": "techreborn",
+      "src": "item/armor/quantum_helmet.png",
+      "dest": "item/quantum_helmet.png",
+      "force": false
+    },
+    {
+      "source": "techreborn",
+      "src": "item/armor/quantum_chestplate.png",
+      "dest": "item/quantum_chestplate.png",
+      "force": false
+    },
+    {
+      "source": "techreborn",
+      "src": "item/armor/quantum_leggings.png",
+      "dest": "item/quantum_leggings.png",
+      "force": false
+    },
+    {
+      "source": "techreborn",
+      "src": "item/armor/quantum_boots.png",
+      "dest": "item/quantum_boots.png",
+      "force": false
+    },
+    {
+      "source": "techreborn",
+      "src": "item/armor/nano_helmet.png",
+      "dest": "item/hazmat_helmet.png",
+      "force": false
+    },
+    {
+      "source": "techreborn",
+      "src": "item/armor/nano_chestplate.png",
+      "dest": "item/hazmat_chestplate.png",
+      "force": false
+    },
+    {
+      "source": "techreborn",
+      "src": "item/armor/nano_leggings.png",
+      "dest": "item/hazmat_leggings.png",
+      "force": false
+    },
+    {
+      "source": "techreborn",
+      "src": "item/armor/nano_boots.png",
+      "dest": "item/hazmat_boots.png",
+      "force": false
+    },
+    {
+      "source": "techreborn",
+      "src": "item/armor/bronze_helmet.png",
+      "dest": "item/bronze_helmet.png",
+      "force": false
+    },
+    {
+      "source": "techreborn",
+      "src": "item/armor/bronze_chestplate.png",
+      "dest": "item/bronze_chestplate.png",
+      "force": false
+    },
+    {
+      "source": "techreborn",
+      "src": "item/armor/bronze_leggings.png",
+      "dest": "item/bronze_leggings.png",
+      "force": false
+    },
+    {
+      "source": "techreborn",
+      "src": "item/armor/bronze_boots.png",
+      "dest": "item/bronze_boots.png",
+      "force": false
+    },
+    {
+      "source": "techreborn",
+      "src": "item/armor/peridot_helmet.png",
+      "dest": "item/composite_helmet.png",
+      "force": false
+    },
+    {
+      "source": "techreborn",
+      "src": "item/armor/peridot_chestplate.png",
+      "dest": "item/composite_chestplate.png",
+      "force": false
+    },
+    {
+      "source": "techreborn",
+      "src": "item/armor/peridot_leggings.png",
+      "dest": "item/composite_leggings.png",
+      "force": false
+    },
+    {
+      "source": "techreborn",
+      "src": "item/armor/peridot_boots.png",
+      "dest": "item/composite_boots.png",
+      "force": false
+    },
+    {
+      "source": "techreborn",
+      "src": "item/part/nuclear/empty_fuel_rod.png",
+      "dest": "item/empty_fuel_rod.png",
+      "force": false
+    },
+    {
+      "source": "techreborn",
+      "src": "item/part/nuclear/uranium_fuel_rod.png",
+      "dest": "item/fuel_rod.png",
+      "force": false
+    },
+    {
+      "source": "techreborn",
+      "src": "item/part/nuclear/depleted_uranium_fuel_rod.png",
+      "dest": "item/depleted_fuel_rod.png",
+      "force": false
+    },
+    {
+      "source": "modern_industrialization",
+      "src": "src/generated/resources/assets/modern_industrialization/textures/item/le_mox_fuel_rod.png",
+      "dest": "item/mox_fuel_rod.png",
+      "force": false
+    },
+    {
+      "source": "techreborn",
+      "src": "item/part/nuclear/heat_vent.png",
+      "dest": "item/heat_vent.png",
+      "force": false
+    },
+    {
+      "source": "techreborn",
+      "src": "item/part/nuclear/advanced_heat_vent.png",
+      "dest": "item/advanced_heat_vent.png",
+      "force": false
+    },
+    {
+      "source": "techreborn",
+      "src": "item/part/nuclear/overclocked_heat_vent.png",
+      "dest": "item/overclocked_heat_vent.png",
+      "force": false
+    },
+    {
+      "source": "techreborn",
+      "src": "item/part/nuclear/heat_exchanger.png",
+      "dest": "item/heat_exchanger.png",
+      "force": false
+    },
+    {
+      "source": "techreborn",
+      "src": "item/part/nuclear/advanced_heat_exchanger.png",
+      "dest": "item/advanced_heat_exchanger.png",
+      "force": false
+    },
+    {
+      "source": "techreborn",
+      "src": "item/part/nuclear/water_coolant_cell_10k.png",
+      "dest": "item/coolant_cell.png",
+      "force": false
+    },
+    {
+      "source": "techreborn",
+      "src": "item/part/nuclear/water_coolant_cell_30k.png",
+      "dest": "item/triple_coolant_cell.png",
+      "force": false
+    },
+    {
+      "source": "techreborn",
+      "src": "item/part/nuclear/water_coolant_cell_60k.png",
+      "dest": "item/quad_coolant_cell.png",
+      "force": false
+    }
+  ]
+}
