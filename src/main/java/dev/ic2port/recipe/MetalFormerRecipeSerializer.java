@@ -17,7 +17,10 @@ public class MetalFormerRecipeSerializer implements RecipeSerializer<MetalFormer
         ItemStack output = CraftingHelper.getItemStack(GsonHelper.getAsJsonObject(json, "output"), true);
         double energyCost = GsonHelper.getAsDouble(json, "energy", 0.0D);
         int processingTime = GsonHelper.getAsInt(json, "time", 100);
-        return new MetalFormerRecipe(recipeId, input, output, energyCost, processingTime);
+        MetalFormerMode mode = json.has("mode")
+                ? MetalFormerMode.fromString(GsonHelper.getAsString(json, "mode"))
+                : MetalFormerMode.DEFAULT;
+        return new MetalFormerRecipe(recipeId, input, output, energyCost, processingTime, mode);
     }
 
     @Override
@@ -26,7 +29,8 @@ public class MetalFormerRecipeSerializer implements RecipeSerializer<MetalFormer
         ItemStack output = buffer.readItem();
         double energyCost = buffer.readDouble();
         int processingTime = buffer.readVarInt();
-        return new MetalFormerRecipe(recipeId, input, output, energyCost, processingTime);
+        MetalFormerMode mode = MetalFormerMode.fromString(buffer.readUtf());
+        return new MetalFormerRecipe(recipeId, input, output, energyCost, processingTime, mode);
     }
 
     @Override
@@ -35,5 +39,6 @@ public class MetalFormerRecipeSerializer implements RecipeSerializer<MetalFormer
         buffer.writeItem(recipe.getOutput());
         buffer.writeDouble(recipe.getEnergyCost());
         buffer.writeVarInt(recipe.getProcessingTime());
+        buffer.writeUtf(recipe.getMode().getSerializedName());
     }
 }

@@ -7,5 +7,6 @@
     "item": "ic2port:energy_crystal"
   },
   "energy": 600.0,
-  "time": 150
+  "time": 150,
+  "mode": "cutting"
 }

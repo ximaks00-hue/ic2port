@@ -8,5 +8,6 @@
     "count": 3
   },
   "energy": 350.0,
-  "time": 100
+  "time": 100,
+  "mode": "extruding"
 }

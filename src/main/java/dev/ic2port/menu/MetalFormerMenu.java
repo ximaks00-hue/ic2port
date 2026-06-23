@@ -1,6 +1,7 @@
 package dev.ic2port.menu;
 
 import dev.ic2port.blockentity.MetalFormerBlockEntity;
+import dev.ic2port.recipe.MetalFormerMode;
 import dev.ic2port.setup.MenuTypeRegistry;
 import dev.ic2port.util.MachineMenuLayout;
 import net.minecraft.network.FriendlyByteBuf;
@@ -21,7 +22,7 @@ public class MetalFormerMenu extends MachineWithUpgradesMenu {
     private final ContainerData data;
 
     public MetalFormerMenu(final int containerId, final Inventory playerInventory, final FriendlyByteBuf extraData) {
-        this(containerId, playerInventory, getBlockEntity(playerInventory, extraData), new SimpleContainerData(4));
+        this(containerId, playerInventory, getBlockEntity(playerInventory, extraData), new SimpleContainerData(5));
     }
 
     public MetalFormerMenu(
@@ -64,6 +65,15 @@ public class MetalFormerMenu extends MachineWithUpgradesMenu {
 
     public int getEnergyScaled(final int height) {
         return getMachineEnergyScaled(data, height);
+    }
+
+    public MetalFormerMode getMode() {
+        int ordinal = data.get(4);
+        MetalFormerMode[] modes = MetalFormerMode.values();
+        if (ordinal < 0 || ordinal >= modes.length) {
+            return MetalFormerMode.DEFAULT;
+        }
+        return modes[ordinal];
     }
 
     @Override

@@ -20,18 +20,21 @@ public class MetalFormerRecipe implements Recipe<Container>, IMachineRecipe {
     private final ItemStack output;
     private final double energyCost;
     private final int processingTime;
+    private final MetalFormerMode mode;
 
     public MetalFormerRecipe(
             final ResourceLocation id,
             final Ingredient input,
             final ItemStack output,
             final double energyCost,
-            final int processingTime) {
+            final int processingTime,
+            final MetalFormerMode mode) {
         this.id = id;
         this.input = input;
         this.output = output;
         this.energyCost = energyCost;
         this.processingTime = processingTime;
+        this.mode = mode != null ? mode : MetalFormerMode.DEFAULT;
     }
 
     @Override
@@ -91,5 +94,9 @@ public class MetalFormerRecipe implements Recipe<Container>, IMachineRecipe {
 
     public ItemStack getOutput() {
         return output;
+    }
+
+    public MetalFormerMode getMode() {
+        return mode;
     }
 }

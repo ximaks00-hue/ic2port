@@ -1,8 +1,10 @@
 package dev.ic2port.block;
 
 import dev.ic2port.blockentity.MetalFormerBlockEntity;
+import dev.ic2port.recipe.MetalFormerMode;
 import dev.ic2port.setup.BlockEntityRegistry;
 import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -55,6 +57,14 @@ public class MetalFormerBlock extends BaseEntityBlock {
         if (!(level.getBlockEntity(pos) instanceof MetalFormerBlockEntity former)) {
             return InteractionResult.PASS;
         }
+        if (player.isShiftKeyDown() && player.getItemInHand(hand).isEmpty() && hand == InteractionHand.MAIN_HAND) {
+            if (former.cycleMode()) {
+                player.displayClientMessage(
+                        Component.translatable(modeMessageKey(former.getMode())),
+                        true);
+            }
+            return InteractionResult.sidedSuccess(level.isClientSide());
+        }
         if (player instanceof ServerPlayer serverPlayer && hand == InteractionHand.MAIN_HAND) {
             NetworkHooks.openScreen(serverPlayer, former, pos);
             return InteractionResult.CONSUME;
@@ -65,5 +75,13 @@ public class MetalFormerBlock extends BaseEntityBlock {
     @Override
     public RenderShape getRenderShape(final BlockState state) {
         return RenderShape.MODEL;
+    }
+
+    private static String modeMessageKey(final MetalFormerMode mode) {
+        return switch (mode) {
+            case ROLLING -> "message.ic2port.metal_former.mode_rolling";
+            case EXTRUDING -> "message.ic2port.metal_former.mode_extruding";
+            case CUTTING -> "message.ic2port.metal_former.mode_cutting";
+        };
     }
 }

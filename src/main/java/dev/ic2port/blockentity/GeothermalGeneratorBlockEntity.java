@@ -80,6 +80,22 @@ public class GeothermalGeneratorBlockEntity extends BlockEntity implements IEner
         protected void onContentsChanged(final int slot) {
             setChanged();
         }
+
+        @Override
+        public @NotNull ItemStack extractItem(final int slot, final int amount, final boolean simulate) {
+            if (slot == SLOT_INPUT && canConsumeLavaBucket()) {
+                return ItemStack.EMPTY;
+            }
+            return super.extractItem(slot, amount, simulate);
+        }
+
+        @Override
+        public @NotNull ItemStack insertItem(final int slot, final @NotNull ItemStack stack, final boolean simulate) {
+            if (slot == SLOT_INPUT && canConsumeLavaBucket()) {
+                return stack;
+            }
+            return super.insertItem(slot, stack, simulate);
+        }
     };
     private final ProcessOnlyItemHandler automationItemHandler = new ProcessOnlyItemHandler(
             itemHandler, SLOT_COUNT, slot -> slot == SLOT_OUTPUT);
@@ -134,19 +150,26 @@ public class GeothermalGeneratorBlockEntity extends BlockEntity implements IEner
         distributeEnergy();
     }
 
-    private void processLavaBuckets() {
+    private boolean canConsumeLavaBucket() {
         ItemStack inputStack = itemHandler.getStackInSlot(SLOT_INPUT);
         if (!inputStack.is(Items.LAVA_BUCKET)) {
-            return;
+            return false;
         }
         if (fluidTank.getFluidAmount() + LAVA_MB_PER_BUCKET > FLUID_CAPACITY_MB) {
+            return false;
+        }
+        ItemStack outputStack = itemHandler.getStackInSlot(SLOT_OUTPUT);
+        return outputStack.isEmpty()
+                || (outputStack.is(Items.BUCKET) && outputStack.getCount() < outputStack.getMaxStackSize());
+    }
+
+    private void processLavaBuckets() {
+        if (!canConsumeLavaBucket()) {
             return;
         }
 
+        ItemStack inputStack = itemHandler.getStackInSlot(SLOT_INPUT);
         ItemStack outputStack = itemHandler.getStackInSlot(SLOT_OUTPUT);
-        if (!outputStack.isEmpty() && (!outputStack.is(Items.BUCKET) || outputStack.getCount() >= outputStack.getMaxStackSize())) {
-            return;
-        }
 
         inputStack.shrink(1);
         itemHandler.setStackInSlot(SLOT_INPUT, inputStack);

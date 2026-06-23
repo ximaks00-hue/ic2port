@@ -22,5 +22,12 @@ public class MetalFormerScreen extends MachineScreen<MetalFormerMenu> {
             guiGraphics.blit(FURNACE_TEXTURE, x + 79, y + 34 + (16 - pressHeight), 176, 14, 24, pressHeight);
         }
         renderEnergyBar(guiGraphics, x, y, this.menu.getEnergyScaled(13));
+        guiGraphics.drawString(
+                this.font,
+                Component.translatable("gui.ic2port.metal_former.mode_" + this.menu.getMode().getSerializedName()),
+                x + 8,
+                y + 55,
+                0x404040,
+                false);
     }
 }

@@ -3,6 +3,7 @@ package dev.ic2port.blockentity;
 import dev.ic2port.util.ContainerDataHelper;
 import dev.ic2port.api.energy.EnergyTier;
 import dev.ic2port.menu.MetalFormerMenu;
+import dev.ic2port.recipe.MetalFormerMode;
 import dev.ic2port.recipe.MetalFormerRecipe;
 import dev.ic2port.setup.BlockEntityRegistry;
 import dev.ic2port.setup.RecipeTypeRegistry;
@@ -38,6 +39,7 @@ public class MetalFormerBlockEntity extends BaseMachineBlockEntity {
 
     private int progress;
     private int maxProgress = DEFAULT_PROCESSING_TIME;
+    private MetalFormerMode mode = MetalFormerMode.DEFAULT;
     @Nullable
     private ResourceLocation activeRecipeId;
 
@@ -49,6 +51,7 @@ public class MetalFormerBlockEntity extends BaseMachineBlockEntity {
                 case 1 -> maxProgress;
                 case 2 -> (int) Math.round(getStoredEnergy());
                 case 3 -> (int) Math.round(getCapacity());
+                case 4 -> mode.ordinal();
                 default -> 0;
             };
         }
@@ -60,7 +63,7 @@ public class MetalFormerBlockEntity extends BaseMachineBlockEntity {
 
         @Override
         public int getCount() {
-            return 4;
+            return 5;
         }
     };
 
@@ -80,12 +83,23 @@ public class MetalFormerBlockEntity extends BaseMachineBlockEntity {
 
     @Override
     protected boolean isValidProcessInput(final ItemStack stack) {
-        return MachineRecipeHelper.acceptsSingleInput(
-                level,
-                RecipeTypeRegistry.METAL_FORMER.get(),
-                MetalFormerRecipe.class,
-                stack,
-                MetalFormerRecipe::getInput);
+        return findRecipeForMode(stack, mode).isPresent();
+    }
+
+    public MetalFormerMode getMode() {
+        return mode;
+    }
+
+    /** Cycles rolling → extruding → cutting. Returns false while a cycle is in progress. */
+    public boolean cycleMode() {
+        if (progress > 0) {
+            return false;
+        }
+        mode = mode.next();
+        progress = 0;
+        activeRecipeId = null;
+        setChanged();
+        return true;
     }
 
     public static void serverTick(
@@ -157,15 +171,49 @@ public class MetalFormerBlockEntity extends BaseMachineBlockEntity {
     }
 
     private Optional<MetalFormerRecipe> resolveActiveRecipe(final ItemStack input) {
-        final Optional<MetalFormerRecipe> resolved = MachineRecipeHelper.resolveSingleInputRecipe(
-                level,
-                RecipeTypeRegistry.METAL_FORMER.get(),
-                MetalFormerRecipe.class,
-                input,
-                activeRecipeId,
-                MetalFormerRecipe::getInput);
+        final Optional<MetalFormerRecipe> resolved = findRecipeForMode(input, mode);
         activeRecipeId = resolved.map(MetalFormerRecipe::getId).orElse(null);
         return resolved;
+    }
+
+    private Optional<MetalFormerRecipe> findRecipeForMode(final ItemStack input, final MetalFormerMode activeMode) {
+        if (input.isEmpty() || level == null) {
+            return Optional.empty();
+        }
+
+        if (activeRecipeId != null) {
+            final Optional<MetalFormerRecipe> cached = level.getRecipeManager()
+                    .byKey(activeRecipeId)
+                    .filter(MetalFormerRecipe.class::isInstance)
+                    .map(MetalFormerRecipe.class::cast)
+                    .filter(recipe -> recipe.getMode() == activeMode && recipe.getInput().test(input));
+            if (cached.isPresent()) {
+                return cached;
+            }
+        }
+
+        MetalFormerRecipe best = null;
+        int bestScore = Integer.MIN_VALUE;
+        ResourceLocation bestId = null;
+
+        for (final MetalFormerRecipe recipe : level.getRecipeManager()
+                .getAllRecipesFor(RecipeTypeRegistry.METAL_FORMER.get())) {
+            if (recipe.getMode() != activeMode || !recipe.getInput().test(input)) {
+                continue;
+            }
+
+            final int score = MachineRecipeHelper.scoreIngredientSpecificity(recipe.getInput(), input);
+            final ResourceLocation id = recipe.getId();
+            if (best == null
+                    || score > bestScore
+                    || (score == bestScore && id.compareTo(bestId) < 0)) {
+                best = recipe;
+                bestScore = score;
+                bestId = id;
+            }
+        }
+
+        return Optional.ofNullable(best);
     }
 
     private boolean canOutput(final MetalFormerRecipe recipe, final ItemStack output) {
@@ -182,6 +230,7 @@ public class MetalFormerBlockEntity extends BaseMachineBlockEntity {
         super.saveAdditional(tag);
         tag.putInt("Progress", progress);
         tag.putInt("MaxProgress", maxProgress);
+        tag.putString("Mode", mode.getSerializedName());
         if (activeRecipeId != null) {
             tag.putString("ActiveRecipe", activeRecipeId.toString());
         }
@@ -192,6 +241,7 @@ public class MetalFormerBlockEntity extends BaseMachineBlockEntity {
         super.load(tag);
         progress = tag.getInt("Progress");
         maxProgress = tag.contains("MaxProgress") ? tag.getInt("MaxProgress") : DEFAULT_PROCESSING_TIME;
+        mode = tag.contains("Mode") ? MetalFormerMode.fromString(tag.getString("Mode")) : MetalFormerMode.DEFAULT;
         activeRecipeId = tag.contains("ActiveRecipe")
                 ? ResourceLocation.tryParse(tag.getString("ActiveRecipe"))
                 : null;

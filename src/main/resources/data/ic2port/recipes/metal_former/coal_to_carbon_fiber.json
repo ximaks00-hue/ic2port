@@ -7,5 +7,6 @@
     "item": "ic2port:carbon_fiber"
   },
   "energy": 300.0,
-  "time": 80
+  "time": 80,
+  "mode": "extruding"
 }
