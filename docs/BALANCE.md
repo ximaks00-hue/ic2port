@@ -36,7 +36,7 @@ Capacities for BatBox/MFE/MFSU are also configurable in `[energy]`; ESU/PESU/ISU
 | Water mill | ≤0.75 | LV | Adjacent water blocks |
 | Wind mill | ≤2 | LV | Height + obstacles |
 | Nuclear reactor | variable | HV | Grid + redstone signal |
-| Steam reactor | — | HV | Steam (water) output, no direct EU |
+| Steam reactor | — | HV | Dedicated `ic2port:steam` output, no direct EU |
 | Fusion reactor | — | HV | Lava production, not direct EU |
 
 ## LV machines (2 EU/t unless noted)
@@ -69,14 +69,14 @@ Macerator, extractor, compressor, recycler, electric furnace — 4000 EU buffer,
 | Terraformer | 48 | 9×9 blueprint area |
 | Ore scanner (block) | 40 EU/block scanned | 8×8×48 volume |
 
-## Steam reactor (MVP)
+## Steam reactor
 
 | Constant | Value | Notes |
 |----------|-------|-------|
 | Grid | 9×6 | Same component rules as fission |
 | Steam tank | 16,000 mB | Internal buffer |
 | Steam production | 100 mB/tick | While active and heated |
-| Output | Adjacent fluid handlers | Water-based steam fluid |
+| Output | Adjacent fluid handlers | Dedicated `ic2port:steam` fluid |
 
 ## Recycler
 

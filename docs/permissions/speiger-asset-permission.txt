@@ -1,0 +1,9 @@
+Status: NOT APPROVED (pending)
+Date: 2026-06-23
+
+No written permission is currently recorded for extracting/rebundling IC2 Classic assets.
+IC2 Classic assets remain reference-only for IC2 Port.
+
+Action required:
+- Contact rights holder.
+- Store explicit written permission text here when received.

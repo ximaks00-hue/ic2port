@@ -1,0 +1,58 @@
+{
+  "overrides": [
+    {
+      "dest": "block/steam_still.png",
+      "repo": "techreborn",
+      "source": "block/machines/generators/thermal_generator_top_on.png (fallback mapping)",
+      "tier": "green"
+    },
+    {
+      "dest": "block/steam_flow.png",
+      "repo": "techreborn",
+      "source": "block/machines/generators/thermal_generator_top_off.png (fallback mapping)",
+      "tier": "green"
+    },
+    {
+      "dest": "item/hazmat_helmet.png",
+      "repo": "techreborn",
+      "source": "item/armor/nano_helmet.png (release-safe fallback)",
+      "tier": "green"
+    },
+    {
+      "dest": "item/hazmat_chestplate.png",
+      "repo": "techreborn",
+      "source": "item/armor/nano_chestplate.png (release-safe fallback)",
+      "tier": "green"
+    },
+    {
+      "dest": "item/hazmat_leggings.png",
+      "repo": "techreborn",
+      "source": "item/armor/nano_leggings.png (release-safe fallback)",
+      "tier": "green"
+    },
+    {
+      "dest": "item/hazmat_boots.png",
+      "repo": "techreborn",
+      "source": "item/armor/nano_boots.png (release-safe fallback)",
+      "tier": "green"
+    },
+    {
+      "dest": "models/armor/hazmat_layer_1.png",
+      "repo": "techreborn",
+      "source": "models/armor/nano_layer_1.png (release-safe fallback)",
+      "tier": "green"
+    },
+    {
+      "dest": "models/armor/hazmat_layer_2.png",
+      "repo": "techreborn",
+      "source": "models/armor/nano_layer_2.png (release-safe fallback)",
+      "tier": "green"
+    },
+    {
+      "dest": "item/capacitor_cell.png",
+      "repo": "techreborn",
+      "source": "item/battery/energy_crystal.png (release-safe fallback)",
+      "tier": "green"
+    }
+  ]
+}
