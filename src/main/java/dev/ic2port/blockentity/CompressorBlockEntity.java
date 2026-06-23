@@ -6,6 +6,8 @@ import dev.ic2port.menu.CompressorMenu;
 import dev.ic2port.recipe.CompressorRecipe;
 import dev.ic2port.setup.BlockEntityRegistry;
 import dev.ic2port.setup.RecipeTypeRegistry;
+import dev.ic2port.Reference;
+import dev.ic2port.util.AddonRecipeBridge;
 import dev.ic2port.util.MachineRecipeHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
@@ -23,6 +25,8 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Optional;
 
 public class CompressorBlockEntity extends BaseMachineBlockEntity {
+
+    private static final ResourceLocation MACHINE_ID = new ResourceLocation(Reference.MOD_ID, "compressor");
 
     public static final double ENERGY_CAPACITY = 4000.0D;
     public static final int TIER = EnergyTier.LV;
@@ -77,12 +81,14 @@ public class CompressorBlockEntity extends BaseMachineBlockEntity {
 
     @Override
     protected boolean isValidProcessInput(final ItemStack stack) {
-        return MachineRecipeHelper.acceptsSingleInput(
+        return MachineRecipeHelper.acceptsSingleInputWithAddons(
                 level,
+                MACHINE_ID,
                 RecipeTypeRegistry.COMPRESSOR.get(),
                 CompressorRecipe.class,
                 stack,
-                CompressorRecipe::getInput);
+                CompressorRecipe::getInput,
+                AddonRecipeBridge::toCompressor);
     }
 
     public static void serverTick(
@@ -154,13 +160,15 @@ public class CompressorBlockEntity extends BaseMachineBlockEntity {
     }
 
     private Optional<CompressorRecipe> resolveActiveRecipe(final ItemStack input) {
-        final Optional<CompressorRecipe> resolved = MachineRecipeHelper.resolveSingleInputRecipe(
+        final Optional<CompressorRecipe> resolved = MachineRecipeHelper.resolveSingleInputRecipeWithAddons(
                 level,
+                MACHINE_ID,
                 RecipeTypeRegistry.COMPRESSOR.get(),
                 CompressorRecipe.class,
                 input,
                 activeRecipeId,
-                CompressorRecipe::getInput);
+                CompressorRecipe::getInput,
+                AddonRecipeBridge::toCompressor);
         activeRecipeId = resolved.map(CompressorRecipe::getId).orElse(null);
         return resolved;
     }

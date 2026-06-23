@@ -2,6 +2,7 @@ package dev.ic2port.blockentity;
 
 import dev.ic2port.fluid.FluidPipeNetwork;
 import dev.ic2port.setup.BlockEntityRegistry;
+import dev.ic2port.util.PipeConnectionHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -30,6 +31,9 @@ public class FluidPipeBlockEntity extends BlockEntity implements IFluidHandler {
     };
     private final LazyOptional<IFluidHandler> tankOptional = LazyOptional.of(() -> this);
 
+    private int connectionMask = PipeConnectionHelper.ALL_FACES_MASK;
+    private int coverMask;
+
     public FluidPipeBlockEntity(final BlockPos pos, final BlockState state) {
         super(BlockEntityRegistry.FLUID_PIPE_BE.get(), pos, state);
     }
@@ -42,13 +46,41 @@ public class FluidPipeBlockEntity extends BlockEntity implements IFluidHandler {
         pipe.tickServer();
     }
 
+    public boolean isFaceConnected(final Direction direction) {
+        return PipeConnectionHelper.isFaceOpen(connectionMask, direction);
+    }
+
+    public boolean isFaceCovered(final Direction direction) {
+        return PipeConnectionHelper.isFaceOpen(coverMask, direction);
+    }
+
+    public boolean canConnectTo(final Direction direction) {
+        return isFaceConnected(direction) && !isFaceCovered(direction);
+    }
+
+    public void toggleConnection(final Direction direction) {
+        connectionMask = PipeConnectionHelper.toggleFace(connectionMask, direction);
+        setChanged();
+        if (level != null) {
+            level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), 3);
+        }
+    }
+
+    public void toggleCover(final Direction direction) {
+        coverMask = PipeConnectionHelper.toggleFace(coverMask, direction);
+        setChanged();
+        if (level != null) {
+            level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), 3);
+        }
+    }
+
     private void tickServer() {
         if (level == null || level.isClientSide || tank.getFluidAmount() <= 0) {
             return;
         }
         FluidStack fluid = tank.getFluid().copy();
         fluid.setAmount(Math.min(TRANSFER_MB, fluid.getAmount()));
-        int moved = FluidPipeNetwork.distribute(level, worldPosition, fluid, fluid.getAmount());
+        int moved = FluidPipeNetwork.distribute(level, worldPosition, fluid, fluid.getAmount(), this);
         if (moved > 0) {
             tank.drain(moved, FluidAction.EXECUTE);
             setChanged();
@@ -98,6 +130,8 @@ public class FluidPipeBlockEntity extends BlockEntity implements IFluidHandler {
     protected void saveAdditional(final CompoundTag tag) {
         super.saveAdditional(tag);
         tag.put("Tank", tank.writeToNBT(new CompoundTag()));
+        tag.putInt("ConnectionMask", connectionMask);
+        tag.putInt("CoverMask", coverMask);
     }
 
     @Override
@@ -106,6 +140,10 @@ public class FluidPipeBlockEntity extends BlockEntity implements IFluidHandler {
         if (tag.contains("Tank")) {
             tank.readFromNBT(tag.getCompound("Tank"));
         }
+        connectionMask = tag.contains("ConnectionMask")
+                ? tag.getInt("ConnectionMask")
+                : PipeConnectionHelper.ALL_FACES_MASK;
+        coverMask = tag.getInt("CoverMask");
     }
 
     @Override
@@ -113,6 +151,9 @@ public class FluidPipeBlockEntity extends BlockEntity implements IFluidHandler {
             final @NotNull Capability<T> capability,
             final @Nullable Direction side) {
         if (capability == ForgeCapabilities.FLUID_HANDLER) {
+            if (side != null && !canConnectTo(side)) {
+                return LazyOptional.empty();
+            }
             return tankOptional.cast();
         }
         return super.getCapability(capability, side);

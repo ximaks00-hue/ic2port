@@ -23,6 +23,7 @@ public class FluidOMatMenu extends AbstractContainerMenu {
 
     private final FluidOMatBlockEntity blockEntity;
     private final ContainerData data;
+    private final Player player;
 
     public FluidOMatMenu(final int containerId, final Inventory playerInventory, final FriendlyByteBuf extraData) {
         this(containerId, playerInventory, getBlockEntity(playerInventory, extraData), new SimpleContainerData(4));
@@ -36,6 +37,7 @@ public class FluidOMatMenu extends AbstractContainerMenu {
         super(MenuTypeRegistry.FLUID_O_MAT_MENU.get(), containerId);
         this.blockEntity = blockEntity;
         this.data = data;
+        this.player = playerInventory.player;
 
         IItemHandler handler = blockEntity.getFullItemHandler();
         this.addSlot(new SlotItemHandler(handler, FluidOMatBlockEntity.SLOT_CELL_IN, 44, 35) {
@@ -80,6 +82,10 @@ public class FluidOMatMenu extends AbstractContainerMenu {
 
     public BlockPos getBlockPos() {
         return blockEntity.getBlockPos();
+    }
+
+    public boolean canOwnerAdjustPrice() {
+        return blockEntity.isOwner(player);
     }
 
     @Override

@@ -166,6 +166,7 @@ public final class CreativeTabRegistry {
                         output.accept(ItemRegistry.FLUID_O_MAT.get());
                         output.accept(ItemRegistry.INDUCTION_MATRIX.get());
                         output.accept(ItemRegistry.INDUCTION_MATRIX_CASING.get());
+                        output.accept(ItemRegistry.CAPACITOR_CELL.get());
                         output.accept(ItemRegistry.CONTAMINATED_SOIL.get());
                         output.accept(ItemRegistry.HEAT_VENT.get());
                         output.accept(ItemRegistry.ADVANCED_HEAT_VENT.get());

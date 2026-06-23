@@ -6,6 +6,7 @@ import dev.ic2port.network.packet.ToggleDrillModePacket;
 import dev.ic2port.network.packet.ToggleMiningLaserModePacket;
 import dev.ic2port.network.packet.VillagerOMatActionPacket;
 import dev.ic2port.network.packet.PersonalStorageActionPacket;
+import dev.ic2port.network.packet.FluidOMatActionPacket;
 import dev.ic2port.network.packet.TradeOMatActionPacket;
 import dev.ic2port.network.packet.TradeOMatBuyerViewS2CPacket;
 import dev.ic2port.network.packet.ElectricEnchanterActionPacket;
@@ -73,6 +74,11 @@ public final class ModMessages {
                 .encoder(TradeOMatActionPacket::encode)
                 .decoder(TradeOMatActionPacket::decode)
                 .consumerMainThread(TradeOMatActionPacket::handle)
+                .add();
+        CHANNEL.messageBuilder(FluidOMatActionPacket.class, nextId(), NetworkDirection.PLAY_TO_SERVER)
+                .encoder(FluidOMatActionPacket::encode)
+                .decoder(FluidOMatActionPacket::decode)
+                .consumerMainThread(FluidOMatActionPacket::handle)
                 .add();
         CHANNEL.messageBuilder(ElectricEnchanterActionPacket.class, nextId(), NetworkDirection.PLAY_TO_SERVER)
                 .encoder(ElectricEnchanterActionPacket::encode)

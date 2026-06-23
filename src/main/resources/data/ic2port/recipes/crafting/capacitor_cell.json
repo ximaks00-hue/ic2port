@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "LCL",
+    "CEC",
+    "LCL"
+  ],
+  "key": {
+    "L": {
+      "item": "ic2port:lapotron_crystal"
+    },
+    "C": {
+      "item": "ic2port:advanced_circuit"
+    },
+    "E": {
+      "item": "ic2port:energy_crystal"
+    }
+  },
+  "result": {
+    "item": "ic2port:capacitor_cell"
+  }
+}

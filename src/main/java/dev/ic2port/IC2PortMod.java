@@ -3,6 +3,7 @@ package dev.ic2port;
 import com.mojang.logging.LogUtils;
 import dev.ic2port.crop.CropRegistry;
 import dev.ic2port.network.ModMessages;
+import dev.ic2port.setup.ModFluids;
 import dev.ic2port.setup.ModEffects;
 import dev.ic2port.setup.BlockEntityRegistry;
 import dev.ic2port.setup.BlockRegistry;
@@ -36,6 +37,7 @@ public class IC2PortMod {
         BlockRegistry.register(modEventBus);
         ItemRegistry.register(modEventBus);
         BlockEntityRegistry.register(modEventBus);
+        ModFluids.register(modEventBus);
         MenuTypeRegistry.register(modEventBus);
         CreativeTabRegistry.register(modEventBus);
         RecipeTypeRegistry.register(modEventBus);

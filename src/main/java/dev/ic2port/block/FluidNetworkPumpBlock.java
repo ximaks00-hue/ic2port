@@ -1,5 +1,6 @@
 package dev.ic2port.block;
 
+import dev.ic2port.api.blocks.IWrenchable;
 import dev.ic2port.blockentity.FluidNetworkPumpBlockEntity;
 import dev.ic2port.setup.BlockEntityRegistry;
 import net.minecraft.core.BlockPos;
@@ -15,7 +16,7 @@ import org.jetbrains.annotations.Nullable;
 /**
  * Fluid-network pump — pulls from adjacent tanks and pushes into connected pipes.
  */
-public class FluidNetworkPumpBlock extends BaseEntityBlock {
+public class FluidNetworkPumpBlock extends BaseEntityBlock implements IWrenchable {
 
     public FluidNetworkPumpBlock(final Properties properties) {
         super(properties);

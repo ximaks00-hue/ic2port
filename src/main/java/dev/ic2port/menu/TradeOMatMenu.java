@@ -21,6 +21,7 @@ public class TradeOMatMenu extends AbstractContainerMenu {
 
     private final TradeOMatBlockEntity blockEntity;
     private final ContainerData data;
+    private final Player player;
     private boolean buyerView;
 
     public TradeOMatMenu(final int containerId, final Inventory playerInventory, final FriendlyByteBuf extraData) {
@@ -35,6 +36,7 @@ public class TradeOMatMenu extends AbstractContainerMenu {
         super(MenuTypeRegistry.TRADE_O_MAT_MENU.get(), containerId);
         this.blockEntity = blockEntity;
         this.data = data;
+        this.player = playerInventory.player;
         this.buyerView = blockEntity.isBuyerView(playerInventory.player);
 
         IItemHandler handler = blockEntity.getFullItemHandler();
@@ -80,6 +82,10 @@ public class TradeOMatMenu extends AbstractContainerMenu {
 
     public BlockPos getBlockPos() {
         return blockEntity.getBlockPos();
+    }
+
+    public boolean canOwnerAdjustPrice() {
+        return blockEntity.isOwner(player);
     }
 
     @Override

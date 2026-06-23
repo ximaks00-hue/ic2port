@@ -21,6 +21,19 @@ public final class ModArmorMaterials {
     private static final EnumMap<ArmorItem.Type, Integer> COMPOSITE_DEFENSE = defense(
             3, 6, 8, 3);
 
+    private static final EnumMap<ArmorItem.Type, Integer> HAZMAT_DEFENSE = defense(
+            1, 2, 2, 1);
+
+    public static final ArmorMaterial HAZMAT = material(
+            "hazmat",
+            HAZMAT_DEFENSE,
+            8,
+            5,
+            SoundEvents.ARMOR_EQUIP_LEATHER,
+            0.0F,
+            0.0F,
+            "rubber");
+
     public static final ArmorMaterial BRONZE = material(
             "bronze",
             BRONZE_DEFENSE,

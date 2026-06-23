@@ -1,6 +1,7 @@
 package dev.ic2port.blockentity;
 
 import dev.ic2port.api.reactor.IReactor;
+import dev.ic2port.api.reactor.IReactorMonitor;
 import dev.ic2port.api.reactor.IReactorComponent;
 import dev.ic2port.api.reactor.IReactorFuel;
 import dev.ic2port.api.reactor.IReactorHeatStorage;
@@ -8,20 +9,28 @@ import dev.ic2port.block.SteamReactorBlock;
 import dev.ic2port.setup.BlockEntityRegistry;
 import dev.ic2port.setup.BlockRegistry;
 import dev.ic2port.util.BlockEntitySpillHelper;
+import dev.ic2port.util.ContainerDataHelper;
 import dev.ic2port.util.FullInventoryAccess;
+import dev.ic2port.util.Ic2Fluids;
 import dev.ic2port.util.ProcessOnlyItemHandler;
 import dev.ic2port.util.ReactorGridHelper;
 import dev.ic2port.util.ReactorItemFilters;
 import dev.ic2port.util.ReactorMeltdownHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.MenuProvider;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.inventory.ContainerData;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.material.Fluids;
+import dev.ic2port.menu.SteamReactorMenu;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
@@ -36,7 +45,14 @@ import org.jetbrains.annotations.Nullable;
 /**
  * MVP steam reactor — fission heat drives steam (water) production exported to adjacent tanks.
  */
-public class SteamReactorBlockEntity extends BlockEntity implements IReactor, FullInventoryAccess {
+public class SteamReactorBlockEntity extends BlockEntity implements IReactor, IReactorMonitor, FullInventoryAccess, MenuProvider {
+
+    private static final int DATA_HEAT = 0;
+    private static final int DATA_MAX_HEAT = 1;
+    private static final int DATA_STEAM = 2;
+    private static final int DATA_STEAM_CAPACITY = 3;
+    private static final int DATA_CHAMBER_COUNT = 4;
+    private static final int DATA_ACTIVE = 5;
 
     public static final int GRID_WIDTH = 9;
     public static final int GRID_HEIGHT = 6;
@@ -69,6 +85,31 @@ public class SteamReactorBlockEntity extends BlockEntity implements IReactor, Fu
         }
     };
     private final LazyOptional<IFluidHandler> steamTankOptional = LazyOptional.of(() -> steamTank);
+
+    private final ContainerData data = new ContainerData() {
+        @Override
+        public int get(final int index) {
+            return switch (index) {
+                case DATA_HEAT -> (int) Math.min(heat, Integer.MAX_VALUE);
+                case DATA_MAX_HEAT -> (int) Math.min(getMaxHeat(), Integer.MAX_VALUE);
+                case DATA_STEAM -> steamTank.getFluidAmount();
+                case DATA_STEAM_CAPACITY -> steamTank.getCapacity();
+                case DATA_CHAMBER_COUNT -> chamberCount;
+                case DATA_ACTIVE -> isActive() ? 1 : 0;
+                default -> 0;
+            };
+        }
+
+        @Override
+        public void set(final int index, final int value) {
+            ContainerDataHelper.ignoreClientWrite();
+        }
+
+        @Override
+        public int getCount() {
+            return 6;
+        }
+    };
 
     private double heat;
     private int chamberCount;
@@ -138,7 +179,7 @@ public class SteamReactorBlockEntity extends BlockEntity implements IReactor, Fu
         }
         int space = steamTank.getCapacity() - steamTank.getFluidAmount();
         int toFill = Math.min(STEAM_PER_TICK_MB, space);
-        steamTank.fill(new FluidStack(Fluids.WATER, toFill), IFluidHandler.FluidAction.EXECUTE);
+        steamTank.fill(Ic2Fluids.steamStack(toFill), IFluidHandler.FluidAction.EXECUTE);
         heat -= toFill * 0.5D;
         setChanged();
     }
@@ -197,6 +238,22 @@ public class SteamReactorBlockEntity extends BlockEntity implements IReactor, Fu
                 4.0F, Level.ExplosionInteraction.BLOCK);
     }
 
+    @Override
+    public double getProducedEnergy() {
+        return steamTank.getFluidAmount();
+    }
+
+    @Override
+    public boolean isEjected() {
+        return false;
+    }
+
+    @Override
+    public int getOutputTier() {
+        return 0;
+    }
+
+    @Override
     public boolean isActive() {
         return level != null && level.hasNeighborSignal(worldPosition);
     }
@@ -305,7 +362,23 @@ public class SteamReactorBlockEntity extends BlockEntity implements IReactor, Fu
         itemHandler.deserializeNBT(tag.getCompound("Items"));
         if (tag.contains("SteamTank")) {
             steamTank.readFromNBT(tag.getCompound("SteamTank"));
+            steamTank.setFluid(Ic2Fluids.migrateSteamTank(steamTank.getFluid()));
         }
+    }
+
+    public ContainerData getContainerData() {
+        return data;
+    }
+
+    @Override
+    public Component getDisplayName() {
+        return Component.translatable("block.ic2port.steam_reactor");
+    }
+
+    @Nullable
+    @Override
+    public AbstractContainerMenu createMenu(final int containerId, final Inventory playerInventory, final Player player) {
+        return new SteamReactorMenu(containerId, playerInventory, this, data);
     }
 
     @Override

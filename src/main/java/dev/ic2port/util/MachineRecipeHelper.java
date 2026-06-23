@@ -2,6 +2,7 @@ package dev.ic2port.util;
 
 
 
+import dev.ic2port.setup.MachineRecipeRegistry;
 import dev.ic2port.recipe.CentrifugeRecipe;
 
 import dev.ic2port.recipe.IMachineRecipe;
@@ -206,6 +207,94 @@ public final class MachineRecipeHelper {
         return Optional.ofNullable(best);
     }
 
+    @FunctionalInterface
+    public interface AddonRecipeFactory<T extends Recipe<Container> & IMachineRecipe> {
+        T create(dev.ic2port.api.recipes.IMachineRecipe recipe, ItemStack input);
+    }
+
+    public static <T extends Recipe<Container> & IMachineRecipe> Optional<T> resolveSingleInputRecipeWithAddons(
+            final Level level,
+            final ResourceLocation machineId,
+            final RecipeType<T> recipeType,
+            final Class<T> recipeClass,
+            final ItemStack input,
+            @Nullable final ResourceLocation cachedRecipeId,
+            final Function<T, Ingredient> ingredientGetter,
+            final AddonRecipeFactory<T> addonFactory) {
+        Optional<T> datapack = resolveSingleInputRecipe(
+                level, recipeType, recipeClass, input, cachedRecipeId, ingredientGetter);
+
+        if (cachedRecipeId != null) {
+            dev.ic2port.api.recipes.IMachineRecipe cachedAddon =
+                    MachineRecipeRegistry.INSTANCE.getAll().get(cachedRecipeId);
+            if (cachedAddon != null
+                    && machineId.equals(cachedAddon.getMachineId())
+                    && cachedAddon.matches(input)) {
+                T synthetic = addonFactory.create(cachedAddon, input);
+                if (datapack.isEmpty()) {
+                    return Optional.of(synthetic);
+                }
+                return pickBestRecipe(datapack.get(), synthetic, input, ingredientGetter);
+            }
+        }
+
+        T bestAddon = null;
+        int bestAddonScore = Integer.MIN_VALUE;
+        ResourceLocation bestAddonId = null;
+        for (dev.ic2port.api.recipes.IMachineRecipe addon
+                : MachineRecipeRegistry.INSTANCE.getRecipesForMachine(machineId)) {
+            if (!addon.matches(input)) {
+                continue;
+            }
+            T synthetic = addonFactory.create(addon, input);
+            int score = scoreIngredientSpecificity(ingredientGetter.apply(synthetic), input);
+            ResourceLocation id = synthetic.getId();
+            if (bestAddon == null
+                    || score > bestAddonScore
+                    || (score == bestAddonScore && id.compareTo(bestAddonId) < 0)) {
+                bestAddon = synthetic;
+                bestAddonScore = score;
+                bestAddonId = id;
+            }
+        }
+
+        if (bestAddon == null) {
+            return datapack;
+        }
+        if (datapack.isEmpty()) {
+            return Optional.of(bestAddon);
+        }
+        return pickBestRecipe(datapack.get(), bestAddon, input, ingredientGetter);
+    }
+
+    private static <T extends Recipe<Container> & IMachineRecipe> Optional<T> pickBestRecipe(
+            final T datapack,
+            final T addon,
+            final ItemStack input,
+            final Function<T, Ingredient> ingredientGetter) {
+        int datapackScore = scoreIngredientSpecificity(ingredientGetter.apply(datapack), input);
+        int addonScore = scoreIngredientSpecificity(ingredientGetter.apply(addon), input);
+        if (addonScore > datapackScore) {
+            return Optional.of(addon);
+        }
+        if (addonScore == datapackScore && addon.getId().compareTo(datapack.getId()) < 0) {
+            return Optional.of(addon);
+        }
+        return Optional.of(datapack);
+    }
+
+    public static <T extends Recipe<Container> & IMachineRecipe> boolean acceptsSingleInputWithAddons(
+            final Level level,
+            final ResourceLocation machineId,
+            final RecipeType<T> recipeType,
+            final Class<T> recipeClass,
+            final ItemStack input,
+            final Function<T, Ingredient> ingredientGetter,
+            final AddonRecipeFactory<T> addonFactory) {
+        return resolveSingleInputRecipeWithAddons(
+                level, machineId, recipeType, recipeClass, input, null, ingredientGetter, addonFactory).isPresent();
+    }
+
     public static <T extends Recipe<Container> & IMachineRecipe> boolean acceptsSingleInput(
             final Level level,
             final RecipeType<T> recipeType,
@@ -289,11 +378,88 @@ public final class MachineRecipeHelper {
         return Optional.ofNullable(best);
     }
 
+    public static Optional<CentrifugeRecipe> resolveCentrifugeRecipeWithAddons(
+            final Level level,
+            final ResourceLocation machineId,
+            final ItemStack input,
+            @Nullable final ResourceLocation cachedRecipeId,
+            final RecipeType<CentrifugeRecipe> recipeType,
+            final AddonRecipeFactory<CentrifugeRecipe> addonFactory) {
+        Optional<CentrifugeRecipe> datapack = resolveCentrifugeRecipe(level, input, cachedRecipeId, recipeType);
+
+        if (cachedRecipeId != null) {
+            dev.ic2port.api.recipes.IMachineRecipe cachedAddon =
+                    MachineRecipeRegistry.INSTANCE.getAll().get(cachedRecipeId);
+            if (cachedAddon != null
+                    && machineId.equals(cachedAddon.getMachineId())
+                    && cachedAddon.matches(input)) {
+                CentrifugeRecipe synthetic = addonFactory.create(cachedAddon, input);
+                if (datapack.isEmpty()) {
+                    return Optional.of(synthetic);
+                }
+                return pickBestCentrifugeRecipe(datapack.get(), synthetic, input);
+            }
+        }
+
+        CentrifugeRecipe bestAddon = null;
+        int bestAddonScore = Integer.MIN_VALUE;
+        ResourceLocation bestAddonId = null;
+        for (dev.ic2port.api.recipes.IMachineRecipe addon
+                : MachineRecipeRegistry.INSTANCE.getRecipesForMachine(machineId)) {
+            if (!addon.matches(input)) {
+                continue;
+            }
+            CentrifugeRecipe synthetic = addonFactory.create(addon, input);
+            int score = scoreIngredientSpecificity(synthetic.getInput(), input);
+            ResourceLocation id = synthetic.getId();
+            if (bestAddon == null
+                    || score > bestAddonScore
+                    || (score == bestAddonScore && id.compareTo(bestAddonId) < 0)) {
+                bestAddon = synthetic;
+                bestAddonScore = score;
+                bestAddonId = id;
+            }
+        }
+
+        if (bestAddon == null) {
+            return datapack;
+        }
+        if (datapack.isEmpty()) {
+            return Optional.of(bestAddon);
+        }
+        return pickBestCentrifugeRecipe(datapack.get(), bestAddon, input);
+    }
+
+    private static Optional<CentrifugeRecipe> pickBestCentrifugeRecipe(
+            final CentrifugeRecipe datapack,
+            final CentrifugeRecipe addon,
+            final ItemStack input) {
+        int datapackScore = scoreIngredientSpecificity(datapack.getInput(), input);
+        int addonScore = scoreIngredientSpecificity(addon.getInput(), input);
+        if (addonScore > datapackScore) {
+            return Optional.of(addon);
+        }
+        if (addonScore == datapackScore && addon.getId().compareTo(datapack.getId()) < 0) {
+            return Optional.of(addon);
+        }
+        return Optional.of(datapack);
+    }
+
     public static boolean acceptsCentrifugeInput(
             final Level level,
             final ItemStack input,
             final RecipeType<CentrifugeRecipe> recipeType) {
         return resolveCentrifugeRecipe(level, input, null, recipeType).isPresent();
+    }
+
+    public static boolean acceptsCentrifugeInputWithAddons(
+            final Level level,
+            final ResourceLocation machineId,
+            final ItemStack input,
+            final RecipeType<CentrifugeRecipe> recipeType,
+            final AddonRecipeFactory<CentrifugeRecipe> addonFactory) {
+        return resolveCentrifugeRecipeWithAddons(
+                level, machineId, input, null, recipeType, addonFactory).isPresent();
     }
 
 }

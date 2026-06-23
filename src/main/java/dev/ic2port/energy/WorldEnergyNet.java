@@ -61,13 +61,12 @@ public final class WorldEnergyNet implements IEnergyNet {
         }
         BlockPos pos = cable.getBlockPos();
         registeredCables.add(pos);
-        for (Direction direction : Direction.values()) {
-            dissolveGridAt(pos.relative(direction));
+        for (BlockPos neighbor : adjacentPositions(pos)) {
+            dissolveGridAt(neighbor);
         }
         dissolveGridAt(pos);
         rebuildGridAt(pos);
-        for (Direction direction : Direction.values()) {
-            BlockPos neighbor = pos.relative(direction);
+        for (BlockPos neighbor : adjacentPositions(pos)) {
             if (registeredCables.contains(neighbor)) {
                 rebuildGridAt(neighbor);
             }
@@ -78,8 +77,7 @@ public final class WorldEnergyNet implements IEnergyNet {
         registeredCables.remove(pos);
         activeCables.remove(pos);
         dissolveGridAt(pos);
-        for (Direction direction : Direction.values()) {
-            BlockPos neighbor = pos.relative(direction);
+        for (BlockPos neighbor : adjacentPositions(pos)) {
             if (registeredCables.contains(neighbor)) {
                 rebuildGridAt(neighbor);
             }
@@ -101,8 +99,7 @@ public final class WorldEnergyNet implements IEnergyNet {
         if (isConductor(level, pos)) {
             rebuildGridAt(pos);
         }
-        for (Direction direction : Direction.values()) {
-            BlockPos neighbor = pos.relative(direction);
+        for (BlockPos neighbor : adjacentPositions(pos)) {
             if (registeredCables.contains(neighbor)) {
                 EnergyGrid grid = gridByPos.get(neighbor);
                 if (grid != null) {
@@ -127,8 +124,7 @@ public final class WorldEnergyNet implements IEnergyNet {
         }
 
         TickProfiler.profileCable(() -> {
-            Set<BlockPos> snapshot = new HashSet<>(activeCables);
-            activeCables.clear();
+            Set<BlockPos> snapshot = drainActiveSet(activeCables);
             for (BlockPos pos : snapshot) {
                 BlockEntity blockEntity = level.getBlockEntity(pos);
                 if (!(blockEntity instanceof BaseCableBlockEntity cable) || cable.isBurnedOutForNet()) {
@@ -191,8 +187,7 @@ public final class WorldEnergyNet implements IEnergyNet {
                 continue;
             }
             gridByPos.put(current, grid);
-            for (Direction direction : Direction.values()) {
-                BlockPos next = current.relative(direction);
+            for (BlockPos next : adjacentPositions(current)) {
                 if (!grid.contains(next) && isConductor(level, next)) {
                     queue.add(next);
                 }
@@ -231,13 +226,26 @@ public final class WorldEnergyNet implements IEnergyNet {
             if (!members.add(current)) {
                 continue;
             }
-            for (Direction direction : Direction.values()) {
-                BlockPos next = current.relative(direction);
+            for (BlockPos next : adjacentPositions(current)) {
                 if (!members.contains(next) && isConductorAt.test(next)) {
                     queue.add(next);
                 }
             }
         }
         return members;
+    }
+
+    static Set<BlockPos> adjacentPositions(final BlockPos pos) {
+        Set<BlockPos> adjacent = new HashSet<>(6);
+        for (Direction direction : Direction.values()) {
+            adjacent.add(pos.relative(direction));
+        }
+        return adjacent;
+    }
+
+    static Set<BlockPos> drainActiveSet(final Set<BlockPos> active) {
+        Set<BlockPos> snapshot = new HashSet<>(active);
+        active.clear();
+        return snapshot;
     }
 }

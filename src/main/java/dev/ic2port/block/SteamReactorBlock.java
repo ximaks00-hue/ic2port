@@ -1,11 +1,19 @@
 package dev.ic2port.block;
 
+import dev.ic2port.api.reactor.IReactorMonitor;
+import dev.ic2port.api.blocks.IWrenchable;
 import dev.ic2port.blockentity.SteamReactorBlockEntity;
 import dev.ic2port.setup.BlockEntityRegistry;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraftforge.network.NetworkHooks;
 import net.minecraft.world.level.block.BaseEntityBlock;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Mirror;
@@ -20,7 +28,7 @@ import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import org.jetbrains.annotations.Nullable;
 
-public class SteamReactorBlock extends BaseEntityBlock {
+public class SteamReactorBlock extends BaseEntityBlock implements IWrenchable {
 
     public static final DirectionProperty FACING = BlockStateProperties.FACING;
 
@@ -65,6 +73,38 @@ public class SteamReactorBlock extends BaseEntityBlock {
         return level.isClientSide()
                 ? null
                 : createTickerHelper(type, BlockEntityRegistry.STEAM_REACTOR_BE.get(), SteamReactorBlockEntity::serverTick);
+    }
+
+    @Override
+    public InteractionResult use(
+            final BlockState state,
+            final Level level,
+            final BlockPos pos,
+            final Player player,
+            final InteractionHand hand,
+            final BlockHitResult hit) {
+        if (level.isClientSide) {
+            return InteractionResult.SUCCESS;
+        }
+        if (!(level.getBlockEntity(pos) instanceof SteamReactorBlockEntity reactor)) {
+            return InteractionResult.PASS;
+        }
+        if (player instanceof ServerPlayer serverPlayer && hand == InteractionHand.MAIN_HAND) {
+            NetworkHooks.openScreen(serverPlayer, reactor, pos);
+            return InteractionResult.CONSUME;
+        }
+        return InteractionResult.PASS;
+    }
+
+    @Override
+    public boolean hasAnalogOutputSignal(final BlockState state) {
+        return true;
+    }
+
+    @Override
+    public int getAnalogOutputSignal(final BlockState state, final Level level, final BlockPos pos) {
+        IReactorMonitor monitor = IReactorMonitor.getAt(level, pos);
+        return monitor != null ? monitor.getHeatComparatorOutput() : 0;
     }
 
     @Override

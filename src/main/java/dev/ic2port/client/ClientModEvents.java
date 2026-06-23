@@ -21,6 +21,7 @@ import dev.ic2port.client.screen.CropHarvesterScreen;
 import dev.ic2port.client.screen.CropmatronScreen;
 import dev.ic2port.client.screen.CentrifugalExtractorScreen;
 import dev.ic2port.client.screen.CompressorScreen;
+import dev.ic2port.client.screen.ElectricEnchanterScreen;
 import dev.ic2port.client.screen.ElectricFurnaceScreen;
 import dev.ic2port.client.screen.ExtractorScreen;
 import dev.ic2port.client.screen.GeothermalGeneratorScreen;
@@ -36,7 +37,8 @@ import dev.ic2port.client.screen.PersonalChestScreen;
 import dev.ic2port.client.screen.PersonalTankScreen;
 import dev.ic2port.client.screen.FluidOMatScreen;
 import dev.ic2port.client.screen.TradeOMatScreen;
-import dev.ic2port.client.screen.ElectricEnchanterScreen;
+import dev.ic2port.client.screen.InductionMatrixScreen;
+import dev.ic2port.client.screen.SteamReactorScreen;
 import dev.ic2port.client.screen.MachineBufferScreen;
 import dev.ic2port.client.screen.MaceratorScreen;
 import dev.ic2port.client.screen.MassFabricatorScreen;
@@ -122,6 +124,8 @@ public final class ClientModEvents {
             MenuScreens.register(MenuTypeRegistry.TRADE_O_MAT_MENU.get(), TradeOMatScreen::new);
             MenuScreens.register(MenuTypeRegistry.FLUID_O_MAT_MENU.get(), FluidOMatScreen::new);
             MenuScreens.register(MenuTypeRegistry.ELECTRIC_ENCHANTER_MENU.get(), ElectricEnchanterScreen::new);
+            MenuScreens.register(MenuTypeRegistry.STEAM_REACTOR_MENU.get(), SteamReactorScreen::new);
+            MenuScreens.register(MenuTypeRegistry.INDUCTION_MATRIX_MENU.get(), InductionMatrixScreen::new);
         });
     }
 

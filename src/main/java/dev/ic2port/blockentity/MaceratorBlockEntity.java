@@ -6,6 +6,8 @@ import dev.ic2port.menu.MaceratorMenu;
 import dev.ic2port.recipe.MaceratorRecipe;
 import dev.ic2port.setup.BlockEntityRegistry;
 import dev.ic2port.setup.RecipeTypeRegistry;
+import dev.ic2port.Reference;
+import dev.ic2port.util.AddonRecipeBridge;
 import dev.ic2port.util.MachineRecipeHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
@@ -26,6 +28,8 @@ import java.util.Optional;
  * LV macerator — consumes EU and grinds items using {@link MaceratorRecipe} entries.
  */
 public class MaceratorBlockEntity extends BaseMachineBlockEntity {
+
+    private static final ResourceLocation MACHINE_ID = new ResourceLocation(Reference.MOD_ID, "macerator");
 
     public static final double ENERGY_CAPACITY = 4000.0D;
     public static final int TIER = EnergyTier.LV;
@@ -79,12 +83,14 @@ public class MaceratorBlockEntity extends BaseMachineBlockEntity {
 
     @Override
     protected boolean isValidProcessInput(final ItemStack stack) {
-        return MachineRecipeHelper.acceptsSingleInput(
+        return MachineRecipeHelper.acceptsSingleInputWithAddons(
                 level,
+                MACHINE_ID,
                 RecipeTypeRegistry.MACERATOR.get(),
                 MaceratorRecipe.class,
                 stack,
-                MaceratorRecipe::getInput);
+                MaceratorRecipe::getInput,
+                AddonRecipeBridge::toMacerator);
     }
 
     public static void serverTick(
@@ -156,13 +162,15 @@ public class MaceratorBlockEntity extends BaseMachineBlockEntity {
     }
 
     private Optional<MaceratorRecipe> resolveActiveRecipe(final ItemStack input) {
-        final Optional<MaceratorRecipe> resolved = MachineRecipeHelper.resolveSingleInputRecipe(
+        final Optional<MaceratorRecipe> resolved = MachineRecipeHelper.resolveSingleInputRecipeWithAddons(
                 level,
+                MACHINE_ID,
                 RecipeTypeRegistry.MACERATOR.get(),
                 MaceratorRecipe.class,
                 input,
                 activeRecipeId,
-                MaceratorRecipe::getInput);
+                MaceratorRecipe::getInput,
+                AddonRecipeBridge::toMacerator);
         activeRecipeId = resolved.map(MaceratorRecipe::getId).orElse(null);
         return resolved;
     }
@@ -172,13 +180,15 @@ public class MaceratorBlockEntity extends BaseMachineBlockEntity {
         if (level == null || input.isEmpty()) {
             return Optional.empty();
         }
-        return MachineRecipeHelper.resolveSingleInputRecipe(
+        return MachineRecipeHelper.resolveSingleInputRecipeWithAddons(
                 level,
+                MACHINE_ID,
                 RecipeTypeRegistry.MACERATOR.get(),
                 MaceratorRecipe.class,
                 input,
                 activeRecipeId,
-                MaceratorRecipe::getInput);
+                MaceratorRecipe::getInput,
+                AddonRecipeBridge::toMacerator);
     }
 
     private boolean canOutput(final MaceratorRecipe recipe, final ItemStack output) {
@@ -194,12 +204,14 @@ public class MaceratorBlockEntity extends BaseMachineBlockEntity {
         if (level == null || level.isClientSide || stack.isEmpty()) {
             return false;
         }
-        if (!MachineRecipeHelper.acceptsSingleInput(
+        if (!MachineRecipeHelper.acceptsSingleInputWithAddons(
                 level,
+                MACHINE_ID,
                 RecipeTypeRegistry.MACERATOR.get(),
                 MaceratorRecipe.class,
                 stack,
-                MaceratorRecipe::getInput)) {
+                MaceratorRecipe::getInput,
+                AddonRecipeBridge::toMacerator)) {
             return false;
         }
 

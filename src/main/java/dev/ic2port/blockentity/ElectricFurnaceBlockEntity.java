@@ -6,6 +6,8 @@ import dev.ic2port.menu.ElectricFurnaceMenu;
 import dev.ic2port.recipe.ElectricFurnaceRecipe;
 import dev.ic2port.setup.BlockEntityRegistry;
 import dev.ic2port.setup.RecipeTypeRegistry;
+import dev.ic2port.Reference;
+import dev.ic2port.util.AddonRecipeBridge;
 import dev.ic2port.util.MachineRecipeHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
@@ -23,6 +25,8 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Optional;
 
 public class ElectricFurnaceBlockEntity extends BaseMachineBlockEntity {
+
+    private static final ResourceLocation MACHINE_ID = new ResourceLocation(Reference.MOD_ID, "electric_furnace");
 
     public static final double ENERGY_CAPACITY = 4000.0D;
     public static final int TIER = EnergyTier.LV;
@@ -77,12 +81,14 @@ public class ElectricFurnaceBlockEntity extends BaseMachineBlockEntity {
 
     @Override
     protected boolean isValidProcessInput(final ItemStack stack) {
-        return MachineRecipeHelper.acceptsSingleInput(
+        return MachineRecipeHelper.acceptsSingleInputWithAddons(
                 level,
+                MACHINE_ID,
                 RecipeTypeRegistry.ELECTRIC_FURNACE.get(),
                 ElectricFurnaceRecipe.class,
                 stack,
-                ElectricFurnaceRecipe::getInput);
+                ElectricFurnaceRecipe::getInput,
+                AddonRecipeBridge::toElectricFurnace);
     }
 
     public static void serverTick(
@@ -154,13 +160,15 @@ public class ElectricFurnaceBlockEntity extends BaseMachineBlockEntity {
     }
 
     private Optional<ElectricFurnaceRecipe> resolveActiveRecipe(final ItemStack input) {
-        final Optional<ElectricFurnaceRecipe> resolved = MachineRecipeHelper.resolveSingleInputRecipe(
+        final Optional<ElectricFurnaceRecipe> resolved = MachineRecipeHelper.resolveSingleInputRecipeWithAddons(
                 level,
+                MACHINE_ID,
                 RecipeTypeRegistry.ELECTRIC_FURNACE.get(),
                 ElectricFurnaceRecipe.class,
                 input,
                 activeRecipeId,
-                ElectricFurnaceRecipe::getInput);
+                ElectricFurnaceRecipe::getInput,
+                AddonRecipeBridge::toElectricFurnace);
         activeRecipeId = resolved.map(ElectricFurnaceRecipe::getId).orElse(null);
         return resolved;
     }

@@ -6,6 +6,8 @@ import dev.ic2port.menu.InductionFurnaceMenu;
 import dev.ic2port.recipe.ElectricFurnaceRecipe;
 import dev.ic2port.setup.BlockEntityRegistry;
 import dev.ic2port.setup.RecipeTypeRegistry;
+import dev.ic2port.Reference;
+import dev.ic2port.util.AddonRecipeBridge;
 import dev.ic2port.util.MachineRecipeHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
@@ -26,6 +28,8 @@ import java.util.Optional;
  * MV induction furnace — two independent lanes, 2× processing speed vs electric furnace.
  */
 public class InductionFurnaceBlockEntity extends BaseMachineBlockEntity {
+
+    private static final ResourceLocation MACHINE_ID = new ResourceLocation(Reference.MOD_ID, "induction_furnace");
 
     public static final double ENERGY_CAPACITY = 16_000.0D;
     public static final int TIER = EnergyTier.MV;
@@ -128,12 +132,14 @@ public class InductionFurnaceBlockEntity extends BaseMachineBlockEntity {
 
     @Override
     protected boolean isValidProcessInput(final ItemStack stack) {
-        return MachineRecipeHelper.acceptsSingleInput(
+        return MachineRecipeHelper.acceptsSingleInputWithAddons(
                 level,
+                MACHINE_ID,
                 RecipeTypeRegistry.ELECTRIC_FURNACE.get(),
                 ElectricFurnaceRecipe.class,
                 stack,
-                ElectricFurnaceRecipe::getInput);
+                ElectricFurnaceRecipe::getInput,
+                AddonRecipeBridge::toElectricFurnace);
     }
 
     public static void serverTick(
@@ -252,13 +258,15 @@ public class InductionFurnaceBlockEntity extends BaseMachineBlockEntity {
 
     private Optional<ElectricFurnaceRecipe> resolveActiveRecipe(final ItemStack input, final boolean laneA) {
         final ResourceLocation cachedId = laneA ? activeRecipeIdA : activeRecipeIdB;
-        final Optional<ElectricFurnaceRecipe> resolved = MachineRecipeHelper.resolveSingleInputRecipe(
+        final Optional<ElectricFurnaceRecipe> resolved = MachineRecipeHelper.resolveSingleInputRecipeWithAddons(
                 level,
+                MACHINE_ID,
                 RecipeTypeRegistry.ELECTRIC_FURNACE.get(),
                 ElectricFurnaceRecipe.class,
                 input,
                 cachedId,
-                ElectricFurnaceRecipe::getInput);
+                ElectricFurnaceRecipe::getInput,
+                AddonRecipeBridge::toElectricFurnace);
         final ResourceLocation resolvedId = resolved.map(ElectricFurnaceRecipe::getId).orElse(null);
         if (laneA) {
             activeRecipeIdA = resolvedId;

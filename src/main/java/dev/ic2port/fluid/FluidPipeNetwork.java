@@ -14,7 +14,7 @@ import java.util.Queue;
 import java.util.Set;
 
 /**
- * Chunk-local fluid pipe network — distributes fluid between connected {@link FluidPipeBlockEntity} nodes.
+ * Fluid pipe network — distributes fluid through connected {@link FluidPipeBlockEntity} nodes.
  */
 public final class FluidPipeNetwork {
 
@@ -22,16 +22,27 @@ public final class FluidPipeNetwork {
         throw new UnsupportedOperationException("Utility class");
     }
 
+  public static int distribute(
+            final Level level,
+            final BlockPos source,
+            final FluidStack fluid,
+            final int maxTransfer) {
+        BlockEntity sourceEntity = level.getBlockEntity(source);
+        if (!(sourceEntity instanceof FluidPipeBlockEntity sourcePipe)) {
+            return 0;
+        }
+        return distribute(level, source, fluid, maxTransfer, sourcePipe);
+    }
+
     /**
-     * Attempts to push fluid from {@code source} into the connected pipe network.
-     *
      * @return amount moved in mB
      */
     public static int distribute(
             final Level level,
             final BlockPos source,
             final FluidStack fluid,
-            final int maxTransfer) {
+            final int maxTransfer,
+            final FluidPipeBlockEntity sourcePipe) {
         if (fluid.isEmpty() || maxTransfer <= 0) {
             return 0;
         }
@@ -53,14 +64,19 @@ public final class FluidPipeNetwork {
             }
 
             for (Direction direction : Direction.values()) {
+                if (!pipe.canConnectTo(direction)) {
+                    continue;
+                }
                 BlockPos neighborPos = current.relative(direction);
                 if (visited.contains(neighborPos)) {
                     continue;
                 }
                 BlockEntity neighbor = level.getBlockEntity(neighborPos);
-                if (neighbor instanceof FluidPipeBlockEntity) {
-                    visited.add(neighborPos);
-                    queue.add(neighborPos);
+                if (neighbor instanceof FluidPipeBlockEntity neighborPipe) {
+                    if (neighborPipe.canConnectTo(direction.getOpposite())) {
+                        visited.add(neighborPos);
+                        queue.add(neighborPos);
+                    }
                     continue;
                 }
                 if (neighbor == null) {

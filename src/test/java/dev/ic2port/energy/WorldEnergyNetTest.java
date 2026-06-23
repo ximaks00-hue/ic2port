@@ -39,4 +39,44 @@ class WorldEnergyNetTest {
         Set<BlockPos> grid = WorldEnergyNet.floodFill(new BlockPos(15, 64, 0), conductors::contains);
         assertEquals(2, grid.size());
     }
+
+    @Test
+    void floodFillDoesNotCrossDiagonalGaps() {
+        Set<BlockPos> conductors = Set.of(
+                new BlockPos(0, 64, 0),
+                new BlockPos(1, 65, 0),
+                new BlockPos(1, 64, 1));
+
+        Set<BlockPos> grid = WorldEnergyNet.floodFill(new BlockPos(0, 64, 0), conductors::contains);
+        assertEquals(1, grid.size());
+        assertTrue(grid.contains(new BlockPos(0, 64, 0)));
+    }
+
+    @Test
+    void adjacentPositionsReturnsExactlySixOrthogonalNeighbors() {
+        BlockPos origin = new BlockPos(10, 20, 30);
+        Set<BlockPos> adjacent = WorldEnergyNet.adjacentPositions(origin);
+
+        assertEquals(6, adjacent.size());
+        assertTrue(adjacent.contains(origin.north()));
+        assertTrue(adjacent.contains(origin.south()));
+        assertTrue(adjacent.contains(origin.east()));
+        assertTrue(adjacent.contains(origin.west()));
+        assertTrue(adjacent.contains(origin.above()));
+        assertTrue(adjacent.contains(origin.below()));
+    }
+
+    @Test
+    void drainActiveSetReturnsSnapshotAndClearsSource() {
+        Set<BlockPos> active = new HashSet<>(Set.of(
+                new BlockPos(0, 0, 0),
+                new BlockPos(1, 0, 0),
+                new BlockPos(2, 0, 0)));
+
+        Set<BlockPos> snapshot = WorldEnergyNet.drainActiveSet(active);
+
+        assertEquals(3, snapshot.size());
+        assertTrue(active.isEmpty());
+        assertTrue(snapshot.contains(new BlockPos(1, 0, 0)));
+    }
 }

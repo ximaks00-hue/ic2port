@@ -2,9 +2,8 @@ package dev.ic2port.item;
 
 import dev.ic2port.util.ArmorSetHelper;
 import net.minecraft.world.entity.player.Player;
+import dev.ic2port.setup.ModArmorMaterials;
 import net.minecraft.world.item.ArmorItem;
-import net.minecraft.world.item.ArmorMaterial;
-import net.minecraft.world.item.ArmorMaterials;
 import net.minecraft.world.item.ItemStack;
 
 /**
@@ -13,7 +12,7 @@ import net.minecraft.world.item.ItemStack;
 public class HazmatArmorItem extends ArmorItem {
 
     public HazmatArmorItem(final Type type, final Properties properties) {
-        super(ArmorMaterials.LEATHER, type, properties);
+        super(ModArmorMaterials.HAZMAT, type, properties);
     }
 
     public static boolean hasFullSet(final Player player) {

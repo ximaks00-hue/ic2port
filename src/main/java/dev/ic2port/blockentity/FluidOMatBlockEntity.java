@@ -179,6 +179,10 @@ public class FluidOMatBlockEntity extends BlockEntity implements MenuProvider, F
         setChanged();
     }
 
+    public int getPriceCoins() {
+        return priceCoins;
+    }
+
     public void bindOwner(final Player player) {
         if (ownerUuid == null) {
             ownerUuid = player.getUUID();

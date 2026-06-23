@@ -40,6 +40,8 @@ import dev.ic2port.menu.PersonalTankMenu;
 import dev.ic2port.menu.FluidOMatMenu;
 import dev.ic2port.menu.TradeOMatMenu;
 import dev.ic2port.menu.ElectricEnchanterMenu;
+import dev.ic2port.menu.InductionMatrixMenu;
+import dev.ic2port.menu.SteamReactorMenu;
 import dev.ic2port.menu.MaceratorMenu;
 import dev.ic2port.menu.RecyclerMenu;
 import dev.ic2port.menu.NuclearReactorMenu;
@@ -174,6 +176,12 @@ public final class MenuTypeRegistry {
 
     public static final RegistryObject<MenuType<ElectricEnchanterMenu>> ELECTRIC_ENCHANTER_MENU =
             MENUS.register("electric_enchanter", () -> IForgeMenuType.create(ElectricEnchanterMenu::new));
+
+    public static final RegistryObject<MenuType<SteamReactorMenu>> STEAM_REACTOR_MENU =
+            MENUS.register("steam_reactor", () -> IForgeMenuType.create(SteamReactorMenu::new));
+
+    public static final RegistryObject<MenuType<InductionMatrixMenu>> INDUCTION_MATRIX_MENU =
+            MENUS.register("induction_matrix", () -> IForgeMenuType.create(InductionMatrixMenu::new));
 
     private MenuTypeRegistry() {
         throw new UnsupportedOperationException("Utility class");

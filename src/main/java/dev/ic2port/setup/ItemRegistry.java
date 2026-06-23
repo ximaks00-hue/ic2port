@@ -4,6 +4,7 @@ import dev.ic2port.Reference;
 import dev.ic2port.item.AdvancedDrillItem;
 import dev.ic2port.item.AutoFeederModuleItem;
 import dev.ic2port.item.BatPackItem;
+import dev.ic2port.item.CapacitorCellItem;
 import dev.ic2port.item.EnergyCrystalItem;
 import dev.ic2port.item.EnergyStorageUpgradeItem;
 import dev.ic2port.item.LapPackItem;
@@ -738,6 +739,9 @@ public final class ItemRegistry {
 
     public static final RegistryObject<Item> INDUCTION_MATRIX_CASING = ITEMS.register("induction_matrix_casing",
             () -> new BlockItem(BlockRegistry.INDUCTION_MATRIX_CASING.get(), new Item.Properties()));
+
+    public static final RegistryObject<Item> CAPACITOR_CELL = ITEMS.register("capacitor_cell",
+            () -> new CapacitorCellItem(new Item.Properties()));
 
     public static final RegistryObject<Item> STEAM_VENT = ITEMS.register("steam_vent",
             () -> new SteamVentItem(new Item.Properties(), 16.0D, 1_200.0D, 80.0D));
