@@ -3,6 +3,6 @@
   "textures": {
     "front": "ic2port:block/recycler_front",
     "side": "ic2port:block/macerator_top",
-    "top": "ic2port:block/basic_machine_casing"
+    "top": "ic2port:block/machine_side_basic"
   }
 }

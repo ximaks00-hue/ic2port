@@ -2,7 +2,7 @@
   "parent": "minecraft:block/orientable",
   "textures": {
     "front": "ic2port:block/induction_furnace_front",
-    "side": "ic2port:block/advanced_machine_casing",
-    "top": "ic2port:block/advanced_machine_casing"
+    "side": "ic2port:block/machine_side_advanced",
+    "top": "ic2port:block/machine_side_advanced"
   }
 }

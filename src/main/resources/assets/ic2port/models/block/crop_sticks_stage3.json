@@ -1,6 +1,6 @@
 {
   "parent": "minecraft:block/cross",
   "textures": {
-    "cross": "minecraft:block/wheat_stage3"
+    "cross": "ic2port:block/crop_sticks_stage3"
   }
 }

@@ -1,6 +1,6 @@
 {
   "parent": "minecraft:block/cube_all",
   "textures": {
-    "all": "minecraft:block/magma"
+    "all": "ic2port:block/fusion_reactor"
   }
 }

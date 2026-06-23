@@ -1,8 +1,8 @@
 {
   "parent": "minecraft:block/scaffolding",
   "textures": {
-    "top": "minecraft:block/iron_block",
-    "side": "minecraft:block/iron_block",
-    "bottom": "minecraft:block/iron_block"
+    "top": "ic2port:block/iron_scaffold",
+    "side": "ic2port:block/iron_scaffold",
+    "bottom": "ic2port:block/iron_scaffold"
   }
 }

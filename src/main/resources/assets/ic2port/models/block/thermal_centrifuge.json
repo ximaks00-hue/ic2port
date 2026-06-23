@@ -3,6 +3,6 @@
   "textures": {
     "front": "ic2port:block/thermal_centrifuge_front",
     "side": "ic2port:block/thermal_centrifuge_top",
-    "top": "ic2port:block/advanced_machine_casing"
+    "top": "ic2port:block/machine_side_advanced"
   }
 }

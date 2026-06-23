@@ -1,6 +1,8 @@
-﻿{
-  "parent": "minecraft:block/cube_all",
+{
+  "parent": "minecraft:block/orientable",
   "textures": {
-    "all": "ic2port:block/advanced_machine_casing"
+    "top": "ic2port:block/machine_side_advanced",
+    "front": "ic2port:block/mfsu_front",
+    "side": "ic2port:block/machine_side_advanced"
   }
 }

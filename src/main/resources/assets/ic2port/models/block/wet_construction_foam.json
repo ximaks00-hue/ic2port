@@ -1,6 +1,6 @@
 {
   "parent": "minecraft:block/cube_all",
   "textures": {
-    "all": "minecraft:block/white_concrete_powder"
+    "all": "ic2port:block/wet_construction_foam"
   }
 }
