@@ -1,6 +1,6 @@
 {
   "parent": "minecraft:block/cube_all",
   "textures": {
-    "all": "minecraft:block/bricks"
+    "all": "ic2port:block/reinforced_bricks"
   }
 }

@@ -2,6 +2,6 @@
   "parent": "minecraft:block/block",
   "textures": {
     "particle": "ic2port:block/copper_cable",
-    "all": "minecraft:block/yellow_concrete"
+    "all": "ic2port:block/hv_cable"
   }
 }

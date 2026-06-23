@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:block/door_bottom",
+  "textures": {
+    "bottom": "ic2port:block/reinforced_stone",
+    "top": "ic2port:block/reinforced_stone"
+  }
+}

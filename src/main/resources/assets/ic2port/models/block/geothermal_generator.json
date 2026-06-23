@@ -3,6 +3,6 @@
   "textures": {
     "top": "ic2port:block/geothermal_generator_top",
     "front": "ic2port:block/geothermal_generator_side",
-    "side": "ic2port:block/basic_machine_casing"
+    "side": "ic2port:block/machine_side_basic"
   }
 }
