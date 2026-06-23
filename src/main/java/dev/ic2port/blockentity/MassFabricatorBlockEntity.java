@@ -16,7 +16,6 @@ import net.minecraft.world.inventory.ContainerData;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.items.ItemStackHandler;
 import org.jetbrains.annotations.Nullable;
 
 public class MassFabricatorBlockEntity extends BaseMachineBlockEntity {
@@ -61,37 +60,18 @@ public class MassFabricatorBlockEntity extends BaseMachineBlockEntity {
     }
 
     @Override
-    protected ItemStackHandler createItemHandler(final int totalSlots, final int processSlots) {
-        return new ItemStackHandler(totalSlots) {
-            @Override
-            public boolean isItemValid(final int slot, final ItemStack stack) {
-                if (slot >= processSlots) {
-                    return stack.isEmpty() || stack.getItem() instanceof dev.ic2port.item.IUpgradeItem;
-                }
-                if (slot == SLOT_SCRAP) {
-                    return stack.getItem() instanceof ScrapItem;
-                }
-                if (slot == SLOT_OUTPUT) {
-                    return false;
-                }
-                return false;
-            }
-
-            @Override
-            protected void onContentsChanged(final int slot) {
-                if (slot >= processSlots) {
-                    clampStoredEnergyToCapacity();
-                    markUpgradeLayoutChanged();
-                } else {
-                    setChanged();
-                }
-            }
-        };
+    public int getTier() {
+        return TIER;
     }
 
     @Override
-    public int getTier() {
-        return TIER;
+    protected boolean isValidProcessInput(final ItemStack stack) {
+        return stack.getItem() instanceof ScrapItem;
+    }
+
+    @Override
+    protected boolean isProcessSlotLocked(final int processSlot) {
+        return fabricationProgress > 0.0D && processSlot == SLOT_SCRAP;
     }
 
     @Override
@@ -145,15 +125,10 @@ public class MassFabricatorBlockEntity extends BaseMachineBlockEntity {
                 break;
             }
             fabricationProgress -= EU_PER_UU_MATTER;
+            ItemStack uu = new ItemStack(ItemRegistry.UU_MATTER.get());
+            mergeProcessOutput(SLOT_OUTPUT, output, uu);
 
-            if (output.isEmpty()) {
-                output = new ItemStack(ItemRegistry.UU_MATTER.get());
-                getItemHandler().setStackInSlot(SLOT_OUTPUT, output);
-            } else {
-                output.grow(1);
-                getItemHandler().setStackInSlot(SLOT_OUTPUT, output);
-            }
-
+            output = getItemHandler().getStackInSlot(SLOT_OUTPUT);
             if (output.getCount() >= output.getMaxStackSize()) {
                 break;
             }

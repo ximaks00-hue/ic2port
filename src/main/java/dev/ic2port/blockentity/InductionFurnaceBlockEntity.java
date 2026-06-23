@@ -111,6 +111,17 @@ public class InductionFurnaceBlockEntity extends BaseMachineBlockEntity {
     }
 
     @Override
+    protected boolean isProcessSlotLocked(final int processSlot) {
+        if (processSlot == SLOT_INPUT_A) {
+            return progressA > 0;
+        }
+        if (processSlot == SLOT_INPUT_B) {
+            return progressB > 0;
+        }
+        return false;
+    }
+
+    @Override
     protected boolean canAutomationExtractFromSlot(final int processSlot) {
         return processSlot == SLOT_OUTPUT_A || processSlot == SLOT_OUTPUT_B;
     }

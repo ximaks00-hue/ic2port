@@ -265,4 +265,65 @@ public final class CannerOperationHelper {
         }
         return null;
     }
+
+    /** Whether the operation can make progress this tick (output/transfer not blocked). */
+    public static boolean canAdvance(
+            final Operation operation,
+            final ItemStack slot0,
+            final ItemStack slot1) {
+        return switch (operation) {
+            case FOOD_CAN -> {
+                FoodCanningHelper.FoodCanLayout layout = FoodCanningHelper.detectLayout(slot0, slot1);
+                yield layout != null && FoodCanningHelper.canProcessLayout(layout);
+            }
+            case BATTERY_CHARGE -> canBatteryChargeAdvance(slot0, slot1);
+            case FOAM_REFILL -> canFoamRefillAdvance(slot0, slot1);
+            case HYDRATION_REFILL -> canHydrationRefillAdvance(slot0, slot1);
+            case CELL_FILL -> orientCellFill(slot0, slot1) != null;
+            case CELL_EMPTY -> canCellEmptyAdvance(slot0, slot1);
+            default -> true;
+        };
+    }
+
+    private static boolean canBatteryChargeAdvance(final ItemStack slot0, final ItemStack slot1) {
+        ItemStack[] pair = orientBatteryCharge(slot0, slot1);
+        if (pair == null) {
+            return false;
+        }
+        ItemStack batteryStack = pair[0];
+        ItemStack crystalStack = pair[1];
+        if (!(batteryStack.getItem() instanceof ReBatteryItem battery)
+                || !(crystalStack.getItem() instanceof ElectricItem crystal)) {
+            return false;
+        }
+        double batterySpace = battery.getMaxEnergy() - battery.getStoredEnergy(batteryStack);
+        double crystalStored = crystal.getStoredEnergy(crystalStack);
+        return Math.min(BATTERY_TRANSFER_EU, Math.min(batterySpace, crystalStored)) > 0.0D;
+    }
+
+    private static boolean canFoamRefillAdvance(final ItemStack slot0, final ItemStack slot1) {
+        ItemStack[] pair = orientFoamRefill(slot0, slot1);
+        if (pair == null) {
+            return false;
+        }
+        return ElectricFoamSprayerItem.getFoamStored(pair[0]) < ElectricFoamSprayerItem.MAX_FOAM;
+    }
+
+    private static boolean canCellEmptyAdvance(final ItemStack slot0, final ItemStack slot1) {
+        ItemStack[] pair = orientCellEmpty(slot0, slot1);
+        if (pair == null) {
+            return false;
+        }
+        var fluid = FluidCellItem.getFluid(pair[0]);
+        return fluid == Fluids.WATER || fluid == Fluids.LAVA;
+    }
+
+    private static boolean canHydrationRefillAdvance(final ItemStack slot0, final ItemStack slot1) {
+        ItemStack[] pair = orientHydrationRefill(slot0, slot1);
+        if (pair == null) {
+            return false;
+        }
+        ItemStack cell = pair[0];
+        return cell.getDamageValue() > 0 && cell.getDamageValue() < cell.getMaxDamage();
+    }
 }

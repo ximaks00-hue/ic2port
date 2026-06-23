@@ -50,7 +50,7 @@
   "advancements.ic2port.first_fusion_reactor.description": "Build a Fusion Reactor — the pinnacle of IC2 energy.",
   "block.ic2port.teleporter": "Teleporter",
   "block.ic2port.teleporter.status": "Teleporter: %d / %d EU",
-  "block.ic2port.teleporter.no_energy": "Not enough EU to teleport",
+  "block.ic2port.teleporter.no_energy": "Not enough EU on source or destination teleporter (each needs half the total cost)",
   "block.ic2port.teleporter.invalid_target": "No teleporter at linked coordinates",
   "block.ic2port.teleporter.same_block": "Cannot teleport to itself",
   "block.ic2port.teleporter.blocked_destination": "Destination teleporter is blocked",

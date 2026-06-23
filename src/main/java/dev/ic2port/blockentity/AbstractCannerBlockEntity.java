@@ -20,8 +20,6 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.items.ItemStackHandler;
-import org.jetbrains.annotations.NotNull;
 
 /**
  * Shared canner processing logic for LV and vacuum variants.
@@ -92,39 +90,8 @@ public abstract class AbstractCannerBlockEntity extends BaseMachineBlockEntity {
     }
 
     @Override
-    protected ItemStackHandler createItemHandler(final int totalSlots, final int processSlots) {
-        return new ItemStackHandler(totalSlots) {
-            @Override
-            public boolean isItemValid(final int slot, final ItemStack stack) {
-                if (slot >= processSlots) {
-                    return stack.isEmpty() || stack.getItem() instanceof IUpgradeItem;
-                }
-                if (!isProcessSlotInput(slot)) {
-                    return false;
-                }
-                return !stack.isEmpty() && isValidProcessInput(slot, stack);
-            }
-
-            @Override
-            public @NotNull ItemStack insertItem(
-                    final int slot,
-                    final @NotNull ItemStack stack,
-                    final boolean simulate) {
-                if (progress > 0 && slot < processSlots) {
-                    return stack;
-                }
-                return super.insertItem(slot, stack, simulate);
-            }
-
-            @Override
-            protected void onContentsChanged(final int slot) {
-                if (slot >= processSlots) {
-                    clampStoredEnergyToCapacity();
-                    markUpgradeLayoutChanged();
-                }
-                setChanged();
-            }
-        };
+    protected boolean isProcessSlotLocked(final int processSlot) {
+        return progress > 0 && isProcessSlotInput(processSlot);
     }
 
     @Override
@@ -258,14 +225,10 @@ public abstract class AbstractCannerBlockEntity extends BaseMachineBlockEntity {
             final CannerOperationHelper.Operation operation,
             final ItemStack slot0,
             final ItemStack slot1) {
-        if (operation == CannerOperationHelper.Operation.FOOD_CAN) {
-            FoodCanningHelper.FoodCanLayout layout = FoodCanningHelper.detectLayout(slot0, slot1);
-            return layout != null && FoodCanningHelper.canProcessLayout(layout);
-        }
         if (operation == CannerOperationHelper.Operation.TIN_CAN_PRESS) {
             return canFitTinCanOutput();
         }
-        return true;
+        return CannerOperationHelper.canAdvance(operation, slot0, slot1);
     }
 
     private boolean canFitTinCanOutput() {
@@ -369,9 +332,17 @@ public abstract class AbstractCannerBlockEntity extends BaseMachineBlockEntity {
         }
         ItemStack cellStack = getItemHandler().getStackInSlot(cellSlot);
         var fluid = FluidCellItem.getFluid(cellStack);
-        net.minecraft.world.item.Item bucketItem = fluid == Fluids.LAVA
-                ? Items.LAVA_BUCKET
-                : Items.WATER_BUCKET;
+        if (fluid == null) {
+            return false;
+        }
+        net.minecraft.world.item.Item bucketItem;
+        if (fluid == Fluids.LAVA) {
+            bucketItem = Items.LAVA_BUCKET;
+        } else if (fluid == Fluids.WATER) {
+            bucketItem = Items.WATER_BUCKET;
+        } else {
+            return false;
+        }
         getItemHandler().setStackInSlot(cellSlot, FluidCellItem.emptyCell(ItemRegistry.FLUID_CELL.get()));
         getItemHandler().setStackInSlot(bucketSlot, new ItemStack(bucketItem));
         return true;

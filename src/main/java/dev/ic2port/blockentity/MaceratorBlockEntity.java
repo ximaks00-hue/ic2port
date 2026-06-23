@@ -73,6 +73,11 @@ public class MaceratorBlockEntity extends BaseMachineBlockEntity {
     }
 
     @Override
+    protected boolean isProcessSlotLocked(final int processSlot) {
+        return progress > 0 && processSlot == SLOT_INPUT;
+    }
+
+    @Override
     protected boolean isValidProcessInput(final ItemStack stack) {
         return MachineRecipeHelper.acceptsSingleInput(
                 level,

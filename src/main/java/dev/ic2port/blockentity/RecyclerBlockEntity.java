@@ -6,7 +6,6 @@ import dev.ic2port.menu.RecyclerMenu;
 import dev.ic2port.setup.BlockEntityRegistry;
 import dev.ic2port.setup.ItemRegistry;
 import dev.ic2port.util.RecyclerHelper;
-import net.minecraftforge.items.ItemStackHandler;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -71,34 +70,13 @@ public class RecyclerBlockEntity extends BaseMachineBlockEntity {
     }
 
     @Override
-    protected ItemStackHandler createItemHandler(final int totalSlots, final int processSlots) {
-        return new ItemStackHandler(totalSlots) {
-            @Override
-            public boolean isItemValid(final int slot, final ItemStack stack) {
-                if (slot == SLOT_INPUT) {
-                    return RecyclerHelper.canRecycle(stack);
-                }
-                if (slot >= processSlots) {
-                    return stack.isEmpty() || stack.getItem() instanceof dev.ic2port.item.IUpgradeItem;
-                }
-                return false;
-            }
-
-            @Override
-            protected void onContentsChanged(final int slot) {
-                if (slot >= processSlots) {
-                    clampStoredEnergyToCapacity();
-                    markUpgradeLayoutChanged();
-                } else {
-                    setChanged();
-                }
-            }
-        };
+    public int getTier() {
+        return TIER;
     }
 
     @Override
-    public int getTier() {
-        return TIER;
+    protected boolean isProcessSlotLocked(final int processSlot) {
+        return progress > 0 && processSlot == SLOT_INPUT;
     }
 
     public static void serverTick(

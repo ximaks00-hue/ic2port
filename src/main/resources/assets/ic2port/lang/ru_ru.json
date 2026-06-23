@@ -50,7 +50,7 @@
   "advancements.ic2port.first_fusion_reactor.description": "Постройте реактор синтеза — вершину IC2 энергии.",
   "block.ic2port.teleporter": "Телепортер",
   "block.ic2port.teleporter.status": "Телепортер: %d / %d EU",
-  "block.ic2port.teleporter.no_energy": "Недостаточно EU для телепортации",
+  "block.ic2port.teleporter.no_energy": "Недостаточно EU на исходном или целевом телепортере (каждому нужна половина стоимости)",
   "block.ic2port.teleporter.invalid_target": "На связанных координатах нет телепортера",
   "block.ic2port.teleporter.same_block": "Нельзя телепортироваться к себе",
   "block.ic2port.teleporter.blocked_destination": "Телепортер назначения заблокирован",

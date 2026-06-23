@@ -59,6 +59,14 @@ public class PatternReplicatorBlockEntity extends BlockEntity implements IEnergy
             return super.insertItem(slot, stack, simulate);
         }
 
+        @Override
+        public @NotNull ItemStack extractItem(final int slot, final int amount, final boolean simulate) {
+            if (progress > 0 && slot != SLOT_OUTPUT) {
+                return ItemStack.EMPTY;
+            }
+            return super.extractItem(slot, amount, simulate);
+        }
+
         @Override public boolean isItemValid(final int slot, final ItemStack stack) {
             if (slot == SLOT_UU_MATTER) {
                 return stack.getItem() instanceof UuMatterItem;
@@ -129,7 +137,9 @@ public class PatternReplicatorBlockEntity extends BlockEntity implements IEnergy
         ItemStack expectedOutput = progress > 0 && !lockedPattern.isEmpty() ? lockedPattern : pattern;
         if (!output.isEmpty()) {
             if (!ItemStack.isSameItemSameTags(output, expectedOutput)) {
-                cancelReplication();
+                if (progress > 0) {
+                    cancelReplication();
+                }
                 return;
             }
             if (output.getCount() + 1 > output.getMaxStackSize()) {

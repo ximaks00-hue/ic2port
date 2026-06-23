@@ -86,6 +86,11 @@ public class ThermalCentrifugeBlockEntity extends BaseMachineBlockEntity {
     }
 
     @Override
+    protected boolean isProcessSlotLocked(final int processSlot) {
+        return progress > 0 && (processSlot == SLOT_INPUT || processSlot == SLOT_ROTOR);
+    }
+
+    @Override
     protected boolean isProcessSlotInput(final int processSlot) {
         return processSlot == SLOT_INPUT || processSlot == SLOT_ROTOR;
     }
@@ -259,12 +264,7 @@ public class ThermalCentrifugeBlockEntity extends BaseMachineBlockEntity {
             }
             ItemStack result = output.copy();
             ItemStack existing = getItemHandler().getStackInSlot(outputSlot);
-            if (existing.isEmpty()) {
-                getItemHandler().setStackInSlot(outputSlot, result);
-            } else {
-                existing.grow(result.getCount());
-                getItemHandler().setStackInSlot(outputSlot, existing);
-            }
+            mergeProcessOutput(outputSlot, existing, result);
             outputSlot++;
         }
     }

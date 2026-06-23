@@ -87,6 +87,14 @@ public class FusionReactorBlockEntity extends BlockEntity implements IEnergyAcce
             }
             return super.insertItem(slot, stack, simulate);
         }
+
+        @Override
+        public @NotNull ItemStack extractItem(final int slot, final int amount, final boolean simulate) {
+            if (!canAutomationExtractFromSlot(slot)) {
+                return ItemStack.EMPTY;
+            }
+            return super.extractItem(slot, amount, simulate);
+        }
     };
 
     private final ProcessOnlyItemHandler automationItemHandler = new ProcessOnlyItemHandler(

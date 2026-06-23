@@ -201,6 +201,11 @@ public class NuclearReactorBlockEntity extends BlockEntity
 
         if (isActive()) {
             ReactorTickProfiler.profile("fission", this::processReactorTick);
+        } else if (heat > 0.0D) {
+            ReactorTickProfiler.profile("passive_cooldown", this::processPassiveCooldownTick);
+        }
+
+        if (heat > 0.0D) {
             ReactorMeltdownHelper.applyOverheatEffects(level, worldPosition, heat, getMaxHeat());
         }
 
@@ -260,6 +265,12 @@ public class NuclearReactorBlockEntity extends BlockEntity
         processComponentPhase(IReactorFuel.class);
         processComponentPhase(IReactorHeatStorage.class);
         processMiscComponents();
+    }
+
+    /** Vents, exchangers and coolant cells still tick while the reactor is redstone-off. */
+    private void processPassiveCooldownTick() {
+        processComponentPhase(IReactorHeatStorage.class);
+        setChanged();
     }
 
     /** Components that are not fuel rods or heat-storage parts (e.g. neutron reflectors). */

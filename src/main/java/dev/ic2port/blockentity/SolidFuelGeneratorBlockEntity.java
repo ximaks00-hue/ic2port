@@ -63,6 +63,14 @@ public class SolidFuelGeneratorBlockEntity extends BlockEntity implements IEnerg
             }
             return false;
         }
+
+        @Override
+        public @NotNull ItemStack extractItem(final int slot, final int amount, final boolean simulate) {
+            if (burnTime > 0 && slot == SLOT_FUEL) {
+                return ItemStack.EMPTY;
+            }
+            return super.extractItem(slot, amount, simulate);
+        }
     };
     private final ProcessOnlyItemHandler automationItemHandler = new ProcessOnlyItemHandler(
             itemHandler, SLOT_COUNT, slot -> slot == SLOT_DISCHARGE);

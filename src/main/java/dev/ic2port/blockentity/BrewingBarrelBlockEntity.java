@@ -72,6 +72,14 @@ public class BrewingBarrelBlockEntity extends BlockEntity implements MenuProvide
             }
             return super.insertItem(slot, stack, simulate);
         }
+
+        @Override
+        public @NotNull ItemStack extractItem(final int slot, final int amount, final boolean simulate) {
+            if (brewing && slot != SLOT_OUTPUT) {
+                return ItemStack.EMPTY;
+            }
+            return super.extractItem(slot, amount, simulate);
+        }
     };
 
     private final ContainerData data = new ContainerData() {

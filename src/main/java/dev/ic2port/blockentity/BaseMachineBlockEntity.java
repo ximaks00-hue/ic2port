@@ -115,6 +115,13 @@ public abstract class BaseMachineBlockEntity extends BlockEntity implements IEne
         return isValidProcessInput(stack);
     }
 
+    /**
+     * @return whether player/automation I/O on the given process slot is blocked mid-operation
+     */
+    protected boolean isProcessSlotLocked(final int processSlot) {
+        return false;
+    }
+
     protected ItemStackHandler createItemHandler(final int totalSlots, final int processSlots) {
         return new ItemStackHandler(totalSlots) {
             @Override
@@ -126,6 +133,25 @@ public abstract class BaseMachineBlockEntity extends BlockEntity implements IEne
                     return false;
                 }
                 return !stack.isEmpty() && isValidProcessInput(slot, stack);
+            }
+
+            @Override
+            public @NotNull ItemStack insertItem(
+                    final int slot,
+                    final @NotNull ItemStack stack,
+                    final boolean simulate) {
+                if (slot < processSlots && isProcessSlotLocked(slot)) {
+                    return stack;
+                }
+                return super.insertItem(slot, stack, simulate);
+            }
+
+            @Override
+            public @NotNull ItemStack extractItem(final int slot, final int amount, final boolean simulate) {
+                if (slot < processSlots && isProcessSlotLocked(slot)) {
+                    return ItemStack.EMPTY;
+                }
+                return super.extractItem(slot, amount, simulate);
             }
 
             @Override

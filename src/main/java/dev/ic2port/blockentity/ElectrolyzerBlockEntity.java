@@ -69,6 +69,11 @@ public class ElectrolyzerBlockEntity extends BaseMachineBlockEntity {
     }
 
     @Override
+    protected boolean isProcessSlotLocked(final int processSlot) {
+        return progress > 0 && processSlot == SLOT_INPUT;
+    }
+
+    @Override
     protected boolean canAutomationExtractFromSlot(final int processSlot) {
         return processSlot == SLOT_OUTPUT_A || processSlot == SLOT_OUTPUT_B;
     }
@@ -136,8 +141,13 @@ public class ElectrolyzerBlockEntity extends BaseMachineBlockEntity {
     }
 
     private boolean canOutput(final ElectrolyzerRecipe recipe) {
-        return canFit(SLOT_OUTPUT_A, recipe.getOutput())
-                && (recipe.getSecondaryOutput().isEmpty() || canFit(SLOT_OUTPUT_B, recipe.getSecondaryOutput()));
+        if (!canFit(SLOT_OUTPUT_A, recipe.getOutput())) {
+            return false;
+        }
+        if (recipe.getSecondaryOutput().isEmpty()) {
+            return getItemHandler().getStackInSlot(SLOT_OUTPUT_B).isEmpty();
+        }
+        return canFit(SLOT_OUTPUT_B, recipe.getSecondaryOutput());
     }
 
     private boolean canFit(final int slot, final ItemStack result) {

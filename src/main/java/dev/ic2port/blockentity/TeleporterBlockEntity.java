@@ -63,14 +63,15 @@ public class TeleporterBlockEntity extends BlockEntity implements IEnergyAccepto
 
         BlockPos destination = link.pos();
         BlockEntity destBe = destLevel.getBlockEntity(destination);
-        if (!(destBe instanceof TeleporterBlockEntity)) {
+        if (!(destBe instanceof TeleporterBlockEntity destTeleporter)) {
             return "invalid_target";
         }
 
         double euCost = TeleporterCostHelper.calculateEuCost(
                 player, worldPosition, serverLevel.dimension(), destination, destLevel.dimension());
 
-        if (storedEnergy < euCost) {
+        double euShare = euCost * 0.5D;
+        if (storedEnergy < euShare || destTeleporter.storedEnergy < euShare) {
             return "no_energy";
         }
 
@@ -90,8 +91,10 @@ public class TeleporterBlockEntity extends BlockEntity implements IEnergyAccepto
             return "invalid_target";
         }
 
-        storedEnergy -= euCost;
+        storedEnergy -= euShare;
+        destTeleporter.storedEnergy -= euShare;
         setChanged();
+        destTeleporter.setChanged();
         return null;
     }
 

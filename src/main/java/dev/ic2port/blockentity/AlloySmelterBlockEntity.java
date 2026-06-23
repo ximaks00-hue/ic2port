@@ -70,6 +70,11 @@ public class AlloySmelterBlockEntity extends BaseMachineBlockEntity implements C
     }
 
     @Override
+    protected boolean isProcessSlotLocked(final int processSlot) {
+        return progress > 0 && (processSlot == SLOT_INPUT_A || processSlot == SLOT_INPUT_B);
+    }
+
+    @Override
     protected boolean canAutomationExtractFromSlot(final int processSlot) {
         return processSlot == SLOT_OUTPUT;
     }
