@@ -46,7 +46,7 @@ public class SplitterCableBlock extends CopperCableBlock {
     @Nullable @Override
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(final Level level, final BlockState state,
                                                                    final BlockEntityType<T> type) {
-        return level.isClientSide() ? null
-                : createTickerHelper(type, BlockEntityRegistry.SPLITTER_CABLE_BE.get(), SplitterCableBlockEntity::serverTick);
+        return cableTickerOrNull(
+                level, type, BlockEntityRegistry.SPLITTER_CABLE_BE.get(), SplitterCableBlockEntity::serverTick);
     }
 }

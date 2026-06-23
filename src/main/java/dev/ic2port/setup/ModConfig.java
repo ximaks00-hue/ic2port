@@ -23,8 +23,16 @@ public final class ModConfig {
     public static final ForgeConfigSpec.DoubleValue FUSION_HEAT_EU_PER_TICK;
     public static final ForgeConfigSpec.DoubleValue FUSION_LAVA_MULTIPLIER;
 
+    public static final ForgeConfigSpec.DoubleValue RECYCLER_SCRAP_CHANCE;
+    public static final ForgeConfigSpec.DoubleValue RECYCLER_SCRAP_BOX_CHANCE;
+
     public static final ForgeConfigSpec.BooleanValue REACTOR_PROFILING_ENABLED;
     public static final ForgeConfigSpec.IntValue REACTOR_PROFILING_THRESHOLD_MS;
+    public static final ForgeConfigSpec.BooleanValue CABLE_PROFILING_ENABLED;
+    public static final ForgeConfigSpec.IntValue CABLE_PROFILING_THRESHOLD_MS;
+    public static final ForgeConfigSpec.BooleanValue TUBE_PROFILING_ENABLED;
+    public static final ForgeConfigSpec.IntValue TUBE_PROFILING_THRESHOLD_MS;
+    public static final ForgeConfigSpec.BooleanValue GLOBAL_ENERGY_NET_ENABLED;
 
     static {
         ForgeConfigSpec.Builder builder = new ForgeConfigSpec.Builder();
@@ -54,6 +62,10 @@ public final class ModConfig {
         SOLID_FUEL_GENERATOR_CAPACITY = builder
                 .comment("Internal EU buffer capacity of the solid fuel generator.")
                 .defineInRange("solidFuelGeneratorCapacity", 4000.0D, 100.0D, 100_000.0D);
+        GLOBAL_ENERGY_NET_ENABLED = builder
+                .comment("Use IC2 Classic-style global energy net (v2): one level tick for all active cables "
+                        + "instead of per-block cable tickers.")
+                .define("globalEnergyNetEnabled", true);
         builder.pop();
 
         builder.push("balance");
@@ -75,6 +87,12 @@ public final class ModConfig {
         FUSION_LAVA_MULTIPLIER = builder
                 .comment("Multiplier applied to fusion lava production per cycle.")
                 .defineInRange("fusionLavaMultiplier", 1.0D, 0.25D, 4.0D);
+        RECYCLER_SCRAP_CHANCE = builder
+                .comment("Chance (0–1) that the recycler produces scrap from a valid input.")
+                .defineInRange("recyclerScrapChance", 0.125D, 0.0D, 1.0D);
+        RECYCLER_SCRAP_BOX_CHANCE = builder
+                .comment("Chance (0–1) that the recycler produces a scrap box instead of loose scrap.")
+                .defineInRange("recyclerScrapBoxChance", 0.01D, 0.0D, 1.0D);
         builder.pop();
 
         builder.push("debug");
@@ -84,6 +102,18 @@ public final class ModConfig {
         REACTOR_PROFILING_THRESHOLD_MS = builder
                 .comment("Minimum tick duration in milliseconds to log when reactor profiling is enabled.")
                 .defineInRange("reactorProfilingThresholdMs", 5, 1, 100);
+        CABLE_PROFILING_ENABLED = builder
+                .comment("Log cable forward ticks slower than the threshold (server performance tuning).")
+                .define("cableProfilingEnabled", false);
+        CABLE_PROFILING_THRESHOLD_MS = builder
+                .comment("Minimum tick duration in milliseconds to log when cable profiling is enabled.")
+                .defineInRange("cableProfilingThresholdMs", 2, 1, 100);
+        TUBE_PROFILING_ENABLED = builder
+                .comment("Log tube server ticks slower than the threshold (server performance tuning).")
+                .define("tubeProfilingEnabled", false);
+        TUBE_PROFILING_THRESHOLD_MS = builder
+                .comment("Minimum tick duration in milliseconds to log when tube profiling is enabled.")
+                .defineInRange("tubeProfilingThresholdMs", 5, 1, 100);
         builder.pop();
 
         COMMON_SPEC = builder.build();

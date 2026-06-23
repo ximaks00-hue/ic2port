@@ -1,6 +1,8 @@
 package dev.ic2port.block;
 
+import dev.ic2port.blockentity.BaseCableBlockEntity;
 import dev.ic2port.blockentity.CopperCableBlockEntity;
+import dev.ic2port.energy.WorldEnergyNet;
 import dev.ic2port.setup.BlockEntityRegistry;
 import dev.ic2port.setup.ModCapabilities;
 import dev.ic2port.util.CableConnectionHelper;
@@ -101,9 +103,8 @@ public class CopperCableBlock extends BaseEntityBlock implements ICableBlock {
             final Level level,
             final BlockState state,
             final BlockEntityType<T> type) {
-        return level.isClientSide()
-                ? null
-                : createTickerHelper(type, BlockEntityRegistry.COPPER_CABLE_BE.get(), CopperCableBlockEntity::serverTick);
+        return cableTickerOrNull(
+                level, type, BlockEntityRegistry.COPPER_CABLE_BE.get(), CopperCableBlockEntity::serverTick);
     }
 
     @Override
@@ -116,7 +117,7 @@ public class CopperCableBlock extends BaseEntityBlock implements ICableBlock {
             final BlockHitResult hit) {
         if (!level.isClientSide && hand == InteractionHand.MAIN_HAND && player.getItemInHand(hand).isEmpty()) {
             if (level.getBlockEntity(pos) instanceof CopperCableBlockEntity cable) {
-                CopperCableBlockEntity.ComponentView status = cable.getDebugStatus();
+                BaseCableBlockEntity.ComponentView status = cable.getDebugStatus();
                 player.displayClientMessage(Component.literal(String.format(
                         "Copper Cable | Buffer: %.1f / %.1f EU | Input side: %s",
                         status.storedEnergy(),
@@ -141,6 +142,7 @@ public class CopperCableBlock extends BaseEntityBlock implements ICableBlock {
             final LevelAccessor level,
             final BlockPos currentPos,
             final BlockPos neighborPos) {
+        BaseCableBlockEntity.notifyNeighborUpdate(level, currentPos, neighborPos);
         return state.setValue(propertyFor(direction), canConnectTo(level, currentPos, direction));
     }
 
@@ -170,6 +172,17 @@ public class CopperCableBlock extends BaseEntityBlock implements ICableBlock {
     @Override
     public RenderShape getRenderShape(final BlockState state) {
         return RenderShape.MODEL;
+    }
+
+  protected static <T extends BlockEntity, C extends BlockEntity> BlockEntityTicker<T> cableTickerOrNull(
+            final Level level,
+            final BlockEntityType<T> type,
+            final BlockEntityType<C> expectedType,
+            final BlockEntityTicker<? super C> ticker) {
+        if (level.isClientSide() || WorldEnergyNet.isEnabled()) {
+            return null;
+        }
+        return createTickerHelper(type, expectedType, ticker);
     }
 
     private BlockState updateConnections(final BlockState state, final LevelAccessor level, final BlockPos pos) {
