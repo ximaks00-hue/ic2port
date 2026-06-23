@@ -1,11 +1,14 @@
 package dev.ic2port.blockentity;
 
 import dev.ic2port.util.ContainerDataHelper;
+import dev.ic2port.Reference;
 import dev.ic2port.api.energy.EnergyTier;
 import dev.ic2port.menu.AlloySmelterMenu;
 import dev.ic2port.recipe.AlloySmelterRecipe;
+import dev.ic2port.setup.MachineRecipeRegistry;
 import dev.ic2port.setup.BlockEntityRegistry;
 import dev.ic2port.setup.RecipeTypeRegistry;
+import dev.ic2port.util.AddonRecipeBridge;
 import dev.ic2port.util.MachineRecipeHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
@@ -27,6 +30,7 @@ import java.util.Optional;
  * MV alloy smelter — combines two inputs into one alloy output (bronze, steel, etc.).
  */
 public class AlloySmelterBlockEntity extends BaseMachineBlockEntity implements Container {
+    private static final ResourceLocation MACHINE_ID = new ResourceLocation(Reference.MOD_ID, "alloy_smelter");
 
     public static final double ENERGY_CAPACITY = 10_000.0D;
     public static final int TIER = EnergyTier.MV;
@@ -102,6 +106,13 @@ public class AlloySmelterBlockEntity extends BaseMachineBlockEntity implements C
                 return true;
             }
         }
+        for (dev.ic2port.api.recipes.IMachineRecipe addon : MachineRecipeRegistry.INSTANCE.getRecipesForMachine(MACHINE_ID)) {
+            if (addon.matches(stack)) {
+                if (other.isEmpty() || ItemStack.isSameItemSameTags(stack, other)) {
+                    return true;
+                }
+            }
+        }
         return false;
     }
 
@@ -174,6 +185,20 @@ public class AlloySmelterBlockEntity extends BaseMachineBlockEntity implements C
         }
         Optional<AlloySmelterRecipe> resolved = level.getRecipeManager()
                 .getRecipeFor(RecipeTypeRegistry.ALLOY_SMELTER.get(), this, level);
+        if (resolved.isEmpty() && ItemStack.isSameItemSameTags(inputA, inputB)) {
+            dev.ic2port.api.recipes.IMachineRecipe addon = MachineRecipeRegistry.INSTANCE.getAll().get(activeRecipeId);
+            if (addon != null && MACHINE_ID.equals(addon.getMachineId()) && addon.matches(inputA)) {
+                resolved = Optional.of(AddonRecipeBridge.toAlloySmelter(addon, inputA));
+            } else {
+                for (dev.ic2port.api.recipes.IMachineRecipe candidate
+                        : MachineRecipeRegistry.INSTANCE.getRecipesForMachine(MACHINE_ID)) {
+                    if (candidate.matches(inputA)) {
+                        resolved = Optional.of(AddonRecipeBridge.toAlloySmelter(candidate, inputA));
+                        break;
+                    }
+                }
+            }
+        }
         activeRecipeId = resolved.map(AlloySmelterRecipe::getId).orElse(null);
         return resolved;
     }

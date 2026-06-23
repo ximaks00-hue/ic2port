@@ -6,6 +6,8 @@ import dev.ic2port.menu.ExtractorMenu;
 import dev.ic2port.recipe.ExtractorRecipe;
 import dev.ic2port.setup.BlockEntityRegistry;
 import dev.ic2port.setup.RecipeTypeRegistry;
+import dev.ic2port.Reference;
+import dev.ic2port.util.AddonRecipeBridge;
 import dev.ic2port.util.MachineRecipeHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
@@ -23,6 +25,8 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Optional;
 
 public class ExtractorBlockEntity extends BaseMachineBlockEntity {
+
+    private static final ResourceLocation MACHINE_ID = new ResourceLocation(Reference.MOD_ID, "extractor");
 
     public static final double ENERGY_CAPACITY = 4000.0D;
     public static final int TIER = EnergyTier.LV;
@@ -100,12 +104,14 @@ public class ExtractorBlockEntity extends BaseMachineBlockEntity {
 
     @Override
     protected boolean isValidProcessInput(final ItemStack stack) {
-        return MachineRecipeHelper.acceptsSingleInput(
+        return MachineRecipeHelper.acceptsSingleInputWithAddons(
                 level,
+                MACHINE_ID,
                 RecipeTypeRegistry.EXTRACTOR.get(),
                 ExtractorRecipe.class,
                 stack,
-                ExtractorRecipe::getInput);
+                ExtractorRecipe::getInput,
+                AddonRecipeBridge::toExtractor);
     }
 
     public static void serverTick(
@@ -180,13 +186,15 @@ public class ExtractorBlockEntity extends BaseMachineBlockEntity {
     }
 
     private Optional<ExtractorRecipe> resolveActiveRecipe(final ItemStack input) {
-        final Optional<ExtractorRecipe> resolved = MachineRecipeHelper.resolveSingleInputRecipe(
+        final Optional<ExtractorRecipe> resolved = MachineRecipeHelper.resolveSingleInputRecipeWithAddons(
                 level,
+                MACHINE_ID,
                 RecipeTypeRegistry.EXTRACTOR.get(),
                 ExtractorRecipe.class,
                 input,
                 activeRecipeId,
-                ExtractorRecipe::getInput);
+                ExtractorRecipe::getInput,
+                AddonRecipeBridge::toExtractor);
         activeRecipeId = resolved.map(ExtractorRecipe::getId).orElse(null);
         return resolved;
     }

@@ -5,6 +5,7 @@ import dev.ic2port.api.energy.EnergyTier;
 import dev.ic2port.menu.RecyclerMenu;
 import dev.ic2port.setup.BlockEntityRegistry;
 import dev.ic2port.setup.ItemRegistry;
+import dev.ic2port.setup.ModConfig;
 import dev.ic2port.util.RecyclerHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
@@ -13,6 +14,7 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ContainerData;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
@@ -28,7 +30,6 @@ public class RecyclerBlockEntity extends BaseMachineBlockEntity {
     public static final int TIER = EnergyTier.LV;
     public static final double ENERGY_PER_TICK = 1.0D;
     public static final int DEFAULT_PROCESSING_TIME = 45;
-    public static final float SCRAP_CHANCE = 0.125F;
 
     public static final int SLOT_INPUT = 0;
     public static final int SLOT_OUTPUT = 1;
@@ -107,12 +108,12 @@ public class RecyclerBlockEntity extends BaseMachineBlockEntity {
 
         maxProgress = getScaledProcessTime(DEFAULT_PROCESSING_TIME);
 
-        if (!output.isEmpty() && !output.is(ItemRegistry.SCRAP.get())) {
+        if (!output.isEmpty() && !isRecyclerProduct(output)) {
             setChanged();
             return;
         }
 
-        if (!output.isEmpty() && !canOutputScrap(output)) {
+        if (!output.isEmpty() && !canMergeRecyclerProduct(output)) {
             setChanged();
             return;
         }
@@ -128,37 +129,51 @@ public class RecyclerBlockEntity extends BaseMachineBlockEntity {
         }
 
         ItemStack outputNow = getItemHandler().getStackInSlot(SLOT_OUTPUT);
-        if (!outputNow.isEmpty() && !outputNow.is(ItemRegistry.SCRAP.get())) {
-            progress = maxProgress;
-            setChanged();
-            return;
-        }
-        if (!canOutputScrap(outputNow)) {
+        if (!outputNow.isEmpty() && !isRecyclerProduct(outputNow)) {
             progress = maxProgress;
             setChanged();
             return;
         }
 
         shrinkProcessInput(SLOT_INPUT, getItemHandler().getStackInSlot(SLOT_INPUT), 1);
-        if (level.random.nextFloat() < SCRAP_CHANCE) {
-            ItemStack scrap = new ItemStack(ItemRegistry.SCRAP.get());
-            ItemStack currentOutput = getItemHandler().getStackInSlot(SLOT_OUTPUT);
-            if (canOutputScrap(currentOutput)) {
-                mergeProcessOutput(SLOT_OUTPUT, currentOutput, scrap);
-            } else if (level != null) {
-                Block.popResource(level, worldPosition, scrap);
-            }
+
+        float roll = level.random.nextFloat();
+        float scrapBoxChance = ModConfig.RECYCLER_SCRAP_BOX_CHANCE.get().floatValue();
+        float scrapChance = ModConfig.RECYCLER_SCRAP_CHANCE.get().floatValue();
+        if (roll < scrapBoxChance) {
+            emitRecyclerProduct(new ItemStack(ItemRegistry.SCRAP_BOX.get()));
+        } else if (roll < scrapBoxChance + scrapChance) {
+            emitRecyclerProduct(new ItemStack(ItemRegistry.SCRAP.get()));
         }
 
         progress = 0;
         setChanged();
     }
 
-    private boolean canOutputScrap(final ItemStack output) {
+    private void emitRecyclerProduct(final ItemStack product) {
+        ItemStack currentOutput = getItemHandler().getStackInSlot(SLOT_OUTPUT);
+        if (canMergeRecyclerProduct(currentOutput)) {
+            mergeProcessOutput(SLOT_OUTPUT, currentOutput, product);
+        } else if (level != null) {
+            Block.popResource(level, worldPosition, product);
+        }
+    }
+
+    private static boolean isRecyclerProduct(final ItemStack stack) {
+        return stack.is(ItemRegistry.SCRAP.get()) || stack.is(ItemRegistry.SCRAP_BOX.get());
+    }
+
+    private boolean canMergeRecyclerProduct(final ItemStack output) {
         if (output.isEmpty()) {
             return true;
         }
-        return output.is(ItemRegistry.SCRAP.get()) && output.getCount() < output.getMaxStackSize();
+        if (!isRecyclerProduct(output)) {
+            return false;
+        }
+        Item productItem = output.is(ItemRegistry.SCRAP_BOX.get())
+                ? ItemRegistry.SCRAP_BOX.get()
+                : ItemRegistry.SCRAP.get();
+        return output.is(productItem) && output.getCount() < output.getMaxStackSize();
     }
 
     @Override

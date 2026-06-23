@@ -1,0 +1,15 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "item": "ic2port:item_tube"
+    },
+    {
+      "item": "minecraft:piston"
+    }
+  ],
+  "result": {
+    "item": "ic2port:insertion_tube",
+    "count": 1
+  }
+}

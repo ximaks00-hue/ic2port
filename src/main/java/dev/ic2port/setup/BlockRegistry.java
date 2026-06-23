@@ -8,6 +8,27 @@ import dev.ic2port.block.BatBoxBlock;
 import dev.ic2port.block.BlastInductionFurnaceBlock;
 import dev.ic2port.block.CentrifugalExtractorBlock;
 import dev.ic2port.block.CopperCableBlock;
+import dev.ic2port.block.ColorFilterTubeBlock;
+import dev.ic2port.block.ExtractionTubeBlock;
+import dev.ic2port.block.FilteredExtractionTubeBlock;
+import dev.ic2port.block.FilterTubeBlock;
+import dev.ic2port.block.HoverTubeBlock;
+import dev.ic2port.block.ItemTubeBlock;
+import dev.ic2port.block.LimiterTubeBlock;
+import dev.ic2port.block.PickupTubeBlock;
+import dev.ic2port.block.ProviderTubeBlock;
+import dev.ic2port.block.InsertionTubeBlock;
+import dev.ic2port.block.StickyTubeBlock;
+import dev.ic2port.block.RedstoneTubeBlock;
+import dev.ic2port.block.RoundRobinTubeBlock;
+import dev.ic2port.block.StackingTubeBlock;
+import dev.ic2port.block.SwitchTubeBlock;
+import dev.ic2port.block.TeleportTubeBlock;
+import dev.ic2port.block.TransportTubeBlock;
+import dev.ic2port.block.VoidTubeBlock;
+import dev.ic2port.block.RequestTubeBlock;
+import dev.ic2port.block.SortingTubeBlock;
+import dev.ic2port.block.SpeedTubeBlock;
 import dev.ic2port.block.CannerBlock;
 import dev.ic2port.block.CompressorBlock;
 import dev.ic2port.block.ContaminatedSoilBlock;
@@ -36,10 +57,21 @@ import dev.ic2port.block.MinerBlock;
 import dev.ic2port.block.OreWasherBlock;
 import dev.ic2port.block.PumpBlock;
 import dev.ic2port.block.EsuBlock;
+import dev.ic2port.block.PesuBlock;
+import dev.ic2port.block.IsuBlock;
+import dev.ic2port.block.OreScannerBlock;
+import dev.ic2port.block.UuCropLibraryBlock;
+import dev.ic2port.block.UuExpansionBlock;
 import dev.ic2port.block.MFEBlock;
 import dev.ic2port.block.MFSUBlock;
 import dev.ic2port.block.MVTransformerBlock;
 import dev.ic2port.block.MaceratorBlock;
+import dev.ic2port.block.MachineBufferBlock;
+import dev.ic2port.block.PersonalChestBlock;
+import dev.ic2port.block.PersonalTankBlock;
+import dev.ic2port.block.TradeOMatBlock;
+import dev.ic2port.block.VillagerOMatBlock;
+import dev.ic2port.block.ElectricEnchanterBlock;
 import dev.ic2port.block.RecyclerBlock;
 import dev.ic2port.block.BrewingBarrelBlock;
 import dev.ic2port.block.ConstructionFoamBlock;
@@ -67,6 +99,14 @@ import dev.ic2port.block.FusionReactorValveBlock;
 import dev.ic2port.block.GeothermalGeneratorBlock;
 import dev.ic2port.block.SolidFuelGeneratorBlock;
 import dev.ic2port.block.SolarPanelBlock;
+import dev.ic2port.block.FluidNetworkPumpBlock;
+import dev.ic2port.block.FluidOMatBlock;
+import dev.ic2port.block.FluidPipeBlock;
+import dev.ic2port.block.InductionMatrixBlock;
+import dev.ic2port.block.InductionMatrixCasingBlock;
+import dev.ic2port.block.SteamChamberBlock;
+import dev.ic2port.block.SteamReactorBlock;
+import dev.ic2port.block.VoidPipeBlock;
 import dev.ic2port.block.WaterMillBlock;
 import dev.ic2port.block.WindMillBlock;
 import net.minecraft.world.level.block.Block;
@@ -104,6 +144,67 @@ public final class BlockRegistry {
 
     public static final RegistryObject<Block> GLASS_FIBER_CABLE = BLOCKS.register("glass_fiber_cable",
             () -> new GlassFiberCableBlock(machineProperties(MapColor.QUARTZ).noOcclusion()));
+
+    public static final RegistryObject<Block> ITEM_TUBE = BLOCKS.register("item_tube", ItemTubeBlock::new);
+
+    public static final RegistryObject<Block> EXTRACTION_TUBE = BLOCKS.register("extraction_tube", ExtractionTubeBlock::new);
+
+    public static final RegistryObject<Block> REQUEST_TUBE = BLOCKS.register("request_tube", RequestTubeBlock::new);
+
+    public static final RegistryObject<Block> LIMITER_TUBE = BLOCKS.register("limiter_tube", LimiterTubeBlock::new);
+
+    public static final RegistryObject<Block> SORTING_TUBE = BLOCKS.register("sorting_tube", SortingTubeBlock::new);
+
+    public static final RegistryObject<Block> FILTER_TUBE = BLOCKS.register("filter_tube", FilterTubeBlock::new);
+
+    public static final RegistryObject<Block> SPEED_TUBE = BLOCKS.register("speed_tube", SpeedTubeBlock::new);
+
+    public static final RegistryObject<Block> COLOR_FILTER_TUBE = BLOCKS.register("color_filter_tube", ColorFilterTubeBlock::new);
+
+    public static final RegistryObject<Block> HOVER_TUBE = BLOCKS.register("hover_tube", HoverTubeBlock::new);
+
+    public static final RegistryObject<Block> FILTERED_EXTRACTION_TUBE = BLOCKS.register(
+            "filtered_extraction_tube", FilteredExtractionTubeBlock::new);
+
+    public static final RegistryObject<Block> PICKUP_TUBE = BLOCKS.register("pickup_tube", PickupTubeBlock::new);
+
+    public static final RegistryObject<Block> REDSTONE_TUBE = BLOCKS.register("redstone_tube", RedstoneTubeBlock::new);
+
+    public static final RegistryObject<Block> SWITCH_TUBE = BLOCKS.register("switch_tube", SwitchTubeBlock::new);
+
+    public static final RegistryObject<Block> TRANSPORT_TUBE = BLOCKS.register("transport_tube", TransportTubeBlock::new);
+
+    public static final RegistryObject<Block> ROUND_ROBIN_TUBE = BLOCKS.register("round_robin_tube", RoundRobinTubeBlock::new);
+
+    public static final RegistryObject<Block> STACKING_TUBE = BLOCKS.register("stacking_tube", StackingTubeBlock::new);
+
+    public static final RegistryObject<Block> TELEPORT_TUBE = BLOCKS.register("teleport_tube", TeleportTubeBlock::new);
+
+    public static final RegistryObject<Block> PROVIDER_TUBE = BLOCKS.register("provider_tube", ProviderTubeBlock::new);
+
+    public static final RegistryObject<Block> INSERTION_TUBE = BLOCKS.register("insertion_tube", InsertionTubeBlock::new);
+
+    public static final RegistryObject<Block> STICKY_TUBE = BLOCKS.register("sticky_tube", StickyTubeBlock::new);
+
+    public static final RegistryObject<Block> VOID_TUBE = BLOCKS.register("void_tube", VoidTubeBlock::new);
+
+    public static final RegistryObject<Block> MACHINE_BUFFER = BLOCKS.register("machine_buffer",
+            () -> new MachineBufferBlock(machineProperties(MapColor.METAL)));
+
+    public static final RegistryObject<Block> VILLAGER_O_MAT = BLOCKS.register("villager_o_mat",
+            () -> new VillagerOMatBlock(machineProperties(MapColor.QUARTZ)));
+
+    public static final RegistryObject<Block> PERSONAL_CHEST = BLOCKS.register("personal_chest",
+            () -> new PersonalChestBlock(machineProperties(MapColor.WOOD)));
+
+    public static final RegistryObject<Block> PERSONAL_TANK = BLOCKS.register("personal_tank",
+            () -> new PersonalTankBlock(machineProperties(MapColor.WOOD)));
+
+    public static final RegistryObject<Block> TRADE_O_MAT = BLOCKS.register("trade_o_mat",
+            () -> new TradeOMatBlock(machineProperties(MapColor.QUARTZ)));
+
+    public static final RegistryObject<Block> ELECTRIC_ENCHANTER = BLOCKS.register("electric_enchanter",
+            () -> new ElectricEnchanterBlock(machineProperties(MapColor.COLOR_PURPLE)));
 
     public static final RegistryObject<Block> MACERATOR = BLOCKS.register("macerator",
             () -> new MaceratorBlock(machineProperties(MapColor.METAL)));
@@ -173,6 +274,21 @@ public final class BlockRegistry {
 
     public static final RegistryObject<Block> ESU = BLOCKS.register("esu",
             () -> new EsuBlock(machineProperties(MapColor.METAL)));
+
+    public static final RegistryObject<Block> PESU = BLOCKS.register("pesu",
+            () -> new PesuBlock(machineProperties(MapColor.COLOR_PURPLE)));
+
+    public static final RegistryObject<Block> ISU = BLOCKS.register("isu",
+            () -> new IsuBlock(machineProperties(MapColor.COLOR_CYAN)));
+
+    public static final RegistryObject<Block> ORE_SCANNER = BLOCKS.register("ore_scanner",
+            () -> new OreScannerBlock(machineProperties(MapColor.COLOR_GRAY)));
+
+    public static final RegistryObject<Block> UU_CROP_LIBRARY = BLOCKS.register("uu_crop_library",
+            () -> new UuCropLibraryBlock(machineProperties(MapColor.COLOR_GREEN)));
+
+    public static final RegistryObject<Block> UU_EXPANSION = BLOCKS.register("uu_expansion",
+            () -> new UuExpansionBlock(machineProperties(MapColor.COLOR_MAGENTA)));
 
     public static final RegistryObject<Block> LV_TRANSFORMER = BLOCKS.register("lv_transformer",
             () -> new LVTransformerBlock(machineProperties(MapColor.STONE)));
@@ -247,6 +363,30 @@ public final class BlockRegistry {
 
     public static final RegistryObject<Block> REACTOR_CHAMBER = BLOCKS.register("reactor_chamber",
             () -> new ReactorChamberBlock());
+
+    public static final RegistryObject<Block> STEAM_REACTOR = BLOCKS.register("steam_reactor",
+            () -> new SteamReactorBlock(machineProperties(MapColor.COLOR_LIGHT_BLUE)));
+
+    public static final RegistryObject<Block> STEAM_CHAMBER = BLOCKS.register("steam_chamber",
+            () -> new SteamChamberBlock());
+
+    public static final RegistryObject<Block> FLUID_PIPE = BLOCKS.register("fluid_pipe",
+            () -> new FluidPipeBlock(machineProperties(MapColor.COLOR_BLUE).noOcclusion()));
+
+    public static final RegistryObject<Block> FLUID_PUMP = BLOCKS.register("fluid_pump",
+            () -> new FluidNetworkPumpBlock(machineProperties(MapColor.METAL)));
+
+    public static final RegistryObject<Block> VOID_PIPE = BLOCKS.register("void_pipe",
+            () -> new VoidPipeBlock(machineProperties(MapColor.COLOR_BLACK).noOcclusion()));
+
+    public static final RegistryObject<Block> FLUID_O_MAT = BLOCKS.register("fluid_o_mat",
+            () -> new FluidOMatBlock(machineProperties(MapColor.QUARTZ)));
+
+    public static final RegistryObject<Block> INDUCTION_MATRIX = BLOCKS.register("induction_matrix",
+            () -> new InductionMatrixBlock(machineProperties(MapColor.DIAMOND)));
+
+    public static final RegistryObject<Block> INDUCTION_MATRIX_CASING = BLOCKS.register("induction_matrix_casing",
+            () -> new InductionMatrixCasingBlock());
 
     public static final RegistryObject<Block> CONTAMINATED_SOIL = BLOCKS.register("contaminated_soil",
             () -> new ContaminatedSoilBlock());

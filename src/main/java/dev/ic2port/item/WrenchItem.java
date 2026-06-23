@@ -11,6 +11,7 @@ import dev.ic2port.block.NuclearReactorBlock;
 import dev.ic2port.block.SolidFuelGeneratorBlock;
 import dev.ic2port.block.GeothermalGeneratorBlock;
 import dev.ic2port.block.WindMillBlock;
+import dev.ic2port.api.blocks.IFaceWrenchable;
 import dev.ic2port.util.WrenchHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -37,6 +38,18 @@ public class WrenchItem extends Item {
         BlockPos pos = context.getClickedPos();
         BlockState state = level.getBlockState(pos);
         var player = context.getPlayer();
+
+        if (state.getBlock() instanceof IFaceWrenchable faceWrenchable) {
+            if (faceWrenchable.onWrenchFace(context, state, context.getClickedFace())) {
+                if (!level.isClientSide && player != null) {
+                    context.getItemInHand().hurtAndBreak(
+                            1,
+                            player,
+                            p -> p.broadcastBreakEvent(context.getHand()));
+                }
+                return InteractionResult.sidedSuccess(level.isClientSide);
+            }
+        }
 
         if (player != null && player.isShiftKeyDown() && WrenchHelper.isIc2PortBlock(state.getBlock())) {
             if (WrenchHelper.tryDismantle(context, WrenchHelper.STANDARD_DROP_CHANCE, WrenchHelper.STANDARD_DROP_CHANCE)) {

@@ -29,8 +29,8 @@ public class DetectorCableBlock extends CopperCableBlock {
     @Nullable @Override
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(final Level level, final BlockState state,
                                                                    final BlockEntityType<T> type) {
-        return level.isClientSide() ? null
-                : createTickerHelper(type, BlockEntityRegistry.DETECTOR_CABLE_BE.get(), DetectorCableBlockEntity::serverTick);
+        return cableTickerOrNull(
+                level, type, BlockEntityRegistry.DETECTOR_CABLE_BE.get(), DetectorCableBlockEntity::serverTick);
     }
 
     @Override

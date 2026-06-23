@@ -117,20 +117,6 @@ public final class OreScannerHelper {
         return largest;
     }
 
-    public static Component formatResult(final Map<String, Integer> counts) {
-        if (counts.isEmpty()) {
-            return Component.translatable("message.ic2port.od_scanner.empty");
-        }
-        MutableComponent message = Component.translatable("message.ic2port.od_scanner.header");
-        boolean first = true;
-        for (Map.Entry<String, Integer> entry : counts.entrySet()) {
-            if (!first) message.append(", ");
-            first = false;
-            message.append(Component.translatable(entry.getKey()).append(": " + entry.getValue()));
-        }
-        return message;
-    }
-
     private static String labelFor(final Block block) {
         if (block == BlockRegistry.TIN_ORE.get() || block == BlockRegistry.DEEPSLATE_TIN_ORE.get()) {
             return "block.ic2port.tin_ore";
@@ -171,5 +157,23 @@ public final class OreScannerHelper {
             return "block.minecraft.emerald_ore";
         }
         return null;
+    }
+
+    public static boolean isOreBlock(final BlockState state) {
+        return labelFor(state.getBlock()) != null;
+    }
+
+    public static Component formatResult(final Map<String, Integer> counts) {
+        if (counts.isEmpty()) {
+            return Component.translatable("message.ic2port.od_scanner.empty");
+        }
+        MutableComponent message = Component.translatable("message.ic2port.od_scanner.header");
+        boolean first = true;
+        for (Map.Entry<String, Integer> entry : counts.entrySet()) {
+            if (!first) message.append(", ");
+            first = false;
+            message.append(Component.translatable(entry.getKey()).append(": " + entry.getValue()));
+        }
+        return message;
     }
 }

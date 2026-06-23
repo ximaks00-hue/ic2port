@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:block/block",
+  "textures": {
+    "particle": "ic2port:block/glass_fiber_cable",
+    "all": "ic2port:block/glass_fiber_cable"
+  }
+}

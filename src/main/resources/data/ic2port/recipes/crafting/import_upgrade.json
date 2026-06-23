@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " C ",
+    "HOH",
+    " C "
+  ],
+  "key": {
+    "C": {
+      "item": "ic2port:copper_cable"
+    },
+    "H": {
+      "item": "minecraft:hopper"
+    },
+    "O": {
+      "item": "ic2port:overclocker_upgrade"
+    }
+  },
+  "result": {
+    "item": "ic2port:import_upgrade"
+  }
+}

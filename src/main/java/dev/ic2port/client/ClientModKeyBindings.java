@@ -3,6 +3,7 @@ package dev.ic2port.client;
 import dev.ic2port.Reference;
 import dev.ic2port.network.ModMessages;
 import dev.ic2port.network.packet.ToggleDrillModePacket;
+import dev.ic2port.network.packet.ToggleMiningLaserModePacket;
 import dev.ic2port.network.packet.ToggleQuantumNightVisionPacket;
 import net.minecraft.client.Minecraft;
 import net.minecraftforge.api.distmarker.Dist;
@@ -22,6 +23,7 @@ public final class ClientModKeyBindings {
     public static void registerKeyMappings(final RegisterKeyMappingsEvent event) {
         event.register(ClientKeyBindings.TOGGLE_ADVANCED_DRILL_MODE);
         event.register(ClientKeyBindings.TOGGLE_QUANTUM_NIGHT_VISION);
+        event.register(ClientKeyBindings.TOGGLE_MINING_LASER_MODE);
     }
 }
 
@@ -40,6 +42,9 @@ final class ClientForgeInputEvents {
         }
         if (ClientKeyBindings.TOGGLE_ADVANCED_DRILL_MODE.consumeClick()) {
             ModMessages.sendToServer(new ToggleDrillModePacket());
+        }
+        if (ClientKeyBindings.TOGGLE_MINING_LASER_MODE.consumeClick()) {
+            ModMessages.sendToServer(new ToggleMiningLaserModePacket());
         }
         if (ClientKeyBindings.TOGGLE_QUANTUM_NIGHT_VISION.consumeClick()) {
             ModMessages.sendToServer(new ToggleQuantumNightVisionPacket());

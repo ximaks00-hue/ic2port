@@ -1,12 +1,14 @@
 package dev.ic2port.blockentity;
 
 import dev.ic2port.util.ContainerDataHelper;
+import dev.ic2port.Reference;
 import dev.ic2port.api.energy.EnergyTier;
 import dev.ic2port.item.CentrifugeRotorItem;
 import dev.ic2port.menu.ThermalCentrifugeMenu;
 import dev.ic2port.recipe.CentrifugeRecipe;
 import dev.ic2port.setup.BlockEntityRegistry;
 import dev.ic2port.setup.RecipeTypeRegistry;
+import dev.ic2port.util.AddonRecipeBridge;
 import dev.ic2port.util.MachineRecipeHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
@@ -25,6 +27,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Optional;
 
 public class ThermalCentrifugeBlockEntity extends BaseMachineBlockEntity {
+    private static final ResourceLocation MACHINE_ID = new ResourceLocation(Reference.MOD_ID, "thermal_centrifuge");
 
     public static final double ENERGY_CAPACITY = 50_000.0D;
     public static final int TIER = EnergyTier.MV;
@@ -108,8 +111,12 @@ public class ThermalCentrifugeBlockEntity extends BaseMachineBlockEntity {
             return CentrifugeRotorItem.isRotorStack(stack);
         }
         if (processSlot == SLOT_INPUT) {
-            return MachineRecipeHelper.acceptsCentrifugeInput(
-                    level, stack, RecipeTypeRegistry.THERMAL_CENTRIFUGE.get());
+            return MachineRecipeHelper.acceptsCentrifugeInputWithAddons(
+                    level,
+                    MACHINE_ID,
+                    stack,
+                    RecipeTypeRegistry.THERMAL_CENTRIFUGE.get(),
+                    AddonRecipeBridge::toCentrifuge);
         }
         return false;
     }
@@ -293,11 +300,13 @@ public class ThermalCentrifugeBlockEntity extends BaseMachineBlockEntity {
     }
 
     private Optional<CentrifugeRecipe> resolveActiveRecipe(final ItemStack input) {
-        final Optional<CentrifugeRecipe> resolved = MachineRecipeHelper.resolveCentrifugeRecipe(
+        final Optional<CentrifugeRecipe> resolved = MachineRecipeHelper.resolveCentrifugeRecipeWithAddons(
                 level,
+                MACHINE_ID,
                 input,
                 activeRecipeId,
-                RecipeTypeRegistry.THERMAL_CENTRIFUGE.get());
+                RecipeTypeRegistry.THERMAL_CENTRIFUGE.get(),
+                AddonRecipeBridge::toCentrifuge);
         activeRecipeId = resolved.map(CentrifugeRecipe::getId).orElse(null);
         return resolved;
     }

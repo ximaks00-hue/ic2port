@@ -1,0 +1,15 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "item": "ic2port:item_tube"
+    },
+    {
+      "item": "ic2port:sticky_resin"
+    }
+  ],
+  "result": {
+    "item": "ic2port:sticky_tube",
+    "count": 1
+  }
+}

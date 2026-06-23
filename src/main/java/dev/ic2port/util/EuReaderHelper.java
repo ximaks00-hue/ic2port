@@ -3,10 +3,7 @@ package dev.ic2port.util;
 import dev.ic2port.api.energy.EnergyTier;
 import dev.ic2port.api.energy.IEnergyEmitter;
 import dev.ic2port.api.energy.IEnergyNode;
-import dev.ic2port.blockentity.CopperCableBlockEntity;
-import dev.ic2port.blockentity.GlassFiberCableBlockEntity;
-import dev.ic2port.blockentity.GoldCableBlockEntity;
-import dev.ic2port.blockentity.HvCableBlockEntity;
+import dev.ic2port.blockentity.BaseCableBlockEntity;
 import dev.ic2port.item.IElectricItem;
 import dev.ic2port.setup.ModCapabilities;
 import net.minecraft.core.BlockPos;
@@ -87,14 +84,8 @@ public final class EuReaderHelper {
     }
 
     private static void appendCableStats(final Player player, final BlockEntity blockEntity) {
-        if (blockEntity instanceof CopperCableBlockEntity cable) {
-            appendCableView(player, cable.getDebugStatus().inputDirection(), CopperCableBlockEntity.TRANSFER_LOSS);
-        } else if (blockEntity instanceof GoldCableBlockEntity cable) {
-            appendCableView(player, cable.getDebugStatus().inputDirection(), GoldCableBlockEntity.TRANSFER_LOSS);
-        } else if (blockEntity instanceof HvCableBlockEntity cable) {
-            appendCableView(player, cable.getDebugStatus().inputDirection(), HvCableBlockEntity.TRANSFER_LOSS);
-        } else if (blockEntity instanceof GlassFiberCableBlockEntity cable) {
-            appendCableView(player, cable.getDebugStatus().inputDirection(), GlassFiberCableBlockEntity.TRANSFER_LOSS);
+        if (blockEntity instanceof BaseCableBlockEntity cable) {
+            appendCableView(player, cable.getDebugStatus().inputDirection(), cable.getTransferLoss());
         }
     }
 

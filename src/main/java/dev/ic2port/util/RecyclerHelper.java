@@ -67,8 +67,13 @@ public final class RecyclerHelper {
                 || stack.is(ItemRegistry.IRIDIUM.get())
                 || stack.is(ItemRegistry.WRENCH.get())
                 || stack.is(ItemRegistry.OD_SCANNER.get())
+                || stack.is(ItemRegistry.OV_SCANNER.get())
+                || stack.is(ItemRegistry.EU_READER.get())
+                || stack.is(ItemRegistry.BASIC_DRILL.get())
                 || stack.is(ItemRegistry.DIAMOND_DRILL.get())
                 || stack.is(ItemRegistry.ADVANCED_DRILL.get())
+                || stack.is(ItemRegistry.MINING_LASER.get())
+                || stack.is(ItemRegistry.NANO_SABER.get())
                 || stack.is(ItemRegistry.CENTRIFUGE_ROTOR.get())
                 || stack.is(ItemRegistry.RECYCLER.get())) {
             return false;

@@ -15,9 +15,7 @@ import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.Nullable;
 
 /**
- * Stub recipe type for the macerator machine.
- * <p>
- * Full input/output matching will be implemented when the macerator block is added.
+ * Recipe type for the LV macerator — single-ingredient grind with EU cost and processing time.
  */
 public class MaceratorRecipe implements Recipe<Container>, IMachineRecipe {
 

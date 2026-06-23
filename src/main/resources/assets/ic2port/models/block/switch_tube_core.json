@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:block/block",
+  "textures": {
+    "particle": "ic2port:block/copper_cable",
+    "all": "minecraft:block/redstone_block"
+  }
+}

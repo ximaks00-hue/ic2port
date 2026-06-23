@@ -6,6 +6,8 @@ import dev.ic2port.menu.ElectrolyzerMenu;
 import dev.ic2port.recipe.ElectrolyzerRecipe;
 import dev.ic2port.setup.BlockEntityRegistry;
 import dev.ic2port.setup.RecipeTypeRegistry;
+import dev.ic2port.Reference;
+import dev.ic2port.util.AddonRecipeBridge;
 import dev.ic2port.util.MachineRecipeHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
@@ -26,6 +28,8 @@ import java.util.Optional;
  * MV electrolyzer — uses EU to decompose materials (e.g., water cells → hydrogen + oxygen cells).
  */
 public class ElectrolyzerBlockEntity extends BaseMachineBlockEntity {
+
+    private static final ResourceLocation MACHINE_ID = new ResourceLocation(Reference.MOD_ID, "electrolyzer");
 
     public static final double ENERGY_CAPACITY = 10_000.0D;
     public static final int TIER = EnergyTier.MV;
@@ -80,9 +84,14 @@ public class ElectrolyzerBlockEntity extends BaseMachineBlockEntity {
 
     @Override
     protected boolean isValidProcessInput(final ItemStack stack) {
-        return MachineRecipeHelper.acceptsSingleInput(
-                level, RecipeTypeRegistry.ELECTROLYZER.get(),
-                ElectrolyzerRecipe.class, stack, ElectrolyzerRecipe::getInput);
+        return MachineRecipeHelper.acceptsSingleInputWithAddons(
+                level,
+                MACHINE_ID,
+                RecipeTypeRegistry.ELECTROLYZER.get(),
+                ElectrolyzerRecipe.class,
+                stack,
+                ElectrolyzerRecipe::getInput,
+                AddonRecipeBridge::toElectrolyzer);
     }
 
     public static void serverTick(final Level level, final BlockPos pos, final BlockState state,
@@ -158,9 +167,15 @@ public class ElectrolyzerBlockEntity extends BaseMachineBlockEntity {
     }
 
     private Optional<ElectrolyzerRecipe> resolveActiveRecipe(final ItemStack input) {
-        Optional<ElectrolyzerRecipe> resolved = MachineRecipeHelper.resolveSingleInputRecipe(
-                level, RecipeTypeRegistry.ELECTROLYZER.get(),
-                ElectrolyzerRecipe.class, input, activeRecipeId, ElectrolyzerRecipe::getInput);
+        Optional<ElectrolyzerRecipe> resolved = MachineRecipeHelper.resolveSingleInputRecipeWithAddons(
+                level,
+                MACHINE_ID,
+                RecipeTypeRegistry.ELECTROLYZER.get(),
+                ElectrolyzerRecipe.class,
+                input,
+                activeRecipeId,
+                ElectrolyzerRecipe::getInput,
+                AddonRecipeBridge::toElectrolyzer);
         activeRecipeId = resolved.map(ElectrolyzerRecipe::getId).orElse(null);
         return resolved;
     }

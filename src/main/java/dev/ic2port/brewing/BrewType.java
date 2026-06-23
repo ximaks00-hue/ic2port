@@ -8,7 +8,9 @@ public enum BrewType {
     BEER,
     RUM,
     WHISKY,
-    POTION;
+    POTION,
+    TEA,
+    COFFEE;
 
     public static BrewType fromIndex(final int index) {
         BrewType[] values = values();

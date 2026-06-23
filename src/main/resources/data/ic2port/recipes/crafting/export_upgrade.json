@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " C ",
+    "DOD",
+    " C "
+  ],
+  "key": {
+    "C": {
+      "item": "ic2port:copper_cable"
+    },
+    "D": {
+      "item": "minecraft:dropper"
+    },
+    "O": {
+      "item": "ic2port:overclocker_upgrade"
+    }
+  },
+  "result": {
+    "item": "ic2port:export_upgrade"
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "item": "ic2port:limiter_tube"
+    },
+    {
+      "item": "ic2port:sorting_tube"
+    }
+  ],
+  "result": {
+    "item": "ic2port:color_filter_tube",
+    "count": 1
+  }
+}

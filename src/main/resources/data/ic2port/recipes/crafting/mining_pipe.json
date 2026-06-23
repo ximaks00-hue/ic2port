@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "I",
+    "I",
+    "T"
+  ],
+  "key": {
+    "I": {"item": "ic2port:iron_plate"},
+    "T": {"item": "ic2port:tin_ingot"}
+  },
+  "result": {"item": "ic2port:mining_pipe", "count": 4}
+}

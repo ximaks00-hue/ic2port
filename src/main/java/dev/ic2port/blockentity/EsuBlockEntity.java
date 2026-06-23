@@ -26,7 +26,9 @@ import net.minecraft.world.inventory.ContainerData;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
@@ -36,8 +38,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 /**
- * Energy Storage Unit — EV tier, stores up to 10 million EU.
- * Outputs up to 2048 EU/t on the output face.
+ * Directional EU storage block shared by ESU, PESU and ISU tiers.
  */
 public class EsuBlockEntity extends BlockEntity implements IEnergyAcceptor, IEnergyEmitter, MenuProvider, FullInventoryAccess {
 
@@ -46,6 +47,11 @@ public class EsuBlockEntity extends BlockEntity implements IEnergyAcceptor, IEne
     public static final int TIER = EnergyTier.EV;
     public static final int SLOT_CHARGE = 0;
     public static final int SLOT_DISCHARGE = 1;
+
+    private final double energyCapacity;
+    private final double maxOutputPerTick;
+    private final DirectionProperty facingProperty;
+    private final Component displayName;
 
     private final ItemStackHandler itemHandler = new ItemStackHandler(2) {
         @Override
@@ -74,7 +80,7 @@ public class EsuBlockEntity extends BlockEntity implements IEnergyAcceptor, IEne
         public int get(final int index) {
             return switch (index) {
                 case 0 -> (int) Math.min(storedEnergy, Integer.MAX_VALUE);
-                case 1 -> (int) Math.min(ENERGY_CAPACITY, Integer.MAX_VALUE);
+                case 1 -> (int) Math.min(energyCapacity, Integer.MAX_VALUE);
                 default -> 0;
             };
         }
@@ -94,7 +100,24 @@ public class EsuBlockEntity extends BlockEntity implements IEnergyAcceptor, IEne
     private boolean destroyedByOverload;
 
     public EsuBlockEntity(final BlockPos pos, final BlockState state) {
-        super(BlockEntityRegistry.ESU_BE.get(), pos, state);
+        this(BlockEntityRegistry.ESU_BE.get(), pos, state,
+                ENERGY_CAPACITY, MAX_OUTPUT_PER_TICK, EsuBlock.FACING,
+                Component.translatable("block.ic2port.esu"));
+    }
+
+    protected EsuBlockEntity(
+            final BlockEntityType<?> type,
+            final BlockPos pos,
+            final BlockState state,
+            final double energyCapacity,
+            final double maxOutputPerTick,
+            final DirectionProperty facingProperty,
+            final Component displayName) {
+        super(type, pos, state);
+        this.energyCapacity = energyCapacity;
+        this.maxOutputPerTick = maxOutputPerTick;
+        this.facingProperty = facingProperty;
+        this.displayName = displayName;
     }
 
     public static void serverTick(final Level level, final BlockPos pos, final BlockState state,
@@ -102,15 +125,19 @@ public class EsuBlockEntity extends BlockEntity implements IEnergyAcceptor, IEne
         esu.tickServer();
     }
 
-    private void tickServer() {
-        if (level == null || level.isClientSide || destroyedByOverload) return;
+    protected void tickServer() {
+        if (level == null || level.isClientSide || destroyedByOverload) {
+            return;
+        }
 
-        double outputBudget = MAX_OUTPUT_PER_TICK;
+        double outputBudget = maxOutputPerTick;
         double remaining = processItemSlots(outputBudget);
 
-        if (storedEnergy <= 0.0D || remaining <= 0.0D) return;
+        if (storedEnergy <= 0.0D || remaining <= 0.0D) {
+            return;
+        }
 
-        Direction outputDirection = getBlockState().getValue(EsuBlock.FACING);
+        Direction outputDirection = getBlockState().getValue(facingProperty);
         double offered = Math.min(storedEnergy, remaining);
         double remainder = EnergyTransferHelper.injectIntoNeighbor(level, worldPosition, outputDirection, offered, TIER);
         double transferred = offered - remainder;
@@ -126,7 +153,7 @@ public class EsuBlockEntity extends BlockEntity implements IEnergyAcceptor, IEne
         ItemStack chargeStack = itemHandler.getStackInSlot(SLOT_CHARGE);
         if (!chargeStack.isEmpty() && storedEnergy > 0.0D && remaining > 0.0D
                 && ItemEnergyHelper.canCharge(chargeStack, TIER)) {
-            double toTransfer = Math.min(Math.min(storedEnergy, remaining), MAX_OUTPUT_PER_TICK);
+            double toTransfer = Math.min(Math.min(storedEnergy, remaining), maxOutputPerTick);
             double transferred = ItemEnergyHelper.chargeItem(chargeStack, toTransfer, TIER);
             if (transferred > 0.0D) {
                 itemHandler.setStackInSlot(SLOT_CHARGE, chargeStack);
@@ -137,10 +164,10 @@ public class EsuBlockEntity extends BlockEntity implements IEnergyAcceptor, IEne
         }
 
         ItemStack dischargeStack = itemHandler.getStackInSlot(SLOT_DISCHARGE);
-        if (!dischargeStack.isEmpty() && storedEnergy < ENERGY_CAPACITY
+        if (!dischargeStack.isEmpty() && storedEnergy < energyCapacity
                 && ItemEnergyHelper.canDischargeInto(dischargeStack, TIER)) {
-            double space = ENERGY_CAPACITY - storedEnergy;
-            double toDraw = Math.min(space, MAX_OUTPUT_PER_TICK);
+            double space = energyCapacity - storedEnergy;
+            double toDraw = Math.min(space, maxOutputPerTick);
             double drawn = ItemEnergyHelper.dischargeItemAndModules(dischargeStack, toDraw, TIER);
             if (drawn > 0.0D) {
                 itemHandler.setStackInSlot(SLOT_DISCHARGE, dischargeStack);
@@ -153,17 +180,23 @@ public class EsuBlockEntity extends BlockEntity implements IEnergyAcceptor, IEne
 
     @Override
     public double injectEnergy(final Direction directionFrom, final double amount, final int tier) {
-        if (level == null || level.isClientSide || amount <= 0.0D || destroyedByOverload) return amount;
+        if (level == null || level.isClientSide || amount <= 0.0D || destroyedByOverload) {
+            return amount;
+        }
         if (tier > getTier()) {
             explode(tier);
             return amount;
         }
-        Direction outputDirection = getBlockState().getValue(EsuBlock.FACING);
-        if (directionFrom == outputDirection) return amount;
+        Direction outputDirection = getBlockState().getValue(facingProperty);
+        if (directionFrom == outputDirection) {
+            return amount;
+        }
 
-        double space = ENERGY_CAPACITY - storedEnergy;
+        double space = energyCapacity - storedEnergy;
         double accepted = Math.min(amount, space);
-        if (accepted <= 0.0D) return amount;
+        if (accepted <= 0.0D) {
+            return amount;
+        }
 
         storedEnergy += accepted;
         setChanged();
@@ -171,32 +204,46 @@ public class EsuBlockEntity extends BlockEntity implements IEnergyAcceptor, IEne
     }
 
     private void explode(final int incomingTier) {
-        if (level == null || level.isClientSide || destroyedByOverload) return;
+        if (level == null || level.isClientSide || destroyedByOverload) {
+            return;
+        }
         destroyedByOverload = true;
         storedEnergy = 0.0D;
         EnergyStorageExplosionHelper.explode(level, worldPosition, itemHandler, getTier(), incomingTier);
     }
 
     @Override
-    public double getCapacity() { return ENERGY_CAPACITY; }
+    public double getCapacity() {
+        return energyCapacity;
+    }
 
     @Override
-    public double getStoredEnergy() { return storedEnergy; }
+    public double getStoredEnergy() {
+        return storedEnergy;
+    }
 
     @Override
-    public int getTier() { return TIER; }
+    public int getTier() {
+        return TIER;
+    }
 
     @Override
-    public double getOfferedEnergy() { return Math.min(storedEnergy, MAX_OUTPUT_PER_TICK); }
+    public double getOfferedEnergy() {
+        return Math.min(storedEnergy, maxOutputPerTick);
+    }
 
     @Override
     public void drawEnergy(final double amount) {
-        if (amount <= 0.0D) return;
+        if (amount <= 0.0D) {
+            return;
+        }
         storedEnergy = Math.max(0.0D, storedEnergy - amount);
         setChanged();
     }
 
-    public ContainerData getContainerData() { return data; }
+    public ContainerData getContainerData() {
+        return data;
+    }
 
     @Override
     public IItemHandler getFullItemHandler() {
@@ -214,25 +261,36 @@ public class EsuBlockEntity extends BlockEntity implements IEnergyAcceptor, IEne
     public void load(final CompoundTag tag) {
         super.load(tag);
         itemHandler.deserializeNBT(tag.getCompound("Inventory"));
-        storedEnergy = Math.min(tag.getDouble("StoredEnergy"), ENERGY_CAPACITY);
+        storedEnergy = Math.min(tag.getDouble("StoredEnergy"), energyCapacity);
     }
 
     @Override
     public Component getDisplayName() {
-        return Component.translatable("block.ic2port.esu");
+        return displayName;
     }
 
     @Nullable
     @Override
     public AbstractContainerMenu createMenu(final int containerId, final Inventory playerInventory, final Player player) {
-        return new EsuMenu(containerId, playerInventory, this, data);
+        return createStorageMenu(containerId, playerInventory, data);
+    }
+
+    protected AbstractContainerMenu createStorageMenu(
+            final int containerId,
+            final Inventory playerInventory,
+            final ContainerData containerData) {
+        return new EsuMenu(containerId, playerInventory, this, containerData);
     }
 
     @Override
     public @NotNull <T> LazyOptional<T> getCapability(final @NotNull Capability<T> capability,
                                                        final @Nullable Direction side) {
-        if (capability == ForgeCapabilities.ITEM_HANDLER) return itemHandlerOptional.cast();
-        if (capability == ModCapabilities.ENERGY_NODE_CAPABILITY) return energyOptional.cast();
+        if (capability == ForgeCapabilities.ITEM_HANDLER) {
+            return itemHandlerOptional.cast();
+        }
+        if (capability == ModCapabilities.ENERGY_NODE_CAPABILITY) {
+            return energyOptional.cast();
+        }
         return super.getCapability(capability, side);
     }
 

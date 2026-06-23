@@ -24,6 +24,11 @@ import dev.ic2port.blockentity.MinerBlockEntity;
 import dev.ic2port.blockentity.OreWasherBlockEntity;
 import dev.ic2port.blockentity.PumpBlockEntity;
 import dev.ic2port.blockentity.EsuBlockEntity;
+import dev.ic2port.blockentity.PesuBlockEntity;
+import dev.ic2port.blockentity.IsuBlockEntity;
+import dev.ic2port.blockentity.OreScannerBlockEntity;
+import dev.ic2port.blockentity.UuCropLibraryBlockEntity;
+import dev.ic2port.blockentity.UuExpansionBlockEntity;
 import dev.ic2port.blockentity.EVTransformerBlockEntity;
 import dev.ic2port.blockentity.GlassFiberCableBlockEntity;
 import dev.ic2port.blockentity.GoldCableBlockEntity;
@@ -43,15 +48,28 @@ import dev.ic2port.blockentity.MetalFormerBlockEntity;
 import dev.ic2port.blockentity.BrewingBarrelBlockEntity;
 import dev.ic2port.blockentity.ChargePadBlockEntity;
 import dev.ic2port.blockentity.MaceratorBlockEntity;
+import dev.ic2port.blockentity.MachineBufferBlockEntity;
+import dev.ic2port.blockentity.VillagerOMatBlockEntity;
 import dev.ic2port.blockentity.RecyclerBlockEntity;
 import dev.ic2port.blockentity.NuclearReactorBlockEntity;
 import dev.ic2port.blockentity.MassFabricatorBlockEntity;
 import dev.ic2port.blockentity.ThermalCentrifugeBlockEntity;
+import dev.ic2port.blockentity.TubeBlockEntity;
 import dev.ic2port.blockentity.SolarPanelBlockEntity;
 import dev.ic2port.blockentity.WaterMillBlockEntity;
 import dev.ic2port.blockentity.WindMillBlockEntity;
 import dev.ic2port.blockentity.FusionReactorBlockEntity;
 import dev.ic2port.blockentity.FusionReactorValveBlockEntity;
+import dev.ic2port.blockentity.FluidNetworkPumpBlockEntity;
+import dev.ic2port.blockentity.FluidOMatBlockEntity;
+import dev.ic2port.blockentity.FluidPipeBlockEntity;
+import dev.ic2port.blockentity.InductionMatrixBlockEntity;
+import dev.ic2port.blockentity.SteamReactorBlockEntity;
+import dev.ic2port.blockentity.VoidPipeBlockEntity;
+import dev.ic2port.blockentity.PersonalChestBlockEntity;
+import dev.ic2port.blockentity.PersonalTankBlockEntity;
+import dev.ic2port.blockentity.TradeOMatBlockEntity;
+import dev.ic2port.blockentity.ElectricEnchanterBlockEntity;
 import dev.ic2port.blockentity.GeothermalGeneratorBlockEntity;
 import dev.ic2port.blockentity.SolidFuelGeneratorBlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -101,6 +119,16 @@ public final class BlockEntityRegistry {
     public static final RegistryObject<BlockEntityType<MaceratorBlockEntity>> MACERATOR_BE =
             BLOCK_ENTITIES.register("macerator", () -> BlockEntityType.Builder
                     .of(MaceratorBlockEntity::new, BlockRegistry.MACERATOR.get())
+                    .build(null));
+
+    public static final RegistryObject<BlockEntityType<MachineBufferBlockEntity>> MACHINE_BUFFER_BE =
+            BLOCK_ENTITIES.register("machine_buffer", () -> BlockEntityType.Builder
+                    .of(MachineBufferBlockEntity::new, BlockRegistry.MACHINE_BUFFER.get())
+                    .build(null));
+
+    public static final RegistryObject<BlockEntityType<VillagerOMatBlockEntity>> VILLAGER_O_MAT_BE =
+            BLOCK_ENTITIES.register("villager_o_mat", () -> BlockEntityType.Builder
+                    .of(VillagerOMatBlockEntity::new, BlockRegistry.VILLAGER_O_MAT.get())
                     .build(null));
 
     public static final RegistryObject<BlockEntityType<RecyclerBlockEntity>> RECYCLER_BE =
@@ -273,6 +301,31 @@ public final class BlockEntityRegistry {
                     .of(EsuBlockEntity::new, BlockRegistry.ESU.get())
                     .build(null));
 
+    public static final RegistryObject<BlockEntityType<PesuBlockEntity>> PESU_BE =
+            BLOCK_ENTITIES.register("pesu", () -> BlockEntityType.Builder
+                    .of(PesuBlockEntity::new, BlockRegistry.PESU.get())
+                    .build(null));
+
+    public static final RegistryObject<BlockEntityType<IsuBlockEntity>> ISU_BE =
+            BLOCK_ENTITIES.register("isu", () -> BlockEntityType.Builder
+                    .of(IsuBlockEntity::new, BlockRegistry.ISU.get())
+                    .build(null));
+
+    public static final RegistryObject<BlockEntityType<OreScannerBlockEntity>> ORE_SCANNER_BE =
+            BLOCK_ENTITIES.register("ore_scanner", () -> BlockEntityType.Builder
+                    .of(OreScannerBlockEntity::new, BlockRegistry.ORE_SCANNER.get())
+                    .build(null));
+
+    public static final RegistryObject<BlockEntityType<UuCropLibraryBlockEntity>> UU_CROP_LIBRARY_BE =
+            BLOCK_ENTITIES.register("uu_crop_library", () -> BlockEntityType.Builder
+                    .of(UuCropLibraryBlockEntity::new, BlockRegistry.UU_CROP_LIBRARY.get())
+                    .build(null));
+
+    public static final RegistryObject<BlockEntityType<UuExpansionBlockEntity>> UU_EXPANSION_BE =
+            BLOCK_ENTITIES.register("uu_expansion", () -> BlockEntityType.Builder
+                    .of(UuExpansionBlockEntity::new, BlockRegistry.UU_EXPANSION.get())
+                    .build(null));
+
     public static final RegistryObject<BlockEntityType<LVTransformerBlockEntity>> LV_TRANSFORMER_BE =
             BLOCK_ENTITIES.register("lv_transformer", () -> BlockEntityType.Builder
                     .of(LVTransformerBlockEntity::new, BlockRegistry.LV_TRANSFORMER.get())
@@ -323,6 +376,32 @@ public final class BlockEntityRegistry {
                     .of(ConstructionFoamBlockEntity::new, BlockRegistry.CONSTRUCTION_FOAM.get())
                     .build(null));
 
+    public static final RegistryObject<BlockEntityType<TubeBlockEntity>> TUBE_BE =
+            BLOCK_ENTITIES.register("tube", () -> BlockEntityType.Builder
+                    .of(TubeBlockEntity::new,
+                            BlockRegistry.ITEM_TUBE.get(),
+                            BlockRegistry.EXTRACTION_TUBE.get(),
+                            BlockRegistry.REQUEST_TUBE.get(),
+                            BlockRegistry.LIMITER_TUBE.get(),
+                            BlockRegistry.SORTING_TUBE.get(),
+                            BlockRegistry.FILTER_TUBE.get(),
+                            BlockRegistry.SPEED_TUBE.get(),
+                            BlockRegistry.COLOR_FILTER_TUBE.get(),
+                            BlockRegistry.HOVER_TUBE.get(),
+                            BlockRegistry.FILTERED_EXTRACTION_TUBE.get(),
+                            BlockRegistry.PICKUP_TUBE.get(),
+                            BlockRegistry.REDSTONE_TUBE.get(),
+                            BlockRegistry.SWITCH_TUBE.get(),
+                            BlockRegistry.TRANSPORT_TUBE.get(),
+                            BlockRegistry.ROUND_ROBIN_TUBE.get(),
+                            BlockRegistry.STACKING_TUBE.get(),
+                            BlockRegistry.TELEPORT_TUBE.get(),
+                            BlockRegistry.PROVIDER_TUBE.get(),
+                            BlockRegistry.INSERTION_TUBE.get(),
+                            BlockRegistry.STICKY_TUBE.get(),
+                            BlockRegistry.VOID_TUBE.get())
+                    .build(null));
+
     public static final RegistryObject<BlockEntityType<FusionReactorBlockEntity>> FUSION_REACTOR_BE =
             BLOCK_ENTITIES.register("fusion_reactor", () -> BlockEntityType.Builder
                     .of(FusionReactorBlockEntity::new, BlockRegistry.FUSION_REACTOR.get())
@@ -331,6 +410,56 @@ public final class BlockEntityRegistry {
     public static final RegistryObject<BlockEntityType<FusionReactorValveBlockEntity>> FUSION_REACTOR_VALVE_BE =
             BLOCK_ENTITIES.register("fusion_reactor_valve", () -> BlockEntityType.Builder
                     .of(FusionReactorValveBlockEntity::new, BlockRegistry.FUSION_REACTOR_VALVE.get())
+                    .build(null));
+
+    public static final RegistryObject<BlockEntityType<SteamReactorBlockEntity>> STEAM_REACTOR_BE =
+            BLOCK_ENTITIES.register("steam_reactor", () -> BlockEntityType.Builder
+                    .of(SteamReactorBlockEntity::new, BlockRegistry.STEAM_REACTOR.get())
+                    .build(null));
+
+    public static final RegistryObject<BlockEntityType<FluidPipeBlockEntity>> FLUID_PIPE_BE =
+            BLOCK_ENTITIES.register("fluid_pipe", () -> BlockEntityType.Builder
+                    .of(FluidPipeBlockEntity::new, BlockRegistry.FLUID_PIPE.get())
+                    .build(null));
+
+    public static final RegistryObject<BlockEntityType<FluidNetworkPumpBlockEntity>> FLUID_PUMP_BE =
+            BLOCK_ENTITIES.register("fluid_pump", () -> BlockEntityType.Builder
+                    .of(FluidNetworkPumpBlockEntity::new, BlockRegistry.FLUID_PUMP.get())
+                    .build(null));
+
+    public static final RegistryObject<BlockEntityType<VoidPipeBlockEntity>> VOID_PIPE_BE =
+            BLOCK_ENTITIES.register("void_pipe", () -> BlockEntityType.Builder
+                    .of(VoidPipeBlockEntity::new, BlockRegistry.VOID_PIPE.get())
+                    .build(null));
+
+    public static final RegistryObject<BlockEntityType<FluidOMatBlockEntity>> FLUID_O_MAT_BE =
+            BLOCK_ENTITIES.register("fluid_o_mat", () -> BlockEntityType.Builder
+                    .of(FluidOMatBlockEntity::new, BlockRegistry.FLUID_O_MAT.get())
+                    .build(null));
+
+    public static final RegistryObject<BlockEntityType<InductionMatrixBlockEntity>> INDUCTION_MATRIX_BE =
+            BLOCK_ENTITIES.register("induction_matrix", () -> BlockEntityType.Builder
+                    .of(InductionMatrixBlockEntity::new, BlockRegistry.INDUCTION_MATRIX.get())
+                    .build(null));
+
+    public static final RegistryObject<BlockEntityType<PersonalChestBlockEntity>> PERSONAL_CHEST_BE =
+            BLOCK_ENTITIES.register("personal_chest", () -> BlockEntityType.Builder
+                    .of(PersonalChestBlockEntity::new, BlockRegistry.PERSONAL_CHEST.get())
+                    .build(null));
+
+    public static final RegistryObject<BlockEntityType<PersonalTankBlockEntity>> PERSONAL_TANK_BE =
+            BLOCK_ENTITIES.register("personal_tank", () -> BlockEntityType.Builder
+                    .of(PersonalTankBlockEntity::new, BlockRegistry.PERSONAL_TANK.get())
+                    .build(null));
+
+    public static final RegistryObject<BlockEntityType<TradeOMatBlockEntity>> TRADE_O_MAT_BE =
+            BLOCK_ENTITIES.register("trade_o_mat", () -> BlockEntityType.Builder
+                    .of(TradeOMatBlockEntity::new, BlockRegistry.TRADE_O_MAT.get())
+                    .build(null));
+
+    public static final RegistryObject<BlockEntityType<ElectricEnchanterBlockEntity>> ELECTRIC_ENCHANTER_BE =
+            BLOCK_ENTITIES.register("electric_enchanter", () -> BlockEntityType.Builder
+                    .of(ElectricEnchanterBlockEntity::new, BlockRegistry.ELECTRIC_ENCHANTER.get())
                     .build(null));
 
     private BlockEntityRegistry() {

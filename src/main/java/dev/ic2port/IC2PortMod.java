@@ -3,6 +3,7 @@ package dev.ic2port;
 import com.mojang.logging.LogUtils;
 import dev.ic2port.crop.CropRegistry;
 import dev.ic2port.network.ModMessages;
+import dev.ic2port.setup.ModFluids;
 import dev.ic2port.setup.ModEffects;
 import dev.ic2port.setup.BlockEntityRegistry;
 import dev.ic2port.setup.BlockRegistry;
@@ -11,6 +12,7 @@ import dev.ic2port.setup.ItemRegistry;
 import dev.ic2port.setup.MenuTypeRegistry;
 import dev.ic2port.setup.ModConfig;
 import dev.ic2port.setup.ModTreeDecoratorTypes;
+import dev.ic2port.villager.Ic2VillagerProfessions;
 import dev.ic2port.setup.RecipeSerializerRegistry;
 import dev.ic2port.setup.RecipeTypeRegistry;
 import net.minecraftforge.common.MinecraftForge;
@@ -35,12 +37,14 @@ public class IC2PortMod {
         BlockRegistry.register(modEventBus);
         ItemRegistry.register(modEventBus);
         BlockEntityRegistry.register(modEventBus);
+        ModFluids.register(modEventBus);
         MenuTypeRegistry.register(modEventBus);
         CreativeTabRegistry.register(modEventBus);
         RecipeTypeRegistry.register(modEventBus);
         RecipeSerializerRegistry.register(modEventBus);
         ModEffects.register(modEventBus);
         ModTreeDecoratorTypes.register(modEventBus);
+        Ic2VillagerProfessions.register(modEventBus);
 
         ModLoadingContext.get().registerConfig(
                 net.minecraftforge.fml.config.ModConfig.Type.COMMON,

@@ -7,6 +7,8 @@ import dev.ic2port.recipe.OreWasherRecipe;
 import dev.ic2port.setup.BlockEntityRegistry;
 import dev.ic2port.setup.RecipeTypeRegistry;
 import dev.ic2port.util.InsertOnlyFluidHandler;
+import dev.ic2port.Reference;
+import dev.ic2port.util.AddonRecipeBridge;
 import dev.ic2port.util.MachineRecipeHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -37,6 +39,8 @@ import java.util.Optional;
  * MV ore washer — purifies crushed ore using water cells, improving ore yield.
  */
 public class OreWasherBlockEntity extends BaseMachineBlockEntity {
+
+    private static final ResourceLocation MACHINE_ID = new ResourceLocation(Reference.MOD_ID, "ore_washer");
 
     public static final double ENERGY_CAPACITY = 8_000.0D;
     public static final int TIER = EnergyTier.MV;
@@ -92,9 +96,14 @@ public class OreWasherBlockEntity extends BaseMachineBlockEntity {
 
     @Override
     protected boolean isValidProcessInput(final ItemStack stack) {
-        return MachineRecipeHelper.acceptsSingleInput(
-                level, RecipeTypeRegistry.ORE_WASHER.get(),
-                OreWasherRecipe.class, stack, OreWasherRecipe::getInput);
+        return MachineRecipeHelper.acceptsSingleInputWithAddons(
+                level,
+                MACHINE_ID,
+                RecipeTypeRegistry.ORE_WASHER.get(),
+                OreWasherRecipe.class,
+                stack,
+                OreWasherRecipe::getInput,
+                AddonRecipeBridge::toOreWasher);
     }
 
     public static void serverTick(final Level level, final BlockPos pos, final BlockState state,
@@ -201,9 +210,15 @@ public class OreWasherBlockEntity extends BaseMachineBlockEntity {
     }
 
     private Optional<OreWasherRecipe> resolveActiveRecipe(final ItemStack input) {
-        Optional<OreWasherRecipe> resolved = MachineRecipeHelper.resolveSingleInputRecipe(
-                level, RecipeTypeRegistry.ORE_WASHER.get(),
-                OreWasherRecipe.class, input, activeRecipeId, OreWasherRecipe::getInput);
+        Optional<OreWasherRecipe> resolved = MachineRecipeHelper.resolveSingleInputRecipeWithAddons(
+                level,
+                MACHINE_ID,
+                RecipeTypeRegistry.ORE_WASHER.get(),
+                OreWasherRecipe.class,
+                input,
+                activeRecipeId,
+                OreWasherRecipe::getInput,
+                AddonRecipeBridge::toOreWasher);
         activeRecipeId = resolved.map(OreWasherRecipe::getId).orElse(null);
         return resolved;
     }

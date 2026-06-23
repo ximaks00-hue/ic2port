@@ -1,9 +1,12 @@
 package dev.ic2port.block;
 
+import dev.ic2port.blockentity.BaseCableBlockEntity;
 import dev.ic2port.blockentity.GlassFiberCableBlockEntity;
 import dev.ic2port.setup.BlockEntityRegistry;
 import dev.ic2port.setup.ModCapabilities;
 import dev.ic2port.util.CableConnectionHelper;
+import dev.ic2port.energy.WorldEnergyNet;
+import dev.ic2port.setup.BlockEntityRegistry;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
@@ -98,9 +101,10 @@ public class GlassFiberCableBlock extends BaseEntityBlock implements ICableBlock
             final Level level,
             final BlockState state,
             final BlockEntityType<T> type) {
-        return level.isClientSide()
-                ? null
-                : createTickerHelper(type, BlockEntityRegistry.GLASS_FIBER_CABLE_BE.get(), GlassFiberCableBlockEntity::serverTick);
+        if (level.isClientSide() || WorldEnergyNet.isEnabled()) {
+            return null;
+        }
+        return createTickerHelper(type, BlockEntityRegistry.GLASS_FIBER_CABLE_BE.get(), GlassFiberCableBlockEntity::serverTick);
     }
 
     @Override
@@ -113,7 +117,7 @@ public class GlassFiberCableBlock extends BaseEntityBlock implements ICableBlock
             final BlockHitResult hit) {
         if (!level.isClientSide && hand == InteractionHand.MAIN_HAND && player.getItemInHand(hand).isEmpty()) {
             if (level.getBlockEntity(pos) instanceof GlassFiberCableBlockEntity cable) {
-                GlassFiberCableBlockEntity.ComponentView status = cable.getDebugStatus();
+                BaseCableBlockEntity.ComponentView status = cable.getDebugStatus();
                 player.displayClientMessage(Component.literal(String.format(
                         "Glass Fibre Cable | Buffer: %.1f / %.1f EU | Input side: %s",
                         status.storedEnergy(),
@@ -138,6 +142,7 @@ public class GlassFiberCableBlock extends BaseEntityBlock implements ICableBlock
             final LevelAccessor level,
             final BlockPos currentPos,
             final BlockPos neighborPos) {
+        BaseCableBlockEntity.notifyNeighborUpdate(level, currentPos, neighborPos);
         return state.setValue(propertyFor(direction), canConnectTo(level, currentPos, direction));
     }
 

@@ -197,11 +197,20 @@ Get-Tr "item/armor/quantum_helmet.png" "item/quantum_helmet.png"
 Get-Tr "item/armor/quantum_chestplate.png" "item/quantum_chestplate.png"
 Get-Tr "item/armor/quantum_leggings.png" "item/quantum_leggings.png"
 Get-Tr "item/armor/quantum_boots.png" "item/quantum_boots.png"
-# Hazmat: interim nano look (closest TR set until custom art)
+# Hazmat: TR nano armor (rubber path not in TR 26.2; interim until custom art)
 Get-Tr "item/armor/nano_helmet.png" "item/hazmat_helmet.png"
 Get-Tr "item/armor/nano_chestplate.png" "item/hazmat_chestplate.png"
 Get-Tr "item/armor/nano_leggings.png" "item/hazmat_leggings.png"
 Get-Tr "item/armor/nano_boots.png" "item/hazmat_boots.png"
+# Bronze & composite armor (TR bronze / peridot as advanced-alloy stand-in)
+Get-Tr "item/armor/bronze_helmet.png" "item/bronze_helmet.png"
+Get-Tr "item/armor/bronze_chestplate.png" "item/bronze_chestplate.png"
+Get-Tr "item/armor/bronze_leggings.png" "item/bronze_leggings.png"
+Get-Tr "item/armor/bronze_boots.png" "item/bronze_boots.png"
+Get-Tr "item/armor/peridot_helmet.png" "item/composite_helmet.png"
+Get-Tr "item/armor/peridot_chestplate.png" "item/composite_chestplate.png"
+Get-Tr "item/armor/peridot_leggings.png" "item/composite_leggings.png"
+Get-Tr "item/armor/peridot_boots.png" "item/composite_boots.png"
 
 # --- Nuclear components ---
 Get-Tr "item/part/nuclear/empty_fuel_rod.png" "item/empty_fuel_rod.png"

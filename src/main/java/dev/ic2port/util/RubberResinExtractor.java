@@ -85,4 +85,19 @@ public final class RubberResinExtractor {
             return true;
         };
     }
+
+    /**
+     * Extracts one resin blob for automated collectors such as the sticky tube.
+     */
+    public static ItemStack extractForAutomation(
+            final Level level,
+            final BlockPos pos,
+            final BlockState state) {
+        if (!state.getValue(RubberWoodBlock.RESIN)) {
+            return ItemStack.EMPTY;
+        }
+        level.setBlock(pos, state.setValue(RubberWoodBlock.RESIN, false), 3);
+        RubberWoodBlock.playTapSound(level, pos);
+        return new ItemStack(ItemRegistry.STICKY_RESIN.get());
+    }
 }

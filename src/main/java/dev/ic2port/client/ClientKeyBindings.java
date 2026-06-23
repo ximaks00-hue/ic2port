@@ -24,6 +24,13 @@ public final class ClientKeyBindings {
             GLFW.GLFW_KEY_N,
             CATEGORY);
 
+    public static final KeyMapping TOGGLE_MINING_LASER_MODE = new KeyMapping(
+            "key." + Reference.MOD_ID + ".toggle_mining_laser_mode",
+            KeyConflictContext.IN_GAME,
+            InputConstants.Type.KEYSYM,
+            GLFW.GLFW_KEY_L,
+            CATEGORY);
+
     private ClientKeyBindings() {
         throw new UnsupportedOperationException("Utility class");
     }

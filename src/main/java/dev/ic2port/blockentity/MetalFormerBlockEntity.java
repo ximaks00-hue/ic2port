@@ -5,8 +5,10 @@ import dev.ic2port.api.energy.EnergyTier;
 import dev.ic2port.menu.MetalFormerMenu;
 import dev.ic2port.recipe.MetalFormerMode;
 import dev.ic2port.recipe.MetalFormerRecipe;
+import dev.ic2port.Reference;
 import dev.ic2port.setup.BlockEntityRegistry;
 import dev.ic2port.setup.RecipeTypeRegistry;
+import dev.ic2port.util.AddonRecipeBridge;
 import dev.ic2port.util.MachineRecipeHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
@@ -27,6 +29,7 @@ import java.util.Optional;
  * MV metal former — faster plate and wire forming than the LV compressor.
  */
 public class MetalFormerBlockEntity extends BaseMachineBlockEntity {
+    private static final ResourceLocation MACHINE_ID = new ResourceLocation(Reference.MOD_ID, "metal_former");
 
     public static final double ENERGY_CAPACITY = 8000.0D;
     public static final int TIER = EnergyTier.MV;
@@ -180,40 +183,17 @@ public class MetalFormerBlockEntity extends BaseMachineBlockEntity {
         if (input.isEmpty() || level == null) {
             return Optional.empty();
         }
-
-        if (activeRecipeId != null) {
-            final Optional<MetalFormerRecipe> cached = level.getRecipeManager()
-                    .byKey(activeRecipeId)
-                    .filter(MetalFormerRecipe.class::isInstance)
-                    .map(MetalFormerRecipe.class::cast)
-                    .filter(recipe -> recipe.getMode() == activeMode && recipe.getInput().test(input));
-            if (cached.isPresent()) {
-                return cached;
-            }
-        }
-
-        MetalFormerRecipe best = null;
-        int bestScore = Integer.MIN_VALUE;
-        ResourceLocation bestId = null;
-
-        for (final MetalFormerRecipe recipe : level.getRecipeManager()
-                .getAllRecipesFor(RecipeTypeRegistry.METAL_FORMER.get())) {
-            if (recipe.getMode() != activeMode || !recipe.getInput().test(input)) {
-                continue;
-            }
-
-            final int score = MachineRecipeHelper.scoreIngredientSpecificity(recipe.getInput(), input);
-            final ResourceLocation id = recipe.getId();
-            if (best == null
-                    || score > bestScore
-                    || (score == bestScore && id.compareTo(bestId) < 0)) {
-                best = recipe;
-                bestScore = score;
-                bestId = id;
-            }
-        }
-
-        return Optional.ofNullable(best);
+        final Optional<MetalFormerRecipe> resolved = MachineRecipeHelper.resolveSingleInputRecipeWithAddons(
+                level,
+                MACHINE_ID,
+                RecipeTypeRegistry.METAL_FORMER.get(),
+                MetalFormerRecipe.class,
+                input,
+                activeRecipeId,
+                MetalFormerRecipe::getInput,
+                (addon, stack) -> AddonRecipeBridge.toMetalFormer(addon, stack, activeMode))
+                .filter(recipe -> recipe.getMode() == activeMode);
+        return resolved;
     }
 
     private boolean canOutput(final MetalFormerRecipe recipe, final ItemStack output) {

@@ -1,0 +1,15 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "item": "ic2port:item_tube"
+    },
+    {
+      "item": "minecraft:dropper"
+    }
+  ],
+  "result": {
+    "item": "ic2port:provider_tube",
+    "count": 1
+  }
+}

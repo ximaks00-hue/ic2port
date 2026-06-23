@@ -1,0 +1,14 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " C ",
+    "CAC",
+    " L "
+  ],
+  "key": {
+    "C": {"item": "ic2port:carbon_plate"},
+    "A": {"item": "ic2port:advanced_alloy"},
+    "L": {"item": "ic2port:lapotron_crystal"}
+  },
+  "result": {"item": "ic2port:nano_saber"}
+}

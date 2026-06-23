@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "SSS",
+    "SES",
+    "SSS"
+  ],
+  "key": {
+    "S": {
+      "item": "ic2port:esu"
+    },
+    "E": {
+      "item": "ic2port:advanced_circuit"
+    }
+  },
+  "result": {
+    "item": "ic2port:pesu",
+    "count": 1
+  }
+}

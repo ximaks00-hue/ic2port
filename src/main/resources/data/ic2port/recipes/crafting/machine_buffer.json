@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "CHC",
+    "HBH",
+    "CHC"
+  ],
+  "key": {
+    "C": {
+      "item": "ic2port:copper_cable"
+    },
+    "H": {
+      "item": "minecraft:hopper"
+    },
+    "B": {
+      "item": "minecraft:chest"
+    }
+  },
+  "result": {
+    "item": "ic2port:machine_buffer"
+  }
+}
