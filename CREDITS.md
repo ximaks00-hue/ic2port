@@ -28,10 +28,12 @@ license text.
 
 ### Interim placeholders
 
-- **Hazmat suit** (`hazmat_*`): Tech Reborn nano armor textures (temporary until custom art).
-- **Bronze / composite armor**: vanilla iron/netherite item icons (temporary).
+- **Hazmat suit** (`hazmat_*`): Tech Reborn nano armor textures (interim until custom art).
+- **Composite armor** (`composite_*`): Tech Reborn peridot armor as advanced-alloy stand-in.
 - **Contaminated soil:** based on Tech Reborn uranium ore texture (temporary).
 - **New machines (Phase 3–5):** advanced machine casing placeholder block models until unique art is imported.
+
+Bronze armor uses Tech Reborn bronze armor textures (import via `scripts/import-textures.ps1`).
 
 ## Re-importing assets
 

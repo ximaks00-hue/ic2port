@@ -18,20 +18,24 @@ EU energy network, ore processing, nuclear power, crops, nano/quantum armor, and
 
 | Category | Highlights |
 |----------|------------|
-| **Energy** | EU tiers LV–EV · copper/gold/HV/glass-fiber cables · **detector / splitter cables** · LV/MV/EV transformers · BatBox → MFE → MFSU → **ESU** |
+| **Energy** | EU tiers LV–EV · copper/gold/HV/glass-fiber cables · **detector / splitter cables** · LV/MV/EV transformers · BatBox → MFE → MFSU → **ESU → PESU → ISU** |
 | **Generators** | Solid fuel · geothermal · solar (LV + advanced MV + **HV**) · wind · water |
-| **Machines** | Macerator · extractor · **centrifugal extractor** · compressor · recycler · electric/**induction blast** furnace · metal former · thermal centrifuge · mass fabricator · canner · vacuum canner · **electrolyzer** · **ore washer** · **alloy smelter** |
-| **Automation** | **Miner** (HV) · **Pump** (MV) · crop harvester · cropmatron |
-| **Nuclear** | Fission reactor + chambers · MOX · reflectors · plating · condensators · dual/quad fuel rods · meltdown |
+| **Machines** | Macerator · extractor · **centrifugal extractor** · compressor · recycler · electric/**induction blast** furnace · metal former · thermal centrifuge · mass fabricator · canner · vacuum canner · **electrolyzer** · **ore washer** · **alloy smelter** · **electric enchanter** |
+| **Automation** | **Miner** (HV) · **Pump** (MV) · crop harvester · cropmatron · **20 item tube types** (incl. void tube) · **fluid pipes** |
+| **Nuclear** | Fission reactor + chambers · **steam reactor** + chambers · MOX · reflectors · plating · condensators · dual/quad fuel rods · meltdown |
 | **Fusion** | 5×5×5 shell reactor · lava production · valve export · comparator (heat/lava) · auto-export toggle |
-| **Crops** | 18+ species · cross-breeding · fertilizer · cropnalyzer (block + EU handheld) |
+| **Crops** | **70 species** · cross-breeding · fertilizer · cropnalyzer (block + EU handheld) · **UU crop library / expansion** |
 | **Brewing** | Barrel: beer · rum · whisky · potions · tin cans |
 | **Armor** | **Bronze / composite** · hazmat · nano / quantum suits · 6 chestplate modules · module charge/discharge in storage blocks |
-| **Tools** | Drills · chainsaw · electric wrench · tree taps · OD / **OV scanner** · **mining laser** · EU reader · jetpack |
-| **Endgame** | UU-matter · **teleporter** · **terraformer** · **pattern replicator** · iridium |
+| **Tools** | Drills · chainsaw · electric wrench · tree taps · OD / **OV scanner** · **OD scanner pro / filtered** · **ore scanner block** · **mining laser** · EU reader · jetpack |
+| **Logistics** | **Personal chest / tank** (friends ACL) · **Trade-O-Mat** · **Fluid-O-Mat** · industrial coins |
+| **Endgame** | UU-matter · **teleporter** · **terraformer** · **pattern replicator** · **induction matrix** (MVP) · iridium |
 | **World** | Tin & uranium ores · rubber trees · contaminated soil · construction foam |
+| **Addon API** | v1 hooks for crops, energy tiles, personal storage — see [`docs/ADDON_API.md`](docs/ADDON_API.md) |
 
-**Scale:** ~75 blocks · ~185 items · 270+ recipes · 8 advancements · EN + RU localization
+**Scale:** 115 blocks · 260 items · 322 recipes · 9 advancements · EN + RU localization
+
+(Block count = `BLOCKS.register` entries in `BlockRegistry`, excluding the deferred-register bootstrap call.)
 
 ---
 
@@ -72,14 +76,14 @@ See [`CREDITS.md`](CREDITS.md) for asset attribution.
 |------|---------|---------|-------------|
 | **LV** | 32 EU/t | BatBox (40k) | Generator · macerator · extractor · compressor · recycler · electric furnace · RE-battery |
 | **MV** | 128 EU/t | MFE (600k) | Induction furnace · blast furnace · centrifugal extractor · metal former · thermal centrifuge · charge pad · nano suit · **ore washer** · **alloy smelter** |
-| **HV** | 512 EU/t | MFSU (10M) | Nuclear reactor · fusion reactor · mass fabricator · hazmat · **miner** · **teleporter** |
-| **EV** | 2048 EU/t | **ESU (10M)** | Quantum suit · UU-matter · **pattern replicator** · EV transformer |
+| **HV** | 512 EU/t | MFSU (10M) | Nuclear reactor · fusion reactor · mass fabricator · hazmat · **miner** · **teleporter** · steam reactor |
+| **EV** | 2048 EU/t | **ESU (10M)** → **PESU (100M)** → **ISU (1B)** | Quantum suit · UU-matter · **pattern replicator** · EV transformer · induction matrix |
 
 Typical ore path: **macerator** (×2 crushed) → **ore washer** or **electric furnace** / **blast induction furnace** → plates via **compressor** / **metal former**.
 
 Balance tables and config keys: [`docs/BALANCE.md`](docs/BALANCE.md).
 
-Armor charging: place electric armor in the **top charge slot** of BatBox / MFE / MFSU / ESU.  
+Armor charging: place electric armor in the **top charge slot** of BatBox / MFE / MFSU / ESU / PESU / ISU.  
 Module discharge: place nano/quantum chestplate in the **discharge slot** — modules (batpack, lappack, jetpack) drain into storage.
 
 ---
@@ -88,13 +92,24 @@ Module discharge: place nano/quantum chestplate in the **discharge slot** — mo
 
 ### EU network
 
-Custom capability-based EU transfer (`IEnergyNode`). Adjacent block energy injection with tier gating.  
+Capability-based EU transfer (`IEnergyNode`) with tier gating.
+
+**Global energy net (v2, default on):** cables register in a per-dimension graph (`WorldEnergyNet`). Connected conductor grids are flood-filled across chunk borders; only **active** cables (buffered EU or recent inject) are ticked once per level tick — no per-block cable `BlockEntityTicker` when enabled. Config: `config/ic2port-common.toml` → `[energy]` → `globalEnergyNetEnabled`.
+
+Optimizations retained from v1: lazy debounce, neighbor acceptor mask cache, grid-level acceptor masks, `/ic2port profile cable`.
+
+API: `dev.ic2port.api.energy.EnergyNet.get(level)` for grid stats and invalidation.
+
 Tools: **EU Reader** (instant stats or 20-tick flow average).
 
 ### Nuclear reactor
 
 6×6 grid inside reactor + chambers. Heat simulation, component interactions, SCRAM, meltdown with contaminated soil.  
 Components: fuel rods, MOX, heat vents/exchangers, coolant cells, neutron reflectors, reactor plating, RSH/LZH condensators, dual/quad uranium rods.
+
+### Steam reactor
+
+9×6 fission grid with adjacent **steam reactor chambers**. Heat drives steam (water) production into an internal 16k mB buffer, exported to adjacent tanks. MVP — no EU output; pairs with fluid pipe networks.
 
 ### Fusion reactor
 
@@ -114,7 +129,11 @@ Reinforced stone/glass/planks/doors for nuclear shielding.
 
 ### Fluids
 
-**Empty fluid cells** (NBT-based) fill/empty in **canner** with water/lava buckets. **Pump** drains fluid sources.
+**Empty fluid cells** (NBT-based) fill/empty in **canner** with water/lava buckets. **Pump** drains fluid sources. **Fluid pipes** route fluids between tanks and machines. **Fluid-O-Mat** sells fluid from a linked **personal tank** for industrial coins.
+
+### Personal storage & trading
+
+**Personal chest** and **personal tank** are owner-bound with a friends ACL. Place a **Trade-O-Mat** or **Fluid-O-Mat** within 3 blocks to link — buyers pay with copper/silver/gold coins and receive items or filled fluid cells.
 
 ### Endgame
 
@@ -142,10 +161,11 @@ JEI (`R`) shows all custom machine recipes under **IC2 Port**.
 | Nuclear | Reactor GUI, heat, SCRAM, components, meltdown |
 | Fusion | Shell build → heat-up → lava → valve → comparator |
 | HV tools | Miner digs down; pump drains water/lava |
-| Endgame | Teleporter link; terraformer blueprint; pattern replicator + UU |
-| Energy | Cables, transformers, ESU, armor/module charge & discharge |
+| Endgame | Teleporter link; terraformer blueprint; pattern replicator + UU; induction matrix |
+| Logistics | Personal chest/tank; Trade-O-Mat; Fluid-O-Mat; item tubes; fluid pipes |
+| Energy | Cables, transformers, ESU/PESU/ISU, armor/module charge & discharge |
 
-Known gaps: hazmat reuses nano textures; bronze/composite use vanilla armor icons; some assets are TR/MI placeholders. See [`CREDITS.md`](CREDITS.md).
+Known gaps: some machine blocks still use casing placeholders; composite/hazmat armor use TR stand-in textures until custom art. Run `scripts/import-textures.ps1` for bronze/composite/hazmat icons. See [`CREDITS.md`](CREDITS.md).
 
 ---
 
@@ -207,7 +227,7 @@ Development is tracked in [GitHub Milestones](https://github.com/ximaks00-hue/ic
 | Phase 2 — Survival polish | ✅ Done | Reactor components · crops · electric tools |
 | Phase 3 — MV–HV infra | ✅ Done | Fluid cells · ESU · miner/pump |
 | Phase 4 — Endgame | ✅ Done | Circuits · processing chain · teleporter/terraformer/replicator |
-| Phase 5 — Release | 🔲 Planned | Balance pass · performance · CI polish · docs |
+| Phase 5 — Release | ✅ Done | Balance pass · cable profiling & lazy tick · CI tests · docs sync |
 
 ---
 
