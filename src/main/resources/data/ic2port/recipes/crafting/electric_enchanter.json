@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " B ",
+    "DED",
+    "CCC"
+  ],
+  "key": {
+    "B": {
+      "item": "minecraft:book"
+    },
+    "D": {
+      "item": "minecraft:diamond"
+    },
+    "E": {
+      "item": "minecraft:enchanting_table"
+    },
+    "C": {
+      "item": "ic2port:advanced_circuit"
+    }
+  },
+  "result": {
+    "item": "ic2port:electric_enchanter"
+  }
+}

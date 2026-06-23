@@ -41,6 +41,13 @@ public final class ScrapBoxDrops {
             drop(ItemRegistry.ENERGY_CRYSTAL, 4, () -> 1),
             drop(ItemRegistry.IRIDIUM, 2, () -> 1),
             drop(ItemRegistry.UU_MATTER, 1, () -> 1),
+            drop(ItemRegistry.BRONZE_PLATE, 20, () -> 1),
+            drop(ItemRegistry.LAPOTRON_CRYSTAL, 3, () -> 1),
+            drop(ItemRegistry.ELECTRONIC_CIRCUIT, 18, () -> 1),
+            drop(ItemRegistry.ADVANCED_CIRCUIT, 8, () -> 1),
+            drop(Items.EMERALD, 5, () -> 1),
+            drop(Items.REDSTONE, 35, () -> 2 + 6),
+            drop(Items.LAPIS_LAZULI, 30, () -> 2 + 5),
             drop(ItemRegistry.SCRAP, 15, () -> 1 + 3));
 
     private static final int TOTAL_WEIGHT = DROPS.stream().mapToInt(WeightedDrop::weight).sum();

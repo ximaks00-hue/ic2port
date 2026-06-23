@@ -3,16 +3,27 @@ package dev.ic2port.blockentity;
 import dev.ic2port.api.energy.EnergyTier;
 import dev.ic2port.api.energy.IEnergyAcceptor;
 import dev.ic2port.api.energy.IEnergyNode;
+import dev.ic2port.menu.MinerMenu;
 import dev.ic2port.setup.BlockEntityRegistry;
 import dev.ic2port.setup.ModCapabilities;
+import dev.ic2port.util.ContainerDataHelper;
 import dev.ic2port.util.EnergyOverloadHelper;
 import dev.ic2port.util.FullInventoryAccess;
+import dev.ic2port.util.MinerHelper;
+import dev.ic2port.util.MinerHelper.DrillProfile;
+import dev.ic2port.util.MinerHelper.ScannerMode;
 import dev.ic2port.util.OutputBufferHelper;
 import dev.ic2port.util.ProcessOnlyItemHandler;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.MenuProvider;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.inventory.ContainerData;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
@@ -29,20 +40,22 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 
 /**
- * HV block miner — digs downward one block every 20 ticks, consuming 100 EU/block.
- * Drops items into its internal output buffer; pipe or hopper to collect.
+ * HV miner — requires a drill, mining pipes and EU. Optional scanner changes targeting behaviour.
  */
-public class MinerBlockEntity extends BlockEntity implements IEnergyAcceptor, FullInventoryAccess {
+public class MinerBlockEntity extends BlockEntity implements IEnergyAcceptor, MenuProvider, FullInventoryAccess {
 
     public static final double ENERGY_CAPACITY = 20_000.0D;
     public static final double EU_PER_BLOCK = 100.0D;
     public static final int TIER = EnergyTier.HV;
-    public static final int OUTPUT_SLOTS = 9;
-    private static final int MINE_INTERVAL_TICKS = 20;
-    /** Blocks harder than iron-tier tools are skipped (e.g. obsidian). */
-    private static final float MAX_MINABLE_HARDNESS = 5.0F;
 
-    private final ItemStackHandler outputHandler = new ItemStackHandler(OUTPUT_SLOTS) {
+    public static final int SLOT_DRILL = 0;
+    public static final int SLOT_SCANNER = 1;
+    public static final int SLOT_PIPE = 2;
+    public static final int SLOT_OUTPUT_START = 3;
+    public static final int OUTPUT_SLOTS = 9;
+    public static final int SLOT_COUNT = SLOT_OUTPUT_START + OUTPUT_SLOTS;
+
+    private final ItemStackHandler itemHandler = new ItemStackHandler(SLOT_COUNT) {
         @Override
         protected void onContentsChanged(final int slot) {
             setChanged();
@@ -50,13 +63,42 @@ public class MinerBlockEntity extends BlockEntity implements IEnergyAcceptor, Fu
 
         @Override
         public boolean isItemValid(final int slot, final ItemStack stack) {
-            return false;
+            return switch (slot) {
+                case SLOT_DRILL -> MinerHelper.isValidDrill(stack);
+                case SLOT_SCANNER -> MinerHelper.isValidScanner(stack);
+                case SLOT_PIPE -> MinerHelper.isMiningPipe(stack);
+                default -> false;
+            };
         }
     };
-    private final ProcessOnlyItemHandler automationOutputHandler = new ProcessOnlyItemHandler(
-            outputHandler, OUTPUT_SLOTS, slot -> true);
-    private final LazyOptional<IItemHandler> outputOptional = LazyOptional.of(() -> automationOutputHandler);
+    private final ProcessOnlyItemHandler automationHandler = new ProcessOnlyItemHandler(
+            itemHandler, SLOT_COUNT, slot -> slot >= SLOT_OUTPUT_START);
+    private final LazyOptional<IItemHandler> itemHandlerOptional = LazyOptional.of(() -> itemHandler);
+    private final LazyOptional<IItemHandler> automationOptional = LazyOptional.of(() -> automationHandler);
     private final LazyOptional<IEnergyNode> energyOptional = LazyOptional.of(() -> this);
+
+    private final ContainerData data = new ContainerData() {
+        @Override
+        public int get(final int index) {
+            return switch (index) {
+                case 0 -> (int) Math.round(storedEnergy);
+                case 1 -> (int) Math.round(ENERGY_CAPACITY);
+                case 2 -> done ? 1 : 0;
+                case 3 -> mineY;
+                default -> 0;
+            };
+        }
+
+        @Override
+        public void set(final int index, final int value) {
+            ContainerDataHelper.ignoreClientWrite();
+        }
+
+        @Override
+        public int getCount() {
+            return 4;
+        }
+    };
 
     private double storedEnergy;
     private int mineY;
@@ -69,66 +111,125 @@ public class MinerBlockEntity extends BlockEntity implements IEnergyAcceptor, Fu
         this.mineY = pos.getY() - 1;
     }
 
-    public static void serverTick(final Level level, final BlockPos pos, final BlockState state,
-                                   final MinerBlockEntity miner) {
+    public static void serverTick(
+            final Level level,
+            final BlockPos pos,
+            final BlockState state,
+            final MinerBlockEntity miner) {
         miner.tickServer();
     }
 
     private void tickServer() {
-        if (level == null || level.isClientSide || done || destroyedByOverload) return;
-        if (storedEnergy < EU_PER_BLOCK) return;
-        if (!hasOutputSpace()) return;
+        if (level == null || level.isClientSide || destroyedByOverload) {
+            return;
+        }
+
+        ItemStack drillStack = itemHandler.getStackInSlot(SLOT_DRILL);
+        DrillProfile profile = MinerHelper.getDrillProfile(drillStack);
+        if (profile == null || itemHandler.getStackInSlot(SLOT_PIPE).isEmpty()) {
+            return;
+        }
+
+        if (!hasOutputSpace()) {
+            return;
+        }
+
+        ScannerMode scannerMode = MinerHelper.getScannerMode(itemHandler.getStackInSlot(SLOT_SCANNER));
+        int interval = MinerHelper.getMineInterval(profile, scannerMode);
 
         tickCount++;
-        if (tickCount < MINE_INTERVAL_TICKS) return;
+        if (tickCount < interval) {
+            return;
+        }
         tickCount = 0;
 
-        BlockPos targetPos = new BlockPos(worldPosition.getX(), mineY, worldPosition.getZ());
-        if (!level.isInWorldBounds(targetPos) || mineY < level.getMinBuildHeight()) {
+        BlockPos shaftCenter = new BlockPos(worldPosition.getX(), mineY, worldPosition.getZ());
+        if (!level.isInWorldBounds(shaftCenter) || mineY < level.getMinBuildHeight()) {
             done = true;
             setChanged();
             return;
         }
 
-        BlockState targetState = level.getBlockState(targetPos);
-        if (targetState.isAir() || targetState.liquid()) {
+        List<BlockPos> layer = MinerHelper.getLayerPositions(shaftCenter, scannerMode);
+        int minedThisCycle = mineLayer(layer, drillStack, profile, scannerMode);
+
+        if (minedThisCycle == 0) {
             mineY--;
+            done = false;
             setChanged();
-            return;
+        }
+    }
+
+    private int mineLayer(
+            final List<BlockPos> layer,
+            final ItemStack drillStack,
+            final DrillProfile profile,
+            final ScannerMode scannerMode) {
+        if (!(level instanceof ServerLevel serverLevel)) {
+            return 0;
         }
 
-        float hardness = targetState.getDestroySpeed(level, targetPos);
-        if (hardness < 0.0F || hardness > MAX_MINABLE_HARDNESS) {
-            mineY--;
-            setChanged();
-            return;
-        }
+        int mined = 0;
+        for (BlockPos targetPos : layer) {
+            if (!level.isInWorldBounds(targetPos)) {
+                continue;
+            }
+            if (itemHandler.getStackInSlot(SLOT_PIPE).isEmpty()) {
+                break;
+            }
 
-        if (level instanceof ServerLevel serverLevel) {
+            BlockState targetState = level.getBlockState(targetPos);
+            if (targetState.isAir() || !targetState.getFluidState().isEmpty()) {
+                continue;
+            }
+            if (!MinerHelper.shouldMineBlock(level, targetPos, targetState, scannerMode, profile.maxHardness())) {
+                continue;
+            }
+            if (storedEnergy < EU_PER_BLOCK) {
+                break;
+            }
+            if (!MinerHelper.drainDrillEnergy(drillStack, profile.drillEuPerBlock())) {
+                break;
+            }
+
             List<ItemStack> drops = Block.getDrops(
                     targetState, serverLevel, targetPos, level.getBlockEntity(targetPos));
-            if (!canFitAllDrops(drops)) {
-                return;
+            if (!OutputBufferHelper.canFitAll(itemHandler, SLOT_OUTPUT_START, OUTPUT_SLOTS, drops)) {
+                break;
             }
+
             for (ItemStack drop : drops) {
-                ItemStack remaining = OutputBufferHelper.insert(outputHandler, drop);
+                ItemStack remaining = OutputBufferHelper.insertRange(
+                        itemHandler, SLOT_OUTPUT_START, OUTPUT_SLOTS, drop);
                 if (!remaining.isEmpty()) {
-                    return;
+                    return mined;
                 }
             }
-        } else {
-            return;
+
+            level.setBlock(targetPos, Blocks.AIR.defaultBlockState(), Block.UPDATE_ALL);
+            storedEnergy -= EU_PER_BLOCK;
+            consumePipe();
+            mined++;
+            done = false;
         }
 
-        level.setBlock(targetPos, Blocks.AIR.defaultBlockState(), Block.UPDATE_ALL);
-        storedEnergy -= EU_PER_BLOCK;
-        mineY--;
-        setChanged();
+        if (mined > 0) {
+            setChanged();
+        }
+        return mined;
+    }
+
+    private void consumePipe() {
+        ItemStack pipes = itemHandler.getStackInSlot(SLOT_PIPE);
+        if (!pipes.isEmpty()) {
+            pipes.shrink(1);
+            itemHandler.setStackInSlot(SLOT_PIPE, pipes);
+        }
     }
 
     private boolean hasOutputSpace() {
-        for (int i = 0; i < OUTPUT_SLOTS; i++) {
-            ItemStack stack = outputHandler.getStackInSlot(i);
+        for (int slot = SLOT_OUTPUT_START; slot < SLOT_COUNT; slot++) {
+            ItemStack stack = itemHandler.getStackInSlot(slot);
             if (stack.isEmpty() || stack.getCount() < stack.getMaxStackSize()) {
                 return true;
             }
@@ -136,13 +237,13 @@ public class MinerBlockEntity extends BlockEntity implements IEnergyAcceptor, Fu
         return false;
     }
 
-    private boolean canFitAllDrops(final List<ItemStack> drops) {
-        return OutputBufferHelper.canFitAll(outputHandler, drops);
-    }
-
     @Override
     public IItemHandler getFullItemHandler() {
-        return outputHandler;
+        return itemHandler;
+    }
+
+    public ContainerData getContainerData() {
+        return data;
     }
 
     @Override
@@ -163,11 +264,19 @@ public class MinerBlockEntity extends BlockEntity implements IEnergyAcceptor, Fu
     }
 
     @Override
-    public double getCapacity() { return ENERGY_CAPACITY; }
+    public double getCapacity() {
+        return ENERGY_CAPACITY;
+    }
+
     @Override
-    public double getStoredEnergy() { return storedEnergy; }
+    public double getStoredEnergy() {
+        return storedEnergy;
+    }
+
     @Override
-    public int getTier() { return TIER; }
+    public int getTier() {
+        return TIER;
+    }
 
     @Override
     protected void saveAdditional(final CompoundTag tag) {
@@ -175,7 +284,7 @@ public class MinerBlockEntity extends BlockEntity implements IEnergyAcceptor, Fu
         tag.putDouble("StoredEnergy", storedEnergy);
         tag.putInt("MineY", mineY);
         tag.putBoolean("Done", done);
-        tag.put("Output", outputHandler.serializeNBT());
+        tag.put("Items", itemHandler.serializeNBT());
     }
 
     @Override
@@ -184,17 +293,36 @@ public class MinerBlockEntity extends BlockEntity implements IEnergyAcceptor, Fu
         storedEnergy = Math.min(tag.getDouble("StoredEnergy"), ENERGY_CAPACITY);
         mineY = tag.contains("MineY") ? tag.getInt("MineY") : worldPosition.getY() - 1;
         done = tag.getBoolean("Done");
-        if (tag.contains("Output")) {
-            outputHandler.deserializeNBT(tag.getCompound("Output"));
+        if (tag.contains("Items")) {
+            itemHandler.deserializeNBT(tag.getCompound("Items"));
+        } else if (tag.contains("Output")) {
+            itemHandler.deserializeNBT(tag.getCompound("Output"));
         }
     }
 
     @Override
-    public @NotNull <T> LazyOptional<T> getCapability(final @NotNull Capability<T> capability,
-                                                       final @Nullable Direction side) {
-        if (capability == ModCapabilities.ENERGY_NODE_CAPABILITY) return energyOptional.cast();
+    public Component getDisplayName() {
+        return Component.translatable("block.ic2port.miner");
+    }
+
+    @Nullable
+    @Override
+    public AbstractContainerMenu createMenu(final int containerId, final Inventory playerInventory, final Player player) {
+        return new MinerMenu(containerId, playerInventory, this, data);
+    }
+
+    @Override
+    public @NotNull <T> LazyOptional<T> getCapability(
+            final @NotNull Capability<T> capability,
+            final @Nullable Direction side) {
+        if (capability == ModCapabilities.ENERGY_NODE_CAPABILITY) {
+            return energyOptional.cast();
+        }
         if (capability == net.minecraftforge.common.capabilities.ForgeCapabilities.ITEM_HANDLER) {
-            return outputOptional.cast();
+            if (side == null || side == Direction.DOWN) {
+                return automationOptional.cast();
+            }
+            return itemHandlerOptional.cast();
         }
         return super.getCapability(capability, side);
     }
@@ -203,7 +331,7 @@ public class MinerBlockEntity extends BlockEntity implements IEnergyAcceptor, Fu
     public void invalidateCaps() {
         super.invalidateCaps();
         energyOptional.invalidate();
-        outputOptional.invalidate();
+        itemHandlerOptional.invalidate();
+        automationOptional.invalidate();
     }
-
 }

@@ -8,6 +8,8 @@ import dev.ic2port.setup.ItemRegistry;
 import dev.ic2port.util.BeerHelper;
 import dev.ic2port.util.PotionHelper;
 import dev.ic2port.util.RumHelper;
+import dev.ic2port.util.CoffeeHelper;
+import dev.ic2port.util.TeaHelper;
 import dev.ic2port.util.WhiskyHelper;
 import dev.ic2port.util.FullInventoryAccess;
 import dev.ic2port.util.ProcessOnlyItemHandler;
@@ -56,6 +58,8 @@ public class BrewingBarrelBlockEntity extends BlockEntity implements MenuProvide
         public boolean isItemValid(final int slot, final ItemStack stack) {
             return switch (slot) {
                 case SLOT_HOPS -> stack.is(ItemRegistry.HOPS.get())
+                        || stack.is(ItemRegistry.TEA_LEAF.get())
+                        || stack.is(ItemRegistry.COFFEE_BEAN.get())
                         || stack.is(Items.SUGAR_CANE)
                         || stack.is(Items.REDSTONE);
                 case SLOT_WHEAT -> stack.is(Items.WHEAT) || stack.is(Items.GLOWSTONE_DUST);
@@ -116,6 +120,8 @@ public class BrewingBarrelBlockEntity extends BlockEntity implements MenuProvide
     private int batchSugarCane;
     private int batchRedstone;
     private int batchGlowstone;
+    private int batchTeaLeaves;
+    private int batchCoffeeBeans;
 
     private final ProcessOnlyItemHandler automationItemHandler = new ProcessOnlyItemHandler(
             itemHandler, SLOT_COUNT, slot -> slot == SLOT_OUTPUT);
@@ -168,6 +174,8 @@ public class BrewingBarrelBlockEntity extends BlockEntity implements MenuProvide
             case RUM -> tryStartRum();
             case WHISKY -> tryStartWhisky();
             case POTION -> tryStartPotion();
+            case TEA -> tryStartTea();
+            case COFFEE -> tryStartCoffee();
             default -> {
             }
         }
@@ -189,6 +197,12 @@ public class BrewingBarrelBlockEntity extends BlockEntity implements MenuProvide
         }
         if (hops.is(ItemRegistry.HOPS.get()) && wheat.is(Items.WHEAT) && water.is(Items.WATER_BUCKET)) {
             return BrewType.BEER;
+        }
+        if (hops.is(ItemRegistry.COFFEE_BEAN.get()) && wheat.isEmpty() && water.is(Items.WATER_BUCKET)) {
+            return BrewType.COFFEE;
+        }
+        if (hops.is(ItemRegistry.TEA_LEAF.get()) && wheat.isEmpty() && water.is(Items.WATER_BUCKET)) {
+            return BrewType.TEA;
         }
         return BrewType.NONE;
     }
@@ -270,6 +284,45 @@ public class BrewingBarrelBlockEntity extends BlockEntity implements MenuProvide
         startBrew(BrewType.POTION, PotionHelper.BREW_DURATION);
     }
 
+    private void tryStartTea() {
+        if (!canOutput(ItemRegistry.TEA.get())) {
+            return;
+        }
+        ItemStack leaves = itemHandler.getStackInSlot(SLOT_HOPS);
+        ItemStack water = itemHandler.getStackInSlot(SLOT_WATER);
+        if (leaves.getCount() < TeaHelper.TEA_LEAF_COST || !water.is(Items.WATER_BUCKET)) {
+            return;
+        }
+        batchTeaLeaves = TeaHelper.TEA_LEAF_COST;
+        batchHops = 0;
+        batchWheat = 0;
+        batchSugarCane = 0;
+        leaves.shrink(TeaHelper.TEA_LEAF_COST);
+        itemHandler.setStackInSlot(SLOT_HOPS, leaves);
+        itemHandler.setStackInSlot(SLOT_WATER, new ItemStack(Items.BUCKET));
+        startBrew(BrewType.TEA, TeaHelper.BREW_DURATION);
+    }
+
+    private void tryStartCoffee() {
+        if (!canOutput(ItemRegistry.COFFEE.get())) {
+            return;
+        }
+        ItemStack beans = itemHandler.getStackInSlot(SLOT_HOPS);
+        ItemStack water = itemHandler.getStackInSlot(SLOT_WATER);
+        if (beans.getCount() < CoffeeHelper.BEAN_COST || !water.is(Items.WATER_BUCKET)) {
+            return;
+        }
+        batchCoffeeBeans = CoffeeHelper.BEAN_COST;
+        batchHops = 0;
+        batchWheat = 0;
+        batchSugarCane = 0;
+        batchTeaLeaves = 0;
+        beans.shrink(CoffeeHelper.BEAN_COST);
+        itemHandler.setStackInSlot(SLOT_HOPS, beans);
+        itemHandler.setStackInSlot(SLOT_WATER, new ItemStack(Items.BUCKET));
+        startBrew(BrewType.COFFEE, CoffeeHelper.BREW_DURATION);
+    }
+
     private void startBrew(final BrewType type, final int duration) {
         activeBrewType = type;
         brewDurationMax = duration;
@@ -289,6 +342,8 @@ public class BrewingBarrelBlockEntity extends BlockEntity implements MenuProvide
             case RUM -> canOutput(ItemRegistry.RUM.get());
             case WHISKY -> canOutput(ItemRegistry.WHISKY.get());
             case POTION -> canOutput(ItemRegistry.BREWED_POTION.get());
+            case TEA -> canOutput(ItemRegistry.TEA.get());
+            case COFFEE -> canOutput(ItemRegistry.COFFEE.get());
             default -> false;
         };
     }
@@ -305,6 +360,8 @@ public class BrewingBarrelBlockEntity extends BlockEntity implements MenuProvide
             case RUM -> RumHelper.createRum(batchSugarCane);
             case WHISKY -> WhiskyHelper.createWhisky(WhiskyHelper.yearsFromProgress(progress));
             case POTION -> PotionHelper.createPotion(batchRedstone, batchGlowstone);
+            case TEA -> TeaHelper.createTea(batchTeaLeaves);
+            case COFFEE -> CoffeeHelper.createCoffee(batchCoffeeBeans);
             default -> ItemStack.EMPTY;
         };
         if (product.isEmpty()) {
@@ -395,6 +452,8 @@ public class BrewingBarrelBlockEntity extends BlockEntity implements MenuProvide
         tag.putInt("BatchSugarCane", batchSugarCane);
         tag.putInt("BatchRedstone", batchRedstone);
         tag.putInt("BatchGlowstone", batchGlowstone);
+        tag.putInt("BatchTeaLeaves", batchTeaLeaves);
+        tag.putInt("BatchCoffeeBeans", batchCoffeeBeans);
     }
 
     @Override
@@ -414,6 +473,8 @@ public class BrewingBarrelBlockEntity extends BlockEntity implements MenuProvide
         batchSugarCane = tag.getInt("BatchSugarCane");
         batchRedstone = tag.getInt("BatchRedstone");
         batchGlowstone = tag.getInt("BatchGlowstone");
+        batchTeaLeaves = tag.getInt("BatchTeaLeaves");
+        batchCoffeeBeans = tag.getInt("BatchCoffeeBeans");
     }
 
     public IItemHandler getItemHandlerCapability() {

@@ -84,6 +84,13 @@ dependencies {
     compileOnly fg.deobf("mezz.jei:jei-${minecraft_version}-common-api:15.2.0.27")
     compileOnly fg.deobf("mezz.jei:jei-${minecraft_version}-forge-api:15.2.0.27")
     runtimeOnly fg.deobf("mezz.jei:jei-${minecraft_version}-forge:15.2.0.27")
+
+    testImplementation 'org.junit.jupiter:junit-jupiter:5.10.2'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+}
+
+tasks.named('test', Test).configure {
+    useJUnitPlatform()
 }
 
 tasks.register('downloadIc2ReferenceJars') {
@@ -153,10 +160,25 @@ tasks.named('jar', Jar).configure {
     finalizedBy 'reobfJar'
 }
 
+tasks.register('apiJar', Jar) {
+    group = 'build'
+    description = 'Builds the api classifier JAR for addon development.'
+    archiveClassifier.set('api')
+    from sourceSets.main.output
+    include 'dev/ic2port/api/**'
+    include 'dev/ic2port/Reference.class'
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+}
+
+tasks.named('build').configure {
+    dependsOn 'apiJar'
+}
+
 publishing {
     publications {
         register('mavenJava', MavenPublication) {
             artifact jar
+            artifact apiJar
         }
     }
     repositories {

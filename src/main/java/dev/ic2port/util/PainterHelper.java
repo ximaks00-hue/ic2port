@@ -1,6 +1,8 @@
 package dev.ic2port.util;
 
+import dev.ic2port.block.ITubeBlock;
 import dev.ic2port.block.ConstructionFoamBlock;
+import dev.ic2port.blockentity.TubeBlockEntity;
 import dev.ic2port.setup.BlockRegistry;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -53,7 +55,7 @@ public final class PainterHelper {
 
     public static boolean canPaint(final BlockState state) {
         Block block = state.getBlock();
-        if (block == BlockRegistry.CONSTRUCTION_FOAM.get()) {
+        if (block == BlockRegistry.CONSTRUCTION_FOAM.get() || block instanceof ITubeBlock) {
             return true;
         }
         return WOOL.containsValue(block)
@@ -65,6 +67,13 @@ public final class PainterHelper {
 
     public static boolean paintBlock(final Level level, final BlockPos pos, final DyeColor color) {
         BlockState state = level.getBlockState(pos);
+        if (state.getBlock() instanceof ITubeBlock) {
+            if (level.getBlockEntity(pos) instanceof TubeBlockEntity tube) {
+                tube.setPaintColor(color);
+                return true;
+            }
+            return false;
+        }
         if (!canPaint(state)) {
             return false;
         }

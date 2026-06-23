@@ -1,5 +1,6 @@
 package dev.ic2port.util;
 
+import dev.ic2port.api.blocks.IWrenchable;
 import dev.ic2port.Reference;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
@@ -60,6 +61,14 @@ public final class WrenchHelper {
         if (player == null || !isIc2PortBlock(state.getBlock())) {
             return false;
         }
+        if (state.getBlock() instanceof IWrenchable wrenchable) {
+            if (!wrenchable.canWrench(player, state)) {
+                return false;
+            }
+            if (!wrenchable.onWrenchRemove(context, state)) {
+                return false;
+            }
+        }
         if (player.blockActionRestricted(level, pos, GameType.SURVIVAL)) {
             return false;
         }
@@ -71,6 +80,9 @@ public final class WrenchHelper {
         spillInventories(level, pos, blockEntity);
 
         double dropChance = player.isShiftKeyDown() ? sneakDropChance : standardDropChance;
+        if (state.getBlock() instanceof IWrenchable wrenchable) {
+            dropChance = wrenchable.getWrenchDropChance(player, state, player.isShiftKeyDown());
+        }
         boolean dropBlock = level.random.nextDouble() < dropChance;
         if (dropBlock && level instanceof ServerLevel serverLevel) {
             List<ItemStack> drops = Block.getDrops(

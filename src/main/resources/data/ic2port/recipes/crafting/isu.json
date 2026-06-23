@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "PPP",
+    "PEP",
+    "PPP"
+  ],
+  "key": {
+    "P": {
+      "item": "ic2port:pesu"
+    },
+    "E": {
+      "item": "ic2port:iridium"
+    }
+  },
+  "result": {
+    "item": "ic2port:isu",
+    "count": 1
+  }
+}

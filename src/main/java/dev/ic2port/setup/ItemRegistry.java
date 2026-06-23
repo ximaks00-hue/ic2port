@@ -28,7 +28,10 @@ import dev.ic2port.item.TinCanItem;
 import dev.ic2port.item.WhiskyItem;
 import dev.ic2port.item.WeedExItem;
 import dev.ic2port.item.MiningLaserItem;
+import dev.ic2port.item.NanoSaberItem;
 import dev.ic2port.item.OdScannerItem;
+import dev.ic2port.item.OdScannerProItem;
+import dev.ic2port.item.FilteredOdScannerItem;
 import dev.ic2port.item.OvScannerItem;
 import dev.ic2port.item.NanoSuitItem;
 import dev.ic2port.item.DiamondDrillItem;
@@ -42,6 +45,7 @@ import dev.ic2port.item.PlutoniumItem;
 import dev.ic2port.item.IridiumItem;
 import dev.ic2port.item.QuantumSuitItem;
 import dev.ic2port.item.TerraWartItem;
+import dev.ic2port.item.SteamVentItem;
 import dev.ic2port.item.ScrapBoxItem;
 import dev.ic2port.item.ScrapItem;
 import dev.ic2port.item.UuMatterItem;
@@ -61,9 +65,14 @@ import dev.ic2port.item.BronzeArmorItem;
 import dev.ic2port.item.CompositeArmorItem;
 import dev.ic2port.item.HazmatArmorItem;
 import dev.ic2port.item.RadioactiveItem;
+import dev.ic2port.item.ImportUpgradeItem;
+import dev.ic2port.item.ExportUpgradeItem;
 import dev.ic2port.item.OverclockerUpgradeItem;
+import dev.ic2port.item.CoffeeItem;
 import dev.ic2port.item.BrewedPotionItem;
 import dev.ic2port.item.BeerItem;
+import dev.ic2port.item.TeaItem;
+import dev.ic2port.item.TubeConfiguratorItem;
 import dev.ic2port.item.PainterItem;
 import dev.ic2port.item.ToolboxItem;
 import dev.ic2port.item.TransformerUpgradeItem;
@@ -72,6 +81,7 @@ import dev.ic2port.item.AdvancedTreeTapItem;
 import dev.ic2port.item.ElectricTreeTapItem;
 import dev.ic2port.item.ThermometerItem;
 import dev.ic2port.item.TreeTapItem;
+import dev.ic2port.item.TradeCoinItem;
 import dev.ic2port.item.WrenchItem;
 import dev.ic2port.setup.BlockRegistry;
 import net.minecraft.world.food.FoodProperties;
@@ -108,6 +118,99 @@ public final class ItemRegistry {
 
     public static final RegistryObject<Item> GLASS_FIBER_CABLE = ITEMS.register("glass_fiber_cable",
             () -> new BlockItem(BlockRegistry.GLASS_FIBER_CABLE.get(), new Item.Properties()));
+
+    public static final RegistryObject<Item> ITEM_TUBE = ITEMS.register("item_tube",
+            () -> new BlockItem(BlockRegistry.ITEM_TUBE.get(), new Item.Properties()));
+
+    public static final RegistryObject<Item> EXTRACTION_TUBE = ITEMS.register("extraction_tube",
+            () -> new BlockItem(BlockRegistry.EXTRACTION_TUBE.get(), new Item.Properties()));
+
+    public static final RegistryObject<Item> REQUEST_TUBE = ITEMS.register("request_tube",
+            () -> new BlockItem(BlockRegistry.REQUEST_TUBE.get(), new Item.Properties()));
+
+    public static final RegistryObject<Item> LIMITER_TUBE = ITEMS.register("limiter_tube",
+            () -> new BlockItem(BlockRegistry.LIMITER_TUBE.get(), new Item.Properties()));
+
+    public static final RegistryObject<Item> SORTING_TUBE = ITEMS.register("sorting_tube",
+            () -> new BlockItem(BlockRegistry.SORTING_TUBE.get(), new Item.Properties()));
+
+    public static final RegistryObject<Item> FILTER_TUBE = ITEMS.register("filter_tube",
+            () -> new BlockItem(BlockRegistry.FILTER_TUBE.get(), new Item.Properties()));
+
+    public static final RegistryObject<Item> SPEED_TUBE = ITEMS.register("speed_tube",
+            () -> new BlockItem(BlockRegistry.SPEED_TUBE.get(), new Item.Properties()));
+
+    public static final RegistryObject<Item> COLOR_FILTER_TUBE = ITEMS.register("color_filter_tube",
+            () -> new BlockItem(BlockRegistry.COLOR_FILTER_TUBE.get(), new Item.Properties()));
+
+    public static final RegistryObject<Item> HOVER_TUBE = ITEMS.register("hover_tube",
+            () -> new BlockItem(BlockRegistry.HOVER_TUBE.get(), new Item.Properties()));
+
+    public static final RegistryObject<Item> FILTERED_EXTRACTION_TUBE = ITEMS.register("filtered_extraction_tube",
+            () -> new BlockItem(BlockRegistry.FILTERED_EXTRACTION_TUBE.get(), new Item.Properties()));
+
+    public static final RegistryObject<Item> PICKUP_TUBE = ITEMS.register("pickup_tube",
+            () -> new BlockItem(BlockRegistry.PICKUP_TUBE.get(), new Item.Properties()));
+
+    public static final RegistryObject<Item> REDSTONE_TUBE = ITEMS.register("redstone_tube",
+            () -> new BlockItem(BlockRegistry.REDSTONE_TUBE.get(), new Item.Properties()));
+
+    public static final RegistryObject<Item> SWITCH_TUBE = ITEMS.register("switch_tube",
+            () -> new BlockItem(BlockRegistry.SWITCH_TUBE.get(), new Item.Properties()));
+
+    public static final RegistryObject<Item> TRANSPORT_TUBE = ITEMS.register("transport_tube",
+            () -> new BlockItem(BlockRegistry.TRANSPORT_TUBE.get(), new Item.Properties()));
+
+    public static final RegistryObject<Item> ROUND_ROBIN_TUBE = ITEMS.register("round_robin_tube",
+            () -> new BlockItem(BlockRegistry.ROUND_ROBIN_TUBE.get(), new Item.Properties()));
+
+    public static final RegistryObject<Item> STACKING_TUBE = ITEMS.register("stacking_tube",
+            () -> new BlockItem(BlockRegistry.STACKING_TUBE.get(), new Item.Properties()));
+
+    public static final RegistryObject<Item> TELEPORT_TUBE = ITEMS.register("teleport_tube",
+            () -> new BlockItem(BlockRegistry.TELEPORT_TUBE.get(), new Item.Properties()));
+
+    public static final RegistryObject<Item> PROVIDER_TUBE = ITEMS.register("provider_tube",
+            () -> new BlockItem(BlockRegistry.PROVIDER_TUBE.get(), new Item.Properties()));
+
+    public static final RegistryObject<Item> INSERTION_TUBE = ITEMS.register("insertion_tube",
+            () -> new BlockItem(BlockRegistry.INSERTION_TUBE.get(), new Item.Properties()));
+
+    public static final RegistryObject<Item> STICKY_TUBE = ITEMS.register("sticky_tube",
+            () -> new BlockItem(BlockRegistry.STICKY_TUBE.get(), new Item.Properties()));
+
+    public static final RegistryObject<Item> VOID_TUBE = ITEMS.register("void_tube",
+            () -> new BlockItem(BlockRegistry.VOID_TUBE.get(), new Item.Properties()));
+
+    public static final RegistryObject<Item> MACHINE_BUFFER = ITEMS.register("machine_buffer",
+            () -> new BlockItem(BlockRegistry.MACHINE_BUFFER.get(), new Item.Properties()));
+
+    public static final RegistryObject<Item> VILLAGER_O_MAT = ITEMS.register("villager_o_mat",
+            () -> new BlockItem(BlockRegistry.VILLAGER_O_MAT.get(), new Item.Properties()));
+
+    public static final RegistryObject<Item> PERSONAL_CHEST = ITEMS.register("personal_chest",
+            () -> new BlockItem(BlockRegistry.PERSONAL_CHEST.get(), new Item.Properties()));
+
+    public static final RegistryObject<Item> PERSONAL_TANK = ITEMS.register("personal_tank",
+            () -> new BlockItem(BlockRegistry.PERSONAL_TANK.get(), new Item.Properties()));
+
+    public static final RegistryObject<Item> TRADE_O_MAT = ITEMS.register("trade_o_mat",
+            () -> new BlockItem(BlockRegistry.TRADE_O_MAT.get(), new Item.Properties()));
+
+    public static final RegistryObject<Item> ELECTRIC_ENCHANTER = ITEMS.register("electric_enchanter",
+            () -> new BlockItem(BlockRegistry.ELECTRIC_ENCHANTER.get(), new Item.Properties()));
+
+    public static final RegistryObject<Item> COPPER_COIN = ITEMS.register("copper_coin",
+            () -> new TradeCoinItem(new Item.Properties(), TradeCoinItem.CoinTier.COPPER));
+
+    public static final RegistryObject<Item> SILVER_COIN = ITEMS.register("silver_coin",
+            () -> new TradeCoinItem(new Item.Properties(), TradeCoinItem.CoinTier.SILVER));
+
+    public static final RegistryObject<Item> GOLD_COIN = ITEMS.register("gold_coin",
+            () -> new TradeCoinItem(new Item.Properties(), TradeCoinItem.CoinTier.GOLD));
+
+    public static final RegistryObject<Item> TUBE_CONFIGURATOR = ITEMS.register("tube_configurator",
+            () -> new TubeConfiguratorItem(new Item.Properties()));
 
     public static final RegistryObject<Item> MACERATOR = ITEMS.register("macerator",
             () -> new BlockItem(BlockRegistry.MACERATOR.get(), new Item.Properties()));
@@ -181,6 +284,9 @@ public final class ItemRegistry {
     public static final RegistryObject<Item> MINER = ITEMS.register("miner",
             () -> new BlockItem(BlockRegistry.MINER.get(), new Item.Properties()));
 
+    public static final RegistryObject<Item> MINING_PIPE = ITEMS.register("mining_pipe",
+            () -> new net.minecraft.world.item.Item(new Item.Properties()));
+
     public static final RegistryObject<Item> PUMP = ITEMS.register("pump",
             () -> new BlockItem(BlockRegistry.PUMP.get(), new Item.Properties()));
 
@@ -201,6 +307,21 @@ public final class ItemRegistry {
 
     public static final RegistryObject<Item> ESU = ITEMS.register("esu",
             () -> new BlockItem(BlockRegistry.ESU.get(), new Item.Properties()));
+
+    public static final RegistryObject<Item> PESU = ITEMS.register("pesu",
+            () -> new BlockItem(BlockRegistry.PESU.get(), new Item.Properties()));
+
+    public static final RegistryObject<Item> ISU = ITEMS.register("isu",
+            () -> new BlockItem(BlockRegistry.ISU.get(), new Item.Properties()));
+
+    public static final RegistryObject<Item> ORE_SCANNER = ITEMS.register("ore_scanner",
+            () -> new BlockItem(BlockRegistry.ORE_SCANNER.get(), new Item.Properties()));
+
+    public static final RegistryObject<Item> UU_CROP_LIBRARY = ITEMS.register("uu_crop_library",
+            () -> new BlockItem(BlockRegistry.UU_CROP_LIBRARY.get(), new Item.Properties()));
+
+    public static final RegistryObject<Item> UU_EXPANSION = ITEMS.register("uu_expansion",
+            () -> new BlockItem(BlockRegistry.UU_EXPANSION.get(), new Item.Properties()));
 
     public static final RegistryObject<Item> LV_TRANSFORMER = ITEMS.register("lv_transformer",
             () -> new BlockItem(BlockRegistry.LV_TRANSFORMER.get(), new Item.Properties()));
@@ -294,6 +415,12 @@ public final class ItemRegistry {
 
     public static final RegistryObject<Item> ENERGY_STORAGE_UPGRADE = ITEMS.register("energy_storage_upgrade",
             () -> new EnergyStorageUpgradeItem(new Item.Properties().stacksTo(16)));
+
+    public static final RegistryObject<Item> IMPORT_UPGRADE = ITEMS.register("import_upgrade",
+            () -> new ImportUpgradeItem(new Item.Properties().stacksTo(16)));
+
+    public static final RegistryObject<Item> EXPORT_UPGRADE = ITEMS.register("export_upgrade",
+            () -> new ExportUpgradeItem(new Item.Properties().stacksTo(16)));
 
     public static final RegistryObject<Item> WRENCH = ITEMS.register("wrench",
             () -> new WrenchItem(new Item.Properties()));
@@ -391,11 +518,20 @@ public final class ItemRegistry {
     public static final RegistryObject<Item> OD_SCANNER = ITEMS.register("od_scanner",
             () -> new OdScannerItem(new Item.Properties()));
 
+    public static final RegistryObject<Item> OD_SCANNER_PRO = ITEMS.register("od_scanner_pro",
+            () -> new OdScannerProItem(new Item.Properties()));
+
+    public static final RegistryObject<Item> FILTERED_OD_SCANNER = ITEMS.register("filtered_od_scanner",
+            () -> new FilteredOdScannerItem(new Item.Properties()));
+
     public static final RegistryObject<Item> OV_SCANNER = ITEMS.register("ov_scanner",
             () -> new OvScannerItem(new Item.Properties()));
 
     public static final RegistryObject<Item> MINING_LASER = ITEMS.register("mining_laser",
             () -> new MiningLaserItem(new Item.Properties()));
+
+    public static final RegistryObject<Item> NANO_SABER = ITEMS.register("nano_saber",
+            () -> new NanoSaberItem(new Item.Properties()));
 
     public static final RegistryObject<Item> THERMOMETER = ITEMS.register("thermometer",
             () -> new ThermometerItem(new Item.Properties()));
@@ -426,6 +562,20 @@ public final class ItemRegistry {
 
     public static final RegistryObject<Item> HOPS = ITEMS.register("hops",
             () -> new Item(new Item.Properties()));
+
+    public static final RegistryObject<Item> TEA_LEAF = ITEMS.register("tea_leaf",
+            () -> new Item(new Item.Properties()));
+
+    public static final RegistryObject<Item> TEA = ITEMS.register("tea",
+            () -> new TeaItem(new Item.Properties().food(
+                    new FoodProperties.Builder().nutrition(1).saturationMod(0.1F).alwaysEat().build())));
+
+    public static final RegistryObject<Item> COFFEE_BEAN = ITEMS.register("coffee_bean",
+            () -> new Item(new Item.Properties()));
+
+    public static final RegistryObject<Item> COFFEE = ITEMS.register("coffee",
+            () -> new CoffeeItem(new Item.Properties().food(
+                    new FoodProperties.Builder().nutrition(1).saturationMod(0.1F).alwaysEat().build())));
 
     public static final RegistryObject<Item> TERRA_WART = ITEMS.register("terra_wart",
             () -> new TerraWartItem(new Item.Properties().food(
@@ -564,6 +714,36 @@ public final class ItemRegistry {
 
     public static final RegistryObject<Item> REACTOR_CHAMBER = ITEMS.register("reactor_chamber",
             () -> new BlockItem(BlockRegistry.REACTOR_CHAMBER.get(), new Item.Properties()));
+
+    public static final RegistryObject<Item> STEAM_REACTOR = ITEMS.register("steam_reactor",
+            () -> new BlockItem(BlockRegistry.STEAM_REACTOR.get(), new Item.Properties()));
+
+    public static final RegistryObject<Item> STEAM_CHAMBER = ITEMS.register("steam_chamber",
+            () -> new BlockItem(BlockRegistry.STEAM_CHAMBER.get(), new Item.Properties()));
+
+    public static final RegistryObject<Item> FLUID_PIPE = ITEMS.register("fluid_pipe",
+            () -> new BlockItem(BlockRegistry.FLUID_PIPE.get(), new Item.Properties()));
+
+    public static final RegistryObject<Item> FLUID_PUMP = ITEMS.register("fluid_pump",
+            () -> new BlockItem(BlockRegistry.FLUID_PUMP.get(), new Item.Properties()));
+
+    public static final RegistryObject<Item> VOID_PIPE = ITEMS.register("void_pipe",
+            () -> new BlockItem(BlockRegistry.VOID_PIPE.get(), new Item.Properties()));
+
+    public static final RegistryObject<Item> FLUID_O_MAT = ITEMS.register("fluid_o_mat",
+            () -> new BlockItem(BlockRegistry.FLUID_O_MAT.get(), new Item.Properties()));
+
+    public static final RegistryObject<Item> INDUCTION_MATRIX = ITEMS.register("induction_matrix",
+            () -> new BlockItem(BlockRegistry.INDUCTION_MATRIX.get(), new Item.Properties()));
+
+    public static final RegistryObject<Item> INDUCTION_MATRIX_CASING = ITEMS.register("induction_matrix_casing",
+            () -> new BlockItem(BlockRegistry.INDUCTION_MATRIX_CASING.get(), new Item.Properties()));
+
+    public static final RegistryObject<Item> STEAM_VENT = ITEMS.register("steam_vent",
+            () -> new SteamVentItem(new Item.Properties(), 16.0D, 1_200.0D, 80.0D));
+
+    public static final RegistryObject<Item> ADVANCED_STEAM_VENT = ITEMS.register("advanced_steam_vent",
+            () -> new SteamVentItem(new Item.Properties(), 28.0D, 2_400.0D, 140.0D));
 
     public static final RegistryObject<Item> CONTAMINATED_SOIL = ITEMS.register("contaminated_soil",
             () -> new BlockItem(BlockRegistry.CONTAMINATED_SOIL.get(), new Item.Properties()));

@@ -4,13 +4,13 @@ import dev.ic2port.Reference;
 import dev.ic2port.api.crops.BaseCrop;
 import dev.ic2port.api.crops.CropProperties;
 import dev.ic2port.api.crops.ICropTile;
+import dev.ic2port.setup.ItemRegistry;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
 
 /**
- * Tier-2 food crop — yields cocoa beans (coffee beans substitute).
+ * Tier-2 food crop — yields coffee beans for barrel brewing.
  */
 public class CoffeaCrop extends BaseCrop {
 
@@ -27,6 +27,6 @@ public class CoffeaCrop extends BaseCrop {
     public ItemStack[] getDrops(final ICropTile tile) {
         int gain = tile.getGainStat();
         int count = 1 + gain / 8;
-        return new ItemStack[]{new ItemStack(Items.COCOA_BEANS, count)};
+        return new ItemStack[]{new ItemStack(ItemRegistry.COFFEE_BEAN.get(), count)};
     }
 }

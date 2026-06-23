@@ -8,6 +8,7 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ContainerData;
+import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.inventory.SimpleContainerData;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
@@ -31,7 +32,12 @@ public class EsuMenu extends AbstractContainerMenu {
 
     public EsuMenu(final int containerId, final Inventory playerInventory,
                    final EsuBlockEntity blockEntity, final ContainerData data) {
-        super(MenuTypeRegistry.ESU_MENU.get(), containerId);
+        this(MenuTypeRegistry.ESU_MENU.get(), containerId, playerInventory, blockEntity, data);
+    }
+
+    protected EsuMenu(final MenuType<?> menuType, final int containerId, final Inventory playerInventory,
+                      final EsuBlockEntity blockEntity, final ContainerData data) {
+        super(menuType, containerId);
         this.blockEntity = blockEntity;
         this.level = playerInventory.player.level();
         this.data = data;

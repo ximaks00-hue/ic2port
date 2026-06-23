@@ -2,22 +2,28 @@ package dev.ic2port.compat.jei;
 
 import dev.ic2port.Reference;
 import dev.ic2port.blockentity.InductionFurnaceBlockEntity;
+import dev.ic2port.recipe.AlloySmelterRecipe;
 import dev.ic2port.recipe.CentrifugeRecipe;
 import dev.ic2port.recipe.CompressorRecipe;
 import dev.ic2port.recipe.ElectricFurnaceRecipe;
+import dev.ic2port.recipe.ElectrolyzerRecipe;
 import dev.ic2port.recipe.ExtractorRecipe;
 import dev.ic2port.recipe.IMachineRecipe;
 import dev.ic2port.recipe.MaceratorRecipe;
 import dev.ic2port.recipe.MetalFormerRecipe;
+import dev.ic2port.recipe.OreWasherRecipe;
+import dev.ic2port.setup.ItemRegistry;
 import dev.ic2port.setup.RecipeTypeRegistry;
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.JeiPlugin;
+import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.registration.IRecipeCategoryRegistration;
 import mezz.jei.api.registration.IRecipeRegistration;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientPacketListener;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeManager;
@@ -45,7 +51,10 @@ public class IC2PortJeiPlugin implements IModPlugin {
                 MachineRecipeCategory.electricFurnace(registration),
                 MachineRecipeCategory.metalFormer(registration),
                 MachineRecipeCategory.centrifuge(registration),
-                MachineRecipeCategory.inductionFurnace(registration));
+                MachineRecipeCategory.inductionFurnace(registration),
+                MachineRecipeCategory.electrolyzer(registration),
+                MachineRecipeCategory.oreWasher(registration),
+                MachineRecipeCategory.alloySmelter(registration));
     }
 
     @Override
@@ -68,6 +77,31 @@ public class IC2PortJeiPlugin implements IModPlugin {
                 recipeManager.getAllRecipesFor(RecipeTypeRegistry.THERMAL_CENTRIFUGE.get()));
         registration.addRecipes(MachineRecipeCategory.INDUCTION_FURNACE_TYPE,
                 recipeManager.getAllRecipesFor(RecipeTypeRegistry.ELECTRIC_FURNACE.get()));
+        registration.addRecipes(MachineRecipeCategory.ELECTROLYZER_TYPE,
+                recipeManager.getAllRecipesFor(RecipeTypeRegistry.ELECTROLYZER.get()));
+        registration.addRecipes(MachineRecipeCategory.ORE_WASHER_TYPE,
+                recipeManager.getAllRecipesFor(RecipeTypeRegistry.ORE_WASHER.get()));
+        registration.addRecipes(MachineRecipeCategory.ALLOY_SMELTER_TYPE,
+                recipeManager.getAllRecipesFor(RecipeTypeRegistry.ALLOY_SMELTER.get()));
+        registerLogisticsInfo(registration);
+    }
+
+    private static void registerLogisticsInfo(final IRecipeRegistration registration) {
+        info(registration, ItemRegistry.ITEM_TUBE.get(), "jei.ic2port.item_tube.info");
+        info(registration, ItemRegistry.REQUEST_TUBE.get(), "jei.ic2port.request_tube.info");
+        info(registration, ItemRegistry.PROVIDER_TUBE.get(), "jei.ic2port.provider_tube.info");
+        info(registration, ItemRegistry.MACHINE_BUFFER.get(), "jei.ic2port.machine_buffer.info");
+        info(registration, ItemRegistry.IMPORT_UPGRADE.get(), "jei.ic2port.import_upgrade.info");
+        info(registration, ItemRegistry.EXPORT_UPGRADE.get(), "jei.ic2port.export_upgrade.info");
+        info(registration, ItemRegistry.VILLAGER_O_MAT.get(), "jei.ic2port.villager_o_mat.info");
+        info(registration, ItemRegistry.TUBE_CONFIGURATOR.get(), "jei.ic2port.tube_configurator.info");
+    }
+
+    private static void info(final IRecipeRegistration registration, final Item item, final String translationKey) {
+        registration.addIngredientInfo(
+                new ItemStack(item),
+                VanillaTypes.ITEM_STACK,
+                Component.translatable(translationKey));
     }
 
     private static RecipeManager resolveRecipeManager() {
@@ -98,6 +132,15 @@ public class IC2PortJeiPlugin implements IModPlugin {
             for (final CentrifugeRecipe.OutputStack output : centrifuge.getOutputs()) {
                 outputs.add(output.copy());
             }
+        } else if (recipe instanceof ElectrolyzerRecipe electrolyzer) {
+            outputs.add(electrolyzer.getOutput());
+            if (!electrolyzer.getSecondaryOutput().isEmpty()) {
+                outputs.add(electrolyzer.getSecondaryOutput());
+            }
+        } else if (recipe instanceof OreWasherRecipe washer) {
+            outputs.add(washer.getOutput());
+        } else if (recipe instanceof AlloySmelterRecipe alloy) {
+            outputs.add(alloy.getOutput());
         }
         return outputs;
     }

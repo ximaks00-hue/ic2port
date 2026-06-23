@@ -30,8 +30,11 @@ jobs:
       - name: Compile
         run: ./gradlew compileJava --no-daemon
 
+      - name: Unit tests
+        run: ./gradlew test --no-daemon
+
       - name: Build JAR
-        run: ./gradlew build --no-daemon -x test
+        run: ./gradlew build --no-daemon
 
       - name: Upload JAR artifact
         if: success() && github.event_name != 'pull_request'

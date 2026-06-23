@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "GEG",
+    "CBC",
+    "GEG"
+  ],
+  "key": {
+    "G": {
+      "item": "ic2port:gold_cable"
+    },
+    "E": {
+      "item": "minecraft:emerald"
+    },
+    "C": {
+      "item": "ic2port:electronic_circuit"
+    },
+    "B": {
+      "item": "ic2port:machine_buffer"
+    }
+  },
+  "result": {
+    "item": "ic2port:villager_o_mat"
+  }
+}

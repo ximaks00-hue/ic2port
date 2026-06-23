@@ -12,6 +12,9 @@ import dev.ic2port.menu.FoodStorageModuleMenu;
 import dev.ic2port.menu.CropAnalyzerMenu;
 import dev.ic2port.menu.CropHarvesterMenu;
 import dev.ic2port.menu.CropmatronMenu;
+import dev.ic2port.menu.FilterTubeMenu;
+import dev.ic2port.menu.StackingTubeMenu;
+import dev.ic2port.menu.TeleportTubeMenu;
 import dev.ic2port.menu.FusionReactorMenu;
 import dev.ic2port.menu.VacuumCannerMenu;
 import dev.ic2port.menu.BatBoxMenu;
@@ -23,14 +26,27 @@ import dev.ic2port.menu.ExtractorMenu;
 import dev.ic2port.menu.InductionFurnaceMenu;
 import dev.ic2port.menu.MetalFormerMenu;
 import dev.ic2port.menu.EsuMenu;
+import dev.ic2port.menu.PesuMenu;
+import dev.ic2port.menu.IsuMenu;
+import dev.ic2port.menu.OreScannerMenu;
+import dev.ic2port.menu.UuCropLibraryMenu;
+import dev.ic2port.menu.UuExpansionMenu;
 import dev.ic2port.menu.MFEMenu;
 import dev.ic2port.menu.MFSUMenu;
+import dev.ic2port.menu.MachineBufferMenu;
+import dev.ic2port.menu.VillagerOMatMenu;
+import dev.ic2port.menu.PersonalChestMenu;
+import dev.ic2port.menu.PersonalTankMenu;
+import dev.ic2port.menu.FluidOMatMenu;
+import dev.ic2port.menu.TradeOMatMenu;
+import dev.ic2port.menu.ElectricEnchanterMenu;
 import dev.ic2port.menu.MaceratorMenu;
 import dev.ic2port.menu.RecyclerMenu;
 import dev.ic2port.menu.NuclearReactorMenu;
 import dev.ic2port.menu.GeothermalGeneratorMenu;
 import dev.ic2port.menu.ToolboxMenu;
 import dev.ic2port.menu.MassFabricatorMenu;
+import dev.ic2port.menu.MinerMenu;
 import dev.ic2port.menu.ThermalCentrifugeMenu;
 import dev.ic2port.menu.SolidFuelGeneratorMenu;
 import net.minecraft.world.inventory.MenuType;
@@ -81,6 +97,16 @@ public final class MenuTypeRegistry {
             MENUS.register("mfsu", () -> IForgeMenuType.create(MFSUMenu::new));
     public static final RegistryObject<MenuType<EsuMenu>> ESU_MENU =
             MENUS.register("esu", () -> IForgeMenuType.create(EsuMenu::new));
+    public static final RegistryObject<MenuType<PesuMenu>> PESU_MENU =
+            MENUS.register("pesu", () -> IForgeMenuType.create(PesuMenu::new));
+    public static final RegistryObject<MenuType<IsuMenu>> ISU_MENU =
+            MENUS.register("isu", () -> IForgeMenuType.create(IsuMenu::new));
+    public static final RegistryObject<MenuType<OreScannerMenu>> ORE_SCANNER_MENU =
+            MENUS.register("ore_scanner", () -> IForgeMenuType.create(OreScannerMenu::new));
+    public static final RegistryObject<MenuType<UuCropLibraryMenu>> UU_CROP_LIBRARY_MENU =
+            MENUS.register("uu_crop_library", () -> IForgeMenuType.create(UuCropLibraryMenu::new));
+    public static final RegistryObject<MenuType<UuExpansionMenu>> UU_EXPANSION_MENU =
+            MENUS.register("uu_expansion", () -> IForgeMenuType.create(UuExpansionMenu::new));
     public static final RegistryObject<MenuType<NuclearReactorMenu>> NUCLEAR_REACTOR_MENU =
             MENUS.register("nuclear_reactor", () -> IForgeMenuType.create(NuclearReactorMenu::new));
     public static final RegistryObject<MenuType<ThermalCentrifugeMenu>> THERMAL_CENTRIFUGE_MENU =
@@ -115,6 +141,39 @@ public final class MenuTypeRegistry {
 
     public static final RegistryObject<MenuType<PatternReplicatorMenu>> PATTERN_REPLICATOR_MENU =
             MENUS.register("pattern_replicator", () -> IForgeMenuType.create(PatternReplicatorMenu::new));
+
+    public static final RegistryObject<MenuType<MinerMenu>> MINER_MENU =
+            MENUS.register("miner", () -> IForgeMenuType.create(MinerMenu::new));
+
+    public static final RegistryObject<MenuType<FilterTubeMenu>> FILTER_TUBE_MENU =
+            MENUS.register("filter_tube", () -> IForgeMenuType.create(FilterTubeMenu::new));
+
+    public static final RegistryObject<MenuType<StackingTubeMenu>> STACKING_TUBE_MENU =
+            MENUS.register("stacking_tube", () -> IForgeMenuType.create(StackingTubeMenu::new));
+
+    public static final RegistryObject<MenuType<TeleportTubeMenu>> TELEPORT_TUBE_MENU =
+            MENUS.register("teleport_tube", () -> IForgeMenuType.create(TeleportTubeMenu::new));
+
+    public static final RegistryObject<MenuType<MachineBufferMenu>> MACHINE_BUFFER_MENU =
+            MENUS.register("machine_buffer", () -> IForgeMenuType.create(MachineBufferMenu::new));
+
+    public static final RegistryObject<MenuType<VillagerOMatMenu>> VILLAGER_O_MAT_MENU =
+            MENUS.register("villager_o_mat", () -> IForgeMenuType.create(VillagerOMatMenu::new));
+
+    public static final RegistryObject<MenuType<PersonalChestMenu>> PERSONAL_CHEST_MENU =
+            MENUS.register("personal_chest", () -> IForgeMenuType.create(PersonalChestMenu::new));
+
+    public static final RegistryObject<MenuType<PersonalTankMenu>> PERSONAL_TANK_MENU =
+            MENUS.register("personal_tank", () -> IForgeMenuType.create(PersonalTankMenu::new));
+
+    public static final RegistryObject<MenuType<TradeOMatMenu>> TRADE_O_MAT_MENU =
+            MENUS.register("trade_o_mat", () -> IForgeMenuType.create(TradeOMatMenu::new));
+
+    public static final RegistryObject<MenuType<FluidOMatMenu>> FLUID_O_MAT_MENU =
+            MENUS.register("fluid_o_mat", () -> IForgeMenuType.create(FluidOMatMenu::new));
+
+    public static final RegistryObject<MenuType<ElectricEnchanterMenu>> ELECTRIC_ENCHANTER_MENU =
+            MENUS.register("electric_enchanter", () -> IForgeMenuType.create(ElectricEnchanterMenu::new));
 
     private MenuTypeRegistry() {
         throw new UnsupportedOperationException("Utility class");

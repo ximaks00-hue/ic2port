@@ -60,6 +60,55 @@ public final class OutputBufferHelper {
         return true;
     }
 
+    public static ItemStack insertRange(
+            final ItemStackHandler handler,
+            final int startSlot,
+            final int slotCount,
+            final ItemStack stack) {
+        ItemStack remaining = stack.copy();
+        for (int slot = startSlot; slot < startSlot + slotCount && !remaining.isEmpty(); slot++) {
+            ItemStack inSlot = handler.getStackInSlot(slot);
+            if (inSlot.isEmpty()) {
+                handler.setStackInSlot(slot, remaining);
+                return ItemStack.EMPTY;
+            }
+            if (ItemStack.isSameItemSameTags(inSlot, remaining)) {
+                int move = Math.min(remaining.getCount(), inSlot.getMaxStackSize() - inSlot.getCount());
+                if (move > 0) {
+                    inSlot.grow(move);
+                    handler.setStackInSlot(slot, inSlot);
+                    remaining.shrink(move);
+                }
+            }
+        }
+        return remaining;
+    }
+
+    public static boolean canFitAll(
+            final ItemStackHandler handler,
+            final int startSlot,
+            final int slotCount,
+            final List<ItemStack> stacks) {
+        if (stacks.isEmpty()) {
+            return true;
+        }
+        ItemStackHandler simulation = new ItemStackHandler(handler.getSlots()) {
+            @Override
+            public boolean isItemValid(final int slot, final ItemStack stack) {
+                return false;
+            }
+        };
+        for (int slot = 0; slot < handler.getSlots(); slot++) {
+            simulation.setStackInSlot(slot, handler.getStackInSlot(slot).copy());
+        }
+        for (ItemStack stack : stacks) {
+            if (!insertRange(simulation, startSlot, slotCount, stack.copy()).isEmpty()) {
+                return false;
+            }
+        }
+        return true;
+    }
+
     private static ItemStackHandler copyHandler(final ItemStackHandler handler) {
         ItemStackHandler simulation = new ItemStackHandler(handler.getSlots()) {
             @Override

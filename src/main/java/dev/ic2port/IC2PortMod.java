@@ -11,6 +11,7 @@ import dev.ic2port.setup.ItemRegistry;
 import dev.ic2port.setup.MenuTypeRegistry;
 import dev.ic2port.setup.ModConfig;
 import dev.ic2port.setup.ModTreeDecoratorTypes;
+import dev.ic2port.villager.Ic2VillagerProfessions;
 import dev.ic2port.setup.RecipeSerializerRegistry;
 import dev.ic2port.setup.RecipeTypeRegistry;
 import net.minecraftforge.common.MinecraftForge;
@@ -41,6 +42,7 @@ public class IC2PortMod {
         RecipeSerializerRegistry.register(modEventBus);
         ModEffects.register(modEventBus);
         ModTreeDecoratorTypes.register(modEventBus);
+        Ic2VillagerProfessions.register(modEventBus);
 
         ModLoadingContext.get().registerConfig(
                 net.minecraftforge.fml.config.ModConfig.Type.COMMON,

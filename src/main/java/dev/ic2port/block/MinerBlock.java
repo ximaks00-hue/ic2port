@@ -3,7 +3,7 @@ package dev.ic2port.block;
 import dev.ic2port.blockentity.MinerBlockEntity;
 import dev.ic2port.setup.BlockEntityRegistry;
 import net.minecraft.core.BlockPos;
-import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
@@ -15,6 +15,7 @@ import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
+import net.minecraftforge.network.NetworkHooks;
 import org.jetbrains.annotations.Nullable;
 
 public class MinerBlock extends BaseEntityBlock {
@@ -31,24 +32,34 @@ public class MinerBlock extends BaseEntityBlock {
 
     @Nullable
     @Override
-    public <T extends BlockEntity> BlockEntityTicker<T> getTicker(final Level level, final BlockState state,
-                                                                   final BlockEntityType<T> type) {
+    public <T extends BlockEntity> BlockEntityTicker<T> getTicker(
+            final Level level,
+            final BlockState state,
+            final BlockEntityType<T> type) {
         return level.isClientSide()
                 ? null
                 : createTickerHelper(type, BlockEntityRegistry.MINER_BE.get(), MinerBlockEntity::serverTick);
     }
 
     @Override
-    public InteractionResult use(final BlockState state, final Level level, final BlockPos pos,
-                                  final Player player, final InteractionHand hand, final BlockHitResult hit) {
-        if (!level.isClientSide && level.getBlockEntity(pos) instanceof MinerBlockEntity miner) {
-            double energy = miner.getStoredEnergy();
-            player.displayClientMessage(
-                    Component.translatable("block.ic2port.miner.status",
-                            (int) energy, (int) MinerBlockEntity.ENERGY_CAPACITY),
-                    true);
+    public InteractionResult use(
+            final BlockState state,
+            final Level level,
+            final BlockPos pos,
+            final Player player,
+            final InteractionHand hand,
+            final BlockHitResult hit) {
+        if (level.isClientSide) {
+            return InteractionResult.SUCCESS;
         }
-        return InteractionResult.sidedSuccess(level.isClientSide);
+        if (!(level.getBlockEntity(pos) instanceof MinerBlockEntity miner)) {
+            return InteractionResult.PASS;
+        }
+        if (player instanceof ServerPlayer serverPlayer && hand == InteractionHand.MAIN_HAND) {
+            NetworkHooks.openScreen(serverPlayer, miner, pos);
+            return InteractionResult.CONSUME;
+        }
+        return InteractionResult.PASS;
     }
 
     @Override
