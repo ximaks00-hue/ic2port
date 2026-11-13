@@ -11,5 +11,5 @@
     "minecraft:mangrove_swamp"
   ],
   "features": "ic2port:rubber_tree",
-  "step": "vegetation_decoration"
+  "step": "vegetal_decoration"
 }
